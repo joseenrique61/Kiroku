@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Acquisition extends Model
 {
@@ -13,8 +13,8 @@ class Acquisition extends Model
         'warranty_end_date',
     ];
 
-    public function device(): HasMany
+    public function device(): HasOne
     {
-        return $this->hasMany(Device::class);
+        return $this->hasOne(Device::class);
     }
 }
