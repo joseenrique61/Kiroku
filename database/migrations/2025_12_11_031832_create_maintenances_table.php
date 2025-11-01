@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('maintenances', function (Blueprint $table) {
             $table->id();
             $table->boolean('is_preventive')->default(true);
-            $table->decimal('cost');
+            $table->decimal('cost', 10, 3);
             $table->timestampTz('datetime');
             $table->foreignId('device_id')->constrained('devices');
             $table->timestamps();

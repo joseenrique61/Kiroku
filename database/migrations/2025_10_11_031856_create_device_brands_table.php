@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('device_brands', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name', 50)->unique();
             $table->timestamps();
         });
     }

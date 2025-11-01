@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('acquisitions', function (Blueprint $table) {
             $table->id();
-            $table->decimal('price');
+            $table->decimal('price', 10, 3);
             $table->date('acquired_at');
             $table->timestampTz('warranty_end_date');
             $table->timestamps();

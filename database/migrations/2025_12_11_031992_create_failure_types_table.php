@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('failure_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('severity');
+            $table->string('name', 30);
+            $table->string('severity', 20);
             $table->timestamps();
         });
     }

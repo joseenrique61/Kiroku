@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('audit_logs', function (Blueprint $table) {
             $table->id();
+            $table->string('table_name', 50);
+            $table->text('record_primary_key');
+            $table->string('operation', 1);
+            $table->text('value_before');
+            $table->text('value_after');
+            $table->ipAddress('host_ip');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }
