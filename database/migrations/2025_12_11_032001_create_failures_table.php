@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('failures', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
-            $table->string('cause');
+            $table->text('description');
+            $table->text('cause');
             $table->foreignId('maintenance_id')->constrained('maintenances');
             $table->foreignId('failure_type_id')->constrained('failure_types');
             $table->timestamps();

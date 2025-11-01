@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
-            $table->string('serial_number')->unique();
-            $table->string('description')->nullable();
+            $table->string('serial_number', 30)->unique();
+            $table->text('description')->nullable();
             $table->foreignId('acquisition_id')->constrained('acquisitions');
             $table->foreignId('organization_id')->constrained('organizations');
             $table->foreignId('device_category_id')->constrained('device_categories');

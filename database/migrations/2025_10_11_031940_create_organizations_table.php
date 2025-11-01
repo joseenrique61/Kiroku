@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('organizations', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name', 50);
             $table->foreignId('organization_policy_id')->constrained('organization_policies');
             $table->timestamps();
         });
