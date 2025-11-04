@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -14,6 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('users', [UserController::class, 'index'] )->name('users');
+    Route::get('devices', [DeviceController::class, 'index'] )->name('devices');
 });
 
 require __DIR__.'/settings.php';

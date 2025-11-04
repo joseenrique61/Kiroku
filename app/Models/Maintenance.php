@@ -20,7 +20,7 @@ class Maintenance extends Model
         return $this->hasOne(Failure::class);
     }
 
-    public function device(): HasMany
+    public function devices(): HasMany
     {
         return $this->hasMany(Device::class);
     }

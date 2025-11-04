@@ -4,23 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\DeviceStatus;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class DeviceStatusController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
-        //
-    }
 
+    }
+    
     /**
      * Show the form for creating a new resource.
-     */
-    public function create()
+    */
+    public function create(): Response
     {
-        //
+
     }
 
     /**
@@ -28,7 +30,7 @@ class DeviceStatusController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**

@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
+use App\Models\DeviceCategory;
+use App\Models\DeviceModel;
+use App\Models\DeviceStatus;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DeviceController extends Controller
 {
@@ -11,8 +15,19 @@ class DeviceController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
+    {   
+        $devices = Device::with([
+            'acquisition',
+            'organization',
+            'deviceCategory',
+            'deviceModel',
+            'deviceModel.deviceBrand',
+            'deviceStatus'
+        ])->paginate(20); // Use pagination to manage the optimization
+
+        return Inertia::render('inventory/devices/index',[
+            'devices' => $devices
+        ]);
     }
 
     /**
@@ -20,7 +35,15 @@ class DeviceController extends Controller
      */
     public function create()
     {
-        //
+        $deviceModels = DeviceModel::with('deviceBrand')->get();
+        $deviceStatus = DeviceStatus::get();
+        $deviceCategories = DeviceCategory::get();
+        
+        return Inertia::render('inventory/devices/create',[
+            'deviceModels' => $deviceModels,
+            'deviceStatus' => $deviceStatus,
+            'deviceCategories' => $deviceCategories
+        ]);
     }
 
     /**
@@ -28,15 +51,46 @@ class DeviceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'serial_number' => 'required|string|max:255|unique: '.Device::class,
+            'description' => 'nullable|string|max:255',
+            'acquisition_id' => 'required|int|exists:acquisitions,id',
+            'organization_id' => 'required|int|exists:organizations,id',
+            'device_category_id' => 'required|int|exists:device_categories,id',
+            'device_model_id' => 'required|int|exists:device_models,id',
+            'device_status_id' => 'required|int|exists:device_status,id'
+        ]);
+
+        Device::create([
+            'serial_number' => $request->serial_number,
+            'description' => $request->description,
+            'acquisition_id' => $request->acquisition_id,
+            'organization_id' => $request->organization_id,
+            'device_category_id' => $request->device_category_id,
+            'device_model_id' => $request->device_model_id,
+            'device_status_id' => $request->device_status_id
+        ]);
+
+        return redirect()->intended(route('devices', absolute: false));
     }
 
     /**
      * Display the specified resource.
      */
     public function show(Device $device)
-    {
-        //
+    {   
+        $device->load([
+            'acquisition',
+            'organization',
+            'deviceCategory',
+            'deviceModel',
+            'deviceModel.deviceBrand',
+            'deviceStatus'
+        ]);
+
+        return Inertia::render('inventory/devices/show',[
+            'device' => $device
+        ]);
     }
 
     /**
@@ -44,7 +98,25 @@ class DeviceController extends Controller
      */
     public function edit(Device $device)
     {
-        //
+        $device->load([
+            'acquisition',
+            'organization',
+            'deviceCategory',
+            'deviceModel',
+            'deviceModel.deviceBrand',
+            'deviceStatus'
+        ]);
+
+        $deviceModels = DeviceModel::with('deviceBrand')->get();
+        $deviceStatus = DeviceStatus::get();
+        $deviceCategories = DeviceCategory::get();
+        
+        return Inertia::render('inventory/devices/edit',[
+            'device' => $device,
+            'deviceModels' => $deviceModels,
+            'deviceStatus' => $deviceStatus,
+            'deviceCategories' => $deviceCategories
+        ]);
     }
 
     /**
@@ -52,7 +124,24 @@ class DeviceController extends Controller
      */
     public function update(Request $request, Device $device)
     {
-        //
+        $request->validate([
+            'description' => 'nullable|string|max:255',
+            'acquisition_id' => 'required|int|exists:acquisitions,id',
+            'organization_id' => 'required|int|exists:organizations,id',
+            'device_category_id' => 'required|int|exists:device_categories,id',
+            'device_model_id' => 'required|int|exists:device_models,id',
+            'device_status_id' => 'required|int|exists:device_status,id'
+        ]);
+
+         $device->update([
+            'acquisition_id' => $request->acquisition_id,
+            'organization_id' => $request->organization_id,
+            'device_category_id' => $request->device_category_id,
+            'device_model_id' => $request->device_model_id,
+            'device_status_id' => $request->device_status_id
+        ]);
+
+        return redirect()->intended(route('devices', absolute: false));
     }
 
     /**
@@ -60,6 +149,7 @@ class DeviceController extends Controller
      */
     public function destroy(Device $device)
     {
-        //
+        $device->delete();
+        return redirect()->intended(route('devices', absolute: false))->with('success','Device was deleted successfully!');
     }
 }

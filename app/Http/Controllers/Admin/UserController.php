@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -68,7 +67,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user) : Response
+    public function show(User $user): Response
     {
         return Inertia::render('admin/users/show',[
             'user' => $user
@@ -78,7 +77,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user) : Response
+    public function edit(User $user): Response
     {
         $roles = Role::all();
 
