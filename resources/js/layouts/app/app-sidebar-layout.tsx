@@ -2,7 +2,7 @@ import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import AppSidebar from '@/components/app-sidebar';
 import { NavItem, type BreadcrumbItem } from '@/types';
-import { LayoutDashboard } from 'lucide-react';
+import { LayoutDashboard, Settings } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 export default function AppSidebarLayout({
@@ -16,9 +16,18 @@ export default function AppSidebarLayout({
             icon: LayoutDashboard
         }
     ];
+
+    const footerItems: NavItem[] = [
+        {
+            title: "Settings",
+            href: route("profile.edit"),
+            icon: Settings
+        }
+    ];
+
     return (
         <AppShell>
-            <AppSidebar navItems={navItems}/>
+            <AppSidebar navItems={navItems} footerItems={footerItems}/>
 
             {/* TODO: Create sass file for AppSidebarLayout */}
             <AppContent className="overflow-x-hidden">

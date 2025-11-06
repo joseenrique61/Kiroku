@@ -24,9 +24,9 @@ $color-input: #e2e8f0;
 $color-ring: #020817;
 $color-sidebar-background: #f8fafc;
 $color-sidebar-foreground: #020817;
-$color-sidebar-hover: #e2e8f0;
-$color-sidebar-active: #cbd5e1;
+$color-sidebar-active: #e2e8f0;
 $color-sidebar-active-foreground: #020817;
+$color-sidebar-hover: color.adjust($color-sidebar-active, $lightness: -5%);
 
 $radius: 0.5rem;
 $shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);

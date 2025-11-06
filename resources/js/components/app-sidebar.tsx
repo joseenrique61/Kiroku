@@ -5,26 +5,36 @@ import AppLogoIcon from './app-logo-icon';
 
 interface AppSidebarProps extends React.HTMLAttributes<HTMLDivElement> {
     navItems: NavItem[];
+    footerItems: NavItem[];
 }
 
-const AppSidebar = ({ navItems, ...props }: AppSidebarProps) => {
+const AppSidebar = ({ navItems, footerItems, ...props }: AppSidebarProps) => {
     const page = usePage();
     return (
         <aside className="app-sidebar" {...props}>
             <AppSidebarHeader />
             <AppSidebarNav>
                 {navItems.map((navItem) => (
-                    <AppSidebarNavItem
+                    <AppSidebarItem
                         navItem={navItem}
                         isActive={page.url.startsWith(
-                            typeof navItem.href === 'string'
-                                ? navItem.href
-                                : navItem.href.url,
+                            new URL(navItem.href).pathname,
                         )}
                         key={navItem.title}
                     />
                 ))}
             </AppSidebarNav>
+            <AppSidebarFooter>
+                {footerItems.map((footerItem) => (
+                    <AppSidebarItem
+                        navItem={footerItem}
+                        isActive={page.url.startsWith(
+                            new URL(footerItem.href).pathname,
+                        )}
+                        key={footerItem.title}
+                    />
+                ))}
+            </AppSidebarFooter>
         </aside>
     );
 };
@@ -34,7 +44,7 @@ interface AppSidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 const AppSidebarHeader = ({ ...props }: AppSidebarHeaderProps) => {
     return (
         <div className="app-sidebar__header" {...props}>
-            <AppLogoIcon />
+            <AppLogoIcon className="app-sidebar__header-icon" />
             <h3 className="app-sidebar__header-title">Kiroku</h3>
         </div>
     );
@@ -52,24 +62,21 @@ const AppSidebarNav = ({ children, ...props }: AppSidebarNavProps) => {
     );
 };
 
-interface AppSidebarNavItemProps extends React.HTMLAttributes<HTMLLIElement> {
+interface AppSidebarItemProps extends React.HTMLAttributes<HTMLLIElement> {
     navItem: NavItem;
     isActive: boolean;
 }
 
-const AppSidebarNavItem = ({
+const AppSidebarItem = ({
     navItem,
     isActive,
     ...props
-}: AppSidebarNavItemProps) => {
+}: AppSidebarItemProps) => {
     return (
-        <li
-            className={`app-sidebar__nav-item ${isActive ? 'app-sidebar__nav-item--active' : ''}`}
-            {...props}
-        >
+        <li className="app-sidebar__nav-item" {...props}>
             <Link
                 href={navItem.href}
-                className="app-sidebar__nav-link"
+                className={`app-sidebar__nav-link ${isActive ? 'app-sidebar__nav-link--active' : ''}`}
                 prefetch
             >
                 {navItem.icon && (
@@ -78,6 +85,16 @@ const AppSidebarNavItem = ({
                 <span>{navItem.title}</span>
             </Link>
         </li>
+    );
+};
+
+interface AppSidebarFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const AppSidebarFooter = ({ children, ...props }: AppSidebarFooterProps) => {
+    return (
+        <footer className="app-sidebar__footer" {...props}>
+            <ul className="app-sidebar__footer-list">{children}</ul>
+        </footer>
     );
 };
 
