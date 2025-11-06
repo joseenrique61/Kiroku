@@ -1,8 +1,6 @@
 import React from 'react';
 
-interface AppContentProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const AppContent = ({ className, ...props }: AppContentProps) => {
+const AppContent = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <div
             className={['app-content', className].filter(Boolean).join(' ')}

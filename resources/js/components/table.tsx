@@ -1,8 +1,6 @@
 import React from 'react';
 
-interface TableProps extends React.HTMLAttributes<HTMLTableElement> {}
-
-const Table = ({ className, ...props }: TableProps) => {
+const Table = ({ className, ...props }: React.HTMLAttributes<HTMLTableElement>) => {
     return (
         <div className="table-wrapper">
             <table
@@ -15,10 +13,7 @@ const Table = ({ className, ...props }: TableProps) => {
     );
 };
 
-interface TableHeaderProps
-    extends React.HTMLAttributes<HTMLTableSectionElement> {}
-
-const TableHeader = ({ className, ...props }: TableHeaderProps) => {
+const TableHeader = ({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => {
     return (
         <thead
             className={['table__header', className].filter(Boolean).join(' ')}
@@ -29,10 +24,7 @@ const TableHeader = ({ className, ...props }: TableHeaderProps) => {
     );
 };
 
-interface TableBodyProps
-    extends React.HTMLAttributes<HTMLTableSectionElement> {}
-
-const TableBody = ({ className, ...props }: TableBodyProps) => {
+const TableBody = ({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => {
     return (
         <tbody
             className={['table__body', className].filter(Boolean).join(' ')}
@@ -43,10 +35,7 @@ const TableBody = ({ className, ...props }: TableBodyProps) => {
     );
 };
 
-interface TableFooterProps
-    extends React.HTMLAttributes<HTMLTableSectionElement> {}
-
-const TableFooter = ({ className, ...props }: TableFooterProps) => {
+const TableFooter = ({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => {
     return (
         <tfoot
             className={['table__footer', className].filter(Boolean).join(' ')}
@@ -57,9 +46,7 @@ const TableFooter = ({ className, ...props }: TableFooterProps) => {
     );
 };
 
-interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {}
-
-const TableRow = ({ className, ...props }: TableRowProps) => {
+const TableRow = ({ className, ...props }: React.HTMLAttributes<HTMLTableRowElement>) => {
     return (
         <tr
             className={['table__row', className].filter(Boolean).join(' ')}
@@ -70,9 +57,7 @@ const TableRow = ({ className, ...props }: TableRowProps) => {
     );
 };
 
-interface TableHeadProps extends React.ThHTMLAttributes<HTMLTableCellElement> {}
-
-const TableHead = ({ className, ...props }: TableHeadProps) => {
+const TableHead = ({ className, ...props }: React.ThHTMLAttributes<HTMLTableCellElement>) => {
     return (
         <th
             className={['table__head', className].filter(Boolean).join(' ')}
@@ -83,9 +68,7 @@ const TableHead = ({ className, ...props }: TableHeadProps) => {
     );
 };
 
-interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {}
-
-const TableCell = ({ className, ...props }: TableCellProps) => {
+const TableCell = ({ className, ...props }: React.TdHTMLAttributes<HTMLTableCellElement>) => {
     return (
         <td
             className={['table__cell', className].filter(Boolean).join(' ')}
@@ -96,10 +79,7 @@ const TableCell = ({ className, ...props }: TableCellProps) => {
     );
 };
 
-interface TableCaptionProps
-    extends React.HTMLAttributes<HTMLTableCaptionElement> {}
-
-const TableCaption = ({ className, ...props }: TableCaptionProps) => {
+const TableCaption = ({ className, ...props }: React.HTMLAttributes<HTMLTableCaptionElement>) => {
     return (
         <caption
             className={['table__caption', className].filter(Boolean).join(' ')}

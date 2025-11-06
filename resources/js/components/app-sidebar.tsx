@@ -39,9 +39,7 @@ const AppSidebar = ({ navItems, footerItems, ...props }: AppSidebarProps) => {
     );
 };
 
-interface AppSidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const AppSidebarHeader = ({ ...props }: AppSidebarHeaderProps) => {
+const AppSidebarHeader = ({ ...props }: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <div className="app-sidebar__header" {...props}>
             <AppLogoIcon className="app-sidebar__header-icon" />
@@ -88,9 +86,7 @@ const AppSidebarItem = ({
     );
 };
 
-interface AppSidebarFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const AppSidebarFooter = ({ children, ...props }: AppSidebarFooterProps) => {
+const AppSidebarFooter = ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <footer className="app-sidebar__footer" {...props}>
             <ul className="app-sidebar__footer-list">{children}</ul>

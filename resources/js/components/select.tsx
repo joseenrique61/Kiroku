@@ -88,7 +88,7 @@ const SelectTrigger = ({
                             child.type === SelectValue
                         ) {
                             return React.cloneElement(
-                                child as React.ReactElement<SelectValueProps>,
+                                child as React.ReactElement<React.HTMLAttributes<HTMLSpanElement>>,
                                 { children: currentValue },
                             );
                         }
@@ -116,9 +116,7 @@ const SelectTrigger = ({
     );
 };
 
-interface SelectValueProps extends React.HTMLAttributes<HTMLSpanElement> {}
-
-const SelectValue = ({ className, ...props }: SelectValueProps) => {
+const SelectValue = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
     return (
         <span
             className={['select__value', className].filter(Boolean).join(' ')}
@@ -201,9 +199,7 @@ const SelectItem = ({
     );
 };
 
-interface SelectGroupProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const SelectGroup = ({ className, ...props }: SelectGroupProps) => {
+const SelectGroup = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <div
             className={['select__group', className].filter(Boolean).join(' ')}
@@ -212,9 +208,7 @@ const SelectGroup = ({ className, ...props }: SelectGroupProps) => {
     );
 };
 
-interface SelectLabelProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const SelectLabel = ({ className, ...props }: SelectLabelProps) => {
+const SelectLabel = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <div
             className={['select__label', className].filter(Boolean).join(' ')}
@@ -223,9 +217,7 @@ const SelectLabel = ({ className, ...props }: SelectLabelProps) => {
     );
 };
 
-interface SelectSeparatorProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const SelectSeparator = ({ className, ...props }: SelectSeparatorProps) => {
+const SelectSeparator = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <div
             className={['select__separator', className]

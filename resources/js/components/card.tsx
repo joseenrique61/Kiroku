@@ -1,8 +1,6 @@
 import React from 'react';
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const Card = ({ className, ...props }: CardProps) => {
+const Card = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <div
             className={['card', className].filter(Boolean).join(' ')}
@@ -13,9 +11,7 @@ const Card = ({ className, ...props }: CardProps) => {
     );
 };
 
-interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const CardHeader = ({ className, ...props }: CardHeaderProps) => {
+const CardHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <div
             className={['card__header', className].filter(Boolean).join(' ')}
@@ -26,9 +22,7 @@ const CardHeader = ({ className, ...props }: CardHeaderProps) => {
     );
 };
 
-interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {}
-
-const CardTitle = ({ className, ...props }: CardTitleProps) => {
+const CardTitle = ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
     return (
         <h3
             className={['card__title', className].filter(Boolean).join(' ')}
@@ -39,10 +33,7 @@ const CardTitle = ({ className, ...props }: CardTitleProps) => {
     );
 };
 
-interface CardDescriptionProps
-    extends React.HTMLAttributes<HTMLParagraphElement> {}
-
-const CardDescription = ({ className, ...props }: CardDescriptionProps) => {
+const CardDescription = ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => {
     return (
         <p
             className={['card__description', className]
@@ -55,9 +46,7 @@ const CardDescription = ({ className, ...props }: CardDescriptionProps) => {
     );
 };
 
-interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const CardContent = ({ className, ...props }: CardContentProps) => {
+const CardContent = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <div
             className={['card__content', className].filter(Boolean).join(' ')}
@@ -68,9 +57,7 @@ const CardContent = ({ className, ...props }: CardContentProps) => {
     );
 };
 
-interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const CardFooter = ({ className, ...props }: CardFooterProps) => {
+const CardFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <div
             className={['card__footer', className].filter(Boolean).join(' ')}

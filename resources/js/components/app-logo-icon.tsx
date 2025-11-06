@@ -1,8 +1,6 @@
 import React from 'react';
 
-interface AppLogoIconProps extends React.SVGProps<SVGSVGElement> {}
-
-const AppLogoIcon: React.FC<AppLogoIconProps> = ({ className, ...props }) => {
+const AppLogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = ({ className, ...props }) => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
