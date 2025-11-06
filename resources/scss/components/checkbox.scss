@@ -1,0 +1,33 @@
+@use "/resources/scss/base";
+
+.checkbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid base.$color-input;
+    border-radius: var(--radius-sm, 0.25rem);
+    background-color: base.$color-background;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:focus-visible {
+        outline: 2px solid base.$color-ring;
+        outline-offset: 2px;
+    }
+
+    &[data-state="checked"] {
+        background-color: base.$color-primary;
+        border-color: base.$color-primary;
+
+        .checkbox__indicator {
+            color: base.$color-primary-foreground;
+        }
+    }
+
+    &__indicator {
+        color: transparent;
+        font-size: 0.75rem;
+    }
+}

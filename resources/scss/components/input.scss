@@ -1,0 +1,28 @@
+@use "/resources/scss/base";
+
+.input {
+    display: flex;
+    height: 2.5rem;
+    width: 100%;
+    border-radius: base.$radius;
+    border: 1px solid base.$color-input;
+    background-color: base.$color-background;
+    padding: 0 0.75rem;
+    font-size: 0.875rem;
+    color: base.$color-foreground;
+    box-shadow: base.$shadow-sm;
+
+    &:focus-visible {
+        outline: none;
+        border-color: base.$color-ring;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+    &::placeholder {
+        color: base.$color-muted-foreground;
+    }
+}

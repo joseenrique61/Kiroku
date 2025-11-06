@@ -1,12 +1,17 @@
 import { wayfinder } from '@laravel/vite-plugin-wayfinder';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
+import path from 'path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.tsx'],
+            input: [
+                'resources/scss/app.scss',
+                'resources/css/reset.css',
+                'resources/js/app.tsx',
+            ],
             ssr: 'resources/js/ssr.tsx',
             refresh: true,
         }),
@@ -17,5 +22,10 @@ export default defineConfig({
     ],
     esbuild: {
         jsx: 'automatic',
+    },
+    resolve: {
+        alias: {
+            'ziggy-js': path.resolve('vendor/tightenco/ziggy'),
+        },
     },
 });

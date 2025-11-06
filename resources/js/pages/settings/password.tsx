@@ -8,9 +8,9 @@ import { Form, Head } from '@inertiajs/react';
 import { useRef } from 'react';
 
 import HeadingSmall from '@/components/heading-small';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/button';
+import { Input } from '@/components/input';
+import { Label } from '@/components/label';
 import { edit } from '@/routes/password';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -29,7 +29,7 @@ export default function Password() {
             <Head title="Password settings" />
 
             <SettingsLayout>
-                <div className="space-y-6">
+                <div className="password-settings">
                     <HeadingSmall
                         title="Update password"
                         description="Ensure your account is using a long, random password to stay secure"
@@ -55,11 +55,11 @@ export default function Password() {
                                 currentPasswordInput.current?.focus();
                             }
                         }}
-                        className="space-y-6"
+                        className="password-settings__form"
                     >
                         {({ errors, processing, recentlySuccessful }) => (
                             <>
-                                <div className="grid gap-2">
+                                <div className="password-settings__form-group">
                                     <Label htmlFor="current_password">
                                         Current password
                                     </Label>
@@ -69,7 +69,6 @@ export default function Password() {
                                         ref={currentPasswordInput}
                                         name="current_password"
                                         type="password"
-                                        className="mt-1 block w-full"
                                         autoComplete="current-password"
                                         placeholder="Current password"
                                     />
@@ -79,7 +78,7 @@ export default function Password() {
                                     />
                                 </div>
 
-                                <div className="grid gap-2">
+                                <div className="password-settings__form-group">
                                     <Label htmlFor="password">
                                         New password
                                     </Label>
@@ -89,7 +88,6 @@ export default function Password() {
                                         ref={passwordInput}
                                         name="password"
                                         type="password"
-                                        className="mt-1 block w-full"
                                         autoComplete="new-password"
                                         placeholder="New password"
                                     />
@@ -97,7 +95,7 @@ export default function Password() {
                                     <InputError message={errors.password} />
                                 </div>
 
-                                <div className="grid gap-2">
+                                <div className="password-settings__form-group">
                                     <Label htmlFor="password_confirmation">
                                         Confirm password
                                     </Label>
@@ -106,7 +104,6 @@ export default function Password() {
                                         id="password_confirmation"
                                         name="password_confirmation"
                                         type="password"
-                                        className="mt-1 block w-full"
                                         autoComplete="new-password"
                                         placeholder="Confirm password"
                                     />
@@ -116,7 +113,7 @@ export default function Password() {
                                     />
                                 </div>
 
-                                <div className="flex items-center gap-4">
+                                <div className="password-settings__form-actions">
                                     <Button
                                         disabled={processing}
                                         data-test="update-password-button"
@@ -131,7 +128,7 @@ export default function Password() {
                                         leave="transition ease-in-out"
                                         leaveTo="opacity-0"
                                     >
-                                        <p className="text-sm text-neutral-600">
+                                        <p className="password-settings__saved-message">
                                             Saved
                                         </p>
                                     </Transition>

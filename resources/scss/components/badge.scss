@@ -1,0 +1,31 @@
+@use "/resources/scss/base";
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: base.$radius;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+
+    &--default {
+        background-color: base.$color-primary;
+        color: base.$color-primary-foreground;
+    }
+
+    &--secondary {
+        background-color: base.$color-secondary;
+        color: base.$color-secondary-foreground;
+    }
+
+    &--destructive {
+        background-color: base.$color-destructive;
+        color: base.$color-destructive-foreground;
+    }
+
+    &--outline {
+        color: base.$color-foreground;
+        border: 1px solid base.$color-input;
+    }
+}
