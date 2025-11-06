@@ -1,0 +1,54 @@
+@use "/resources/scss/base";
+
+.login-page {
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem; // Equivalent to 24px
+    }
+
+    &__form-grid {
+        display: grid;
+        gap: 1.5rem; // Equivalent to 24px
+    }
+
+    &__form-group {
+        display: grid;
+        gap: 0.5rem; // Equivalent to 8px
+    }
+
+    &__password-group {
+        display: flex;
+        align-items: center;
+    }
+
+    &__forgot-password-link {
+        margin-left: auto;
+        font-size: 0.875rem; // Equivalent to 14px
+    }
+
+    &__remember-me {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem; // Equivalent to 12px
+    }
+
+    &__submit-button {
+        margin-top: 1rem; // Equivalent to 16px
+        width: 100%;
+    }
+
+    &__signup-link {
+        text-align: center;
+        font-size: 0.875rem; // Equivalent to 14px
+        color: base.$color-muted-foreground;
+    }
+
+    &__status {
+        margin-bottom: 1rem; // Equivalent to 16px
+        text-align: center;
+        font-size: 0.875rem; // Equivalent to 14px
+        font-weight: 500;
+        color: var(--color-success, #28a745); // Using a placeholder for success color
+    }
+}

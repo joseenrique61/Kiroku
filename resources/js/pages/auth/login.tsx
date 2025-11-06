@@ -1,10 +1,12 @@
+import '@/../scss/pages/auth/login.scss'
+
 import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/button';
+import { Checkbox } from '@/components/checkbox';
+import { Input } from '@/components/input';
+import { Label } from '@/components/label';
 import AuthLayout from '@/layouts/auth-layout';
 import { register } from '@/routes';
 import { request } from '@/routes/password';
@@ -27,12 +29,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             <Form
                 {...AuthenticatedSessionController.store.form()}
                 resetOnSuccess={['password']}
-                className="flex flex-col gap-6"
+                className="login-page__form"
             >
                 {({ processing, errors }) => (
                     <>
-                        <div className="grid gap-6">
-                            <div className="grid gap-2">
+                        <div className="login-page__form-grid">
+                            <div className="login-page__form-group">
                                 <Label htmlFor="email">Email address</Label>
                                 <Input
                                     id="email"
@@ -47,13 +49,13 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 <InputError message={errors.email} />
                             </div>
 
-                            <div className="grid gap-2">
-                                <div className="flex items-center">
+                            <div className="login-page__form-group">
+                                <div className="login-page__password-group">
                                     <Label htmlFor="password">Password</Label>
                                     {canResetPassword && (
                                         <TextLink
-                                            href={request()}
-                                            className="ml-auto text-sm"
+                                            href={request().url}
+                                            className="login-page__forgot-password-link"
                                             tabIndex={5}
                                         >
                                             Forgot password?
@@ -72,7 +74,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 <InputError message={errors.password} />
                             </div>
 
-                            <div className="flex items-center space-x-3">
+                            <div className="login-page__remember-me">
                                 <Checkbox
                                     id="remember"
                                     name="remember"
@@ -83,11 +85,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                             <Button
                                 type="submit"
-                                className="mt-4 w-full"
+                                className="login-page__submit-button"
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
                             >
+                                {/* TODO: Change to Sass and bem */}
                                 {processing && (
                                     <LoaderCircle className="h-4 w-4 animate-spin" />
                                 )}
@@ -95,9 +98,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             </Button>
                         </div>
 
-                        <div className="text-center text-sm text-muted-foreground">
+                        <div className="login-page__signup-link">
                             Don't have an account?{' '}
-                            <TextLink href={register()} tabIndex={5}>
+                            <TextLink href={register().url} tabIndex={5}>
                                 Sign up
                             </TextLink>
                         </div>
@@ -106,7 +109,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             </Form>
 
             {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
+                <div className="login-page__status">
                     {status}
                 </div>
             )}

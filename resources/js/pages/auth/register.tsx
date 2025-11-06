@@ -5,9 +5,9 @@ import { LoaderCircle } from 'lucide-react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/button';
+import { Input } from '@/components/input';
+import { Label } from '@/components/label';
 import AuthLayout from '@/layouts/auth-layout';
 
 export default function Register() {
@@ -21,12 +21,12 @@ export default function Register() {
                 {...RegisteredUserController.store.form()}
                 resetOnSuccess={['password', 'password_confirmation']}
                 disableWhileProcessing
-                className="flex flex-col gap-6"
+                className="register-page__form"
             >
                 {({ processing, errors }) => (
                     <>
-                        <div className="grid gap-6">
-                            <div className="grid gap-2">
+                        <div className="register-page__form-grid">
+                            <div className="register-page__form-group">
                                 <Label htmlFor="name">Name</Label>
                                 <Input
                                     id="name"
@@ -44,7 +44,7 @@ export default function Register() {
                                 />
                             </div>
 
-                            <div className="grid gap-2">
+                            <div className="register-page__form-group">
                                 <Label htmlFor="email">Email address</Label>
                                 <Input
                                     id="email"
@@ -58,7 +58,7 @@ export default function Register() {
                                 <InputError message={errors.email} />
                             </div>
 
-                            <div className="grid gap-2">
+                            <div className="register-page__form-group">
                                 <Label htmlFor="password">Password</Label>
                                 <Input
                                     id="password"
@@ -72,7 +72,7 @@ export default function Register() {
                                 <InputError message={errors.password} />
                             </div>
 
-                            <div className="grid gap-2">
+                            <div className="register-page__form-group">
                                 <Label htmlFor="password_confirmation">
                                     Confirm password
                                 </Label>
@@ -92,7 +92,7 @@ export default function Register() {
 
                             <Button
                                 type="submit"
-                                className="mt-2 w-full"
+                                className="register-page__submit-button"
                                 tabIndex={5}
                                 data-test="register-user-button"
                             >
@@ -103,7 +103,7 @@ export default function Register() {
                             </Button>
                         </div>
 
-                        <div className="text-center text-sm text-muted-foreground">
+                        <div className="register-page__login-link">
                             Already have an account?{' '}
                             <TextLink href={login()} tabIndex={6}>
                                 Log in

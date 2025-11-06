@@ -1,0 +1,8 @@
+@use "/resources/scss/base";
+
+.app-shell {
+    display: flex;
+    min-height: 100vh;
+    background-color: base.$color-background;
+    color: base.$color-foreground;
+}
