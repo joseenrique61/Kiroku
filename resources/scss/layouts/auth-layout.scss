@@ -1,0 +1,78 @@
+@use "/resources/scss/base";
+
+.auth-layout {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem; // Equivalent to 24px
+    background-color: base.$color-background;
+    padding: 1.5rem;
+
+    @media (min-width: 48em) {
+        // Equivalent to 768px
+        padding: 2.5rem; // Equivalent to 40px
+    }
+
+    &__container {
+        width: 100%;
+        max-width: 25rem; // Equivalent to 400px
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem; // Equivalent to 32px
+    }
+
+    &__header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem; // Equivalent to 16px
+    }
+
+    &__logo-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem; // Equivalent to 8px
+        font-weight: 500;
+    }
+
+    &__logo-container {
+        margin-bottom: 0.25rem; // Equivalent to 4px
+        display: flex;
+        height: 2.25rem; // Equivalent to 36px
+        width: 2.25rem; // Equivalent to 36px
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-sm, 0.375rem); // Equivalent to 6px
+    }
+
+    &__logo-icon {
+        height: 2.25rem; // Equivalent to 36px
+        width: 2.25rem; // Equivalent to 36px
+        fill: currentColor;
+        color: base.$color-foreground;
+    }
+
+    &__title-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem; // Equivalent to 8px
+        text-align: center;
+    }
+
+    &__title {
+        font-size: 1.25rem; // Equivalent to 20px
+        font-weight: 500;
+    }
+
+    &__description {
+        font-size: 0.875rem; // Equivalent to 14px
+        color: base.$color-muted-foreground;
+        text-align: center;
+    }
+}

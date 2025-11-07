@@ -1,0 +1,49 @@
+@use "/resources/scss/base";
+
+.profile-settings {
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem; // Equivalent to 24px
+    }
+
+    &__form-group {
+        display: grid;
+        gap: 0.5rem; // Equivalent to 8px
+    }
+
+    &__form-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem; // Equivalent to 16px
+    }
+
+    &__unverified-text {
+        margin-top: -1rem; // Equivalent to -16px
+        font-size: 0.875rem; // Equivalent to 14px
+        color: base.$color-muted-foreground;
+    }
+
+    &__resend-link {
+        text-decoration: underline;
+        color: base.$color-foreground;
+        text-underline-offset: 4px;
+        transition: color 0.3s ease-out;
+
+        &:hover {
+            text-decoration-color: currentColor;
+        }
+    }
+
+    &__verification-status {
+        margin-top: 0.5rem; // Equivalent to 8px
+        font-size: 0.875rem; // Equivalent to 14px
+        font-weight: 500;
+        color: var(--color-success, #28a745); // Using a placeholder for success color
+    }
+
+    &__saved-message {
+        font-size: 0.875rem; // Equivalent to 14px
+        color: base.$color-muted-foreground;
+    }
+}

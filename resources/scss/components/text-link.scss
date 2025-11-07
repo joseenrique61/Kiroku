@@ -1,0 +1,10 @@
+@use "/resources/scss/base";
+
+.text-link {
+    color: base.$color-primary;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

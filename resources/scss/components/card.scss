@@ -1,0 +1,39 @@
+@use "/resources/scss/base";
+
+.card {
+    border: 1px solid base.$color-border;
+    border-radius: base.$radius;
+    background-color: base.$color-card;
+    color: base.$color-card-foreground;
+    box-shadow: base.$shadow;
+
+    &__header {
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem;
+    }
+
+    &__title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.2;
+        letter-spacing: -0.025em;
+    }
+
+    &__description {
+        font-size: 0.875rem;
+        color: base.$color-muted-foreground;
+    }
+
+    &__content {
+        padding: 1.5rem;
+        padding-top: 0;
+    }
+
+    &__footer {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem;
+        padding-top: 0;
+    }
+}

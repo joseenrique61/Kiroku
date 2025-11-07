@@ -1,0 +1,12 @@
+@use "/resources/scss/base";
+
+.log-index-page {
+    &__card-content {
+        padding: 1.25rem; // Equivalent to 20px
+    }
+
+    &__table-actions {
+        display: flex;
+        gap: 0.5rem; // Equivalent to 8px
+    }
+}

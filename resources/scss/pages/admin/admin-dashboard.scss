@@ -1,0 +1,13 @@
+@use "/resources/scss/base";
+
+.admin-dashboard-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; // Equivalent to 24px
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+        gap: 1.5rem; // Equivalent to 24px
+    }
+}

@@ -1,0 +1,38 @@
+@use "sass:color";
+
+$color-background: #ffffff;
+$color-foreground: #020817;
+$color-card: #ffffff;
+$color-card-foreground: #020817;
+$color-popover: #ffffff;
+$color-popover-foreground: #020817;
+$color-primary: #020817;
+$color-primary-foreground: #f8fafc;
+$color-primary-hover: color.adjust($color-primary, $lightness: -5%);
+$color-secondary: #f1f5f9;
+$color-secondary-foreground: #020817;
+$color-secondary-hover: color.adjust($color-secondary, $lightness: -5%);
+$color-muted: #f1f5f9;
+$color-muted-foreground: #64748b;
+$color-accent: #f1f5f9;
+$color-accent-foreground: #020817;
+$color-destructive: #ef4444;
+$color-destructive-foreground: #f8fafc;
+$color-destructive-hover: color.adjust($color-destructive, $lightness: -5%);
+$color-border: #e2e8f0;
+$color-input: #e2e8f0;
+$color-ring: #020817;
+$color-sidebar-background: #f8fafc;
+$color-sidebar-foreground: #020817;
+$color-sidebar-active: #e2e8f0;
+$color-sidebar-active-foreground: #020817;
+$color-sidebar-hover: color.adjust($color-sidebar-active, $lightness: -5%);
+
+$radius: 0.5rem;
+$shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+$shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+$shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
