@@ -11,7 +11,7 @@ class DeviceBrand extends Model
         'name'
     ];
 
-    public function deviceModel() : HasMany
+    public function deviceModels() : HasMany
     {
         return $this->hasMany(DeviceModel::class);
     } 

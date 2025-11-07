@@ -12,7 +12,7 @@ class FailureType extends Model
         'severity'
     ];
 
-    public function failure(): HasMany 
+    public function failures(): HasMany 
     {
         return $this->hasMany(Failure::class);
     }

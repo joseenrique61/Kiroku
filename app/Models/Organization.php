@@ -18,7 +18,7 @@ class Organization extends Model
         return $this->belongsTo(OrganizationPolicy::class);
     }
 
-    public function device(): HasMany
+    public function devices(): HasMany
     {
         return $this->hasMany(Device::class);
     }

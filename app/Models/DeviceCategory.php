@@ -11,7 +11,7 @@ class DeviceCategory extends Model
         'name'
     ];
 
-    public function device() : HasMany
+    public function devices() : HasMany
     {
         return $this->hasMany(Device::class);
     } 

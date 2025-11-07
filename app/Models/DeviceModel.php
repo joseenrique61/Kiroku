@@ -18,7 +18,7 @@ class DeviceModel extends Model
         return $this->belongsTo(DeviceBrand::class);
     }
 
-    public function device() : HasMany
+    public function devices() : HasMany
     {
         return $this->hasMany(Device::class);
     }
