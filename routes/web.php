@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Inventory\Devices\DeviceController;
 use App\Http\Controllers\Inventory\Failures\FailureController;
@@ -20,6 +21,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('devices', DeviceController::class );
     Route::resource('failures', FailureController::class );
     Route::resource('maintenances', MaintenanceController::class );
+
+    Route::get('logs', [AuditLogController::class, 'index'])->name('logs.index');
+    Route::get('logs/{log}', [AuditLogController::class, 'show'])->name('logs.show');
 });
 
 require __DIR__.'/settings.php';

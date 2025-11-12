@@ -50,11 +50,10 @@ export default function LogIndex({ logs }: { logs: AuditLog[] }) {
                                     <TableCell className="log-index-page__table-actions">
                                         <Button variant={'outline'} asChild>
                                             <Link
-                                                // TODO: Create route for logs
-                                                // href={route(
-                                                //     'logs.show',
-                                                //     log.id,
-                                                // )}
+                                                href={route(
+                                                    'logs.show',
+                                                    log.id,
+                                                )}
                                             >
                                                 View
                                             </Link>

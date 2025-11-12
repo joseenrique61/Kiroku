@@ -16,25 +16,29 @@ declare module 'ziggy-js' {
     "users.show": [
         {
             "name": "user",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "users.edit": [
         {
             "name": "user",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "users.update": [
         {
             "name": "user",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "users.destroy": [
         {
             "name": "user",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "devices.index": [],
@@ -43,25 +47,29 @@ declare module 'ziggy-js' {
     "devices.show": [
         {
             "name": "device",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "devices.edit": [
         {
             "name": "device",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "devices.update": [
         {
             "name": "device",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "devices.destroy": [
         {
             "name": "device",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "failures.index": [],
@@ -70,25 +78,29 @@ declare module 'ziggy-js' {
     "failures.show": [
         {
             "name": "failure",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "failures.edit": [
         {
             "name": "failure",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "failures.update": [
         {
             "name": "failure",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "failures.destroy": [
         {
             "name": "failure",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "maintenances.index": [],
@@ -97,25 +109,37 @@ declare module 'ziggy-js' {
     "maintenances.show": [
         {
             "name": "maintenance",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "maintenances.edit": [
         {
             "name": "maintenance",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "maintenances.update": [
         {
             "name": "maintenance",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "maintenances.destroy": [
         {
             "name": "maintenance",
-            "required": true
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "logs.index": [],
+    "logs.show": [
+        {
+            "name": "log",
+            "required": true,
+            "binding": "id"
         }
     ],
     "profile.edit": [],
