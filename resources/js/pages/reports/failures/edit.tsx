@@ -11,7 +11,7 @@ import { Input } from '@/components/input';
 import { Label } from '@/components/label';
 import { Select } from '@/components/select';
 import AppLayout from '@/layouts/app-layout';
-import { FailureType, Maintenance } from '@/types/globals';
+import { Failure, FailureType, Maintenance } from '@/types/globals';
 import { Head, useForm } from '@inertiajs/react';
 
 type FailureFormData = {
@@ -21,38 +21,40 @@ type FailureFormData = {
     failure_type_id: number;
 };
 
-export default function FailureCreate({ 
+export default function FailureEdit({ 
+    failure,
     maintenances, 
     failureTypes 
 }: { 
+    failure: Failure,
     maintenances: Maintenance[], 
     failureTypes: FailureType[] 
 }) {
-    const { data, setData, post, errors } = useForm<FailureFormData>({
-        description: '',
-        cause: '',
-        maintenance_id: maintenances[0]?.id || 0,
-        failure_type_id: failureTypes[0]?.id || 0,
+    const { data, setData, put, errors } = useForm<FailureFormData>({
+        description: failure.description,
+        cause: failure.cause,
+        maintenance_id: failure.maintenance_id,
+        failure_type_id: failure.failure_type_id,
     });
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        post(route('failures.store'));
+        put(route('failures.update', failure.id));
     }
 
     return (
         <AppLayout>
-            <Head title="Create Failure" />
+            <Head title="Edit Failure" />
             <Card>
                 <CardHeader>
-                    <CardTitle>Create Failure</CardTitle>
+                    <CardTitle>Edit Failure</CardTitle>
                     <CardDescription>
-                        Create a new failure to add to the system.
+                        Update the details of the failure.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="failure-create-page__form">
-                        <div className="failure-create-page__form-group">
+                    <form onSubmit={handleSubmit} className="failure-edit-page__form">
+                        <div className="failure-edit-page__form-group">
                             <Label htmlFor="description">Description</Label>
                             <Input
                                 id="description"
@@ -65,7 +67,7 @@ export default function FailureCreate({
                             />
                             <InputError message={errors.description} />
                         </div>
-                        <div className="failure-create-page__form-group">
+                        <div className="failure-edit-page__form-group">
                             <Label htmlFor="cause">Cause</Label>
                             <Input
                                 id="cause"
@@ -78,7 +80,7 @@ export default function FailureCreate({
                             />
                             <InputError message={errors.cause} />
                         </div>
-                        <div className="failure-create-page__form-group">
+                        <div className="failure-edit-page__form-group">
                             <Label htmlFor="maintenance_id">Maintenance</Label>
                             <Select
                                 name="maintenance_id"
@@ -94,7 +96,7 @@ export default function FailureCreate({
                             />
                             <InputError message={errors.maintenance_id} />
                         </div>
-                        <div className="failure-create-page__form-group">
+                        <div className="failure-edit-page__form-group">
                             <Label htmlFor="failure_type_id">Failure Type</Label>
                             <Select
                                 name="failure_type_id"
@@ -110,7 +112,7 @@ export default function FailureCreate({
                             />
                             <InputError message={errors.failure_type_id} />
                         </div>
-                        <Button type="submit">Create</Button>
+                        <Button type="submit">Update</Button>
                     </form>
                 </CardContent>
             </Card>

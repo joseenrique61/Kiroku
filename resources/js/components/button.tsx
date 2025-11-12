@@ -1,12 +1,28 @@
 import React from 'react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary' | 'destructive' | 'ghost';
-    size?: 'sm' | 'md' | 'lg';
-    asChild?: boolean;
+type ButtonVariants = 'primary' | 'secondary' | 'destructive' | 'ghost' | 'outline';
+type ButtonSizes = 'sm' | 'md' | 'lg';
+
+interface CommonButtonProps {
+    variant?: ButtonVariants;
+    size?: ButtonSizes;
+    className?: string;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+// Define the props for when asChild is false (renders a button)
+interface ButtonAsButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, CommonButtonProps {
+    asChild?: false;
+}
+
+// Define the props for when asChild is true (renders a div, or whatever child is passed)
+interface ButtonAsChildProps extends React.HTMLAttributes<HTMLDivElement>, CommonButtonProps {
+    asChild: true;
+}
+
+// Union type for ButtonProps
+type ButtonProps = ButtonAsButtonProps | ButtonAsChildProps;
+
+const Button = React.forwardRef<HTMLButtonElement | HTMLDivElement, ButtonProps>(
     (
         {
             className,
@@ -15,9 +31,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             asChild = false,
             ...props
         },
-        ref,
+        forwardedRef,
     ) => {
-        const Comp = asChild ? 'div' : 'button';
         const buttonClasses = [
             'button',
             `button--${variant}`,
@@ -27,7 +42,23 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             .filter(Boolean)
             .join(' ');
 
-        return <Comp className={buttonClasses} ref={ref} {...props} />;
+        if (asChild) {
+            return (
+                <div
+                    className={buttonClasses}
+                    ref={forwardedRef as React.Ref<HTMLDivElement>}
+                    {...(props as React.HTMLAttributes<HTMLDivElement>)}
+                />
+            );
+        } else {
+            return (
+                <button
+                    className={buttonClasses}
+                    ref={forwardedRef as React.Ref<HTMLButtonElement>}
+                    {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+                />
+            );
+        }
     },
 );
 

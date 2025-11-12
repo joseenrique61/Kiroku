@@ -1,5 +1,5 @@
 import RegisteredUserController from '@/actions/App/Http/Controllers/Auth/RegisteredUserController';
-import { login } from '@/routes';
+
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
@@ -40,7 +40,6 @@ export default function Register() {
                                 />
                                 <InputError
                                     message={errors.name}
-                                    className="mt-2"
                                 />
                             </div>
 
@@ -97,7 +96,7 @@ export default function Register() {
                                 data-test="register-user-button"
                             >
                                 {processing && (
-                                    <LoaderCircle className="h-4 w-4 animate-spin" />
+                                    <LoaderCircle className="register-page__loader" />
                                 )}
                                 Create account
                             </Button>
@@ -105,7 +104,7 @@ export default function Register() {
 
                         <div className="register-page__login-link">
                             Already have an account?{' '}
-                            <TextLink href={login()} tabIndex={6}>
+                            <TextLink href={route('login')} tabIndex={6}>
                                 Log in
                             </TextLink>
                         </div>

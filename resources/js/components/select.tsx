@@ -1,11 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-interface SelectProps extends React.HTMLAttributes<HTMLDivElement> {
-    value?: string;
-    onValueChange?: (value: string) => void;
+interface SelectOption {
+    value: string;
+    label: string;
 }
 
-const Select = ({ children, value, onValueChange, ...props }: SelectProps) => {
+interface SelectProps extends React.HTMLAttributes<HTMLDivElement> {
+    name: string;
+    options: SelectOption[];
+    value?: string;
+    onValueChange?: (value: string) => void;
+    placeholder?: string;
+}
+
+const Select = ({
+    name,
+    options,
+    value,
+    onValueChange,
+    placeholder = 'Select an option',
+    className,
+    ...props
+}: SelectProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const selectRef = useRef<HTMLDivElement>(null);
 
@@ -34,207 +50,72 @@ const Select = ({ children, value, onValueChange, ...props }: SelectProps) => {
         };
     }, []);
 
-    return (
-        <div className="select" ref={selectRef} {...props}>
-            {React.Children.map(children, (child) => {
-                if (React.isValidElement(child)) {
-                    if (child.type === SelectTrigger) {
-                        return React.cloneElement(
-                            child as React.ReactElement<SelectTriggerProps>,
-                            {
-                                onClick: handleToggle,
-                                'aria-expanded': isOpen,
-                                currentValue: value,
-                            },
-                        );
-                    } else if (child.type === SelectContent) {
-                        return React.cloneElement(
-                            child as React.ReactElement<SelectContentProps>,
-                            {
-                                isOpen,
-                                onSelect: handleSelect,
-                                selectedValue: value,
-                            },
-                        );
-                    }
-                }
-                return child;
-            })}
-        </div>
-    );
-};
+    const selectedOption = options.find((option) => option.value === value);
 
-interface SelectTriggerProps extends React.HTMLAttributes<HTMLDivElement> {
-    'aria-expanded'?: boolean;
-    currentValue?: string;
-}
-
-const SelectTrigger = ({
-    className,
-    children,
-    currentValue,
-    ...props
-}: SelectTriggerProps) => {
     return (
         <div
-            className={['select__trigger', className].filter(Boolean).join(' ')}
+            className={['select', className].filter(Boolean).join(' ')}
+            ref={selectRef}
             {...props}
         >
-            <span className="select__value">
-                {currentValue ? (
-                    React.Children.map(children, (child) => {
-                        if (
-                            React.isValidElement(child) &&
-                            child.type === SelectValue
-                        ) {
-                            return React.cloneElement(
-                                child as React.ReactElement<React.HTMLAttributes<HTMLSpanElement>>,
-                                { children: currentValue },
-                            );
-                        }
-                        return child;
-                    })
-                ) : (
-                    <span className="select__trigger--placeholder">
-                        Select an option
-                    </span>
-                )}
-            </span>
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="select__icon"
+            <div
+                className="select__trigger"
+                onClick={handleToggle}
+                aria-expanded={isOpen}
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && handleToggle()}
             >
-                <path d="M6 9l6 6 6-6" />
-            </svg>
+                <span className="select__value">
+                    {selectedOption ? (
+                        selectedOption.label
+                    ) : (
+                        <span className="select__trigger--placeholder">
+                            {placeholder}
+                        </span>
+                    )}
+                </span>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="select__icon"
+                >
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </div>
+            {isOpen && (
+                <div className="select__content">
+                    {options.map((option) => (
+                        <div
+                            key={option.value}
+                            className={[
+                                'select__item',
+                                option.value === value
+                                    ? 'select__item--selected'
+                                    : '',
+                            ]
+                                .filter(Boolean)
+                                .join(' ')}
+                            onClick={() => handleSelect(option.value)}
+                            role="option"
+                            aria-selected={option.value === value}
+                            tabIndex={0}
+                            onKeyDown={(e) =>
+                                e.key === 'Enter' && handleSelect(option.value)
+                            }
+                        >
+                            {option.label}
+                        </div>
+                    ))}
+                </div>
+            )}
+            <input type="hidden" name={name} value={value || ''} />
         </div>
     );
 };
 
-const SelectValue = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
-    return (
-        <span
-            className={['select__value', className].filter(Boolean).join(' ')}
-            {...props}
-        />
-    );
-};
-
-interface SelectContentProps extends React.HTMLAttributes<HTMLDivElement> {
-    isOpen?: boolean;
-    onSelect?: (value: string) => void;
-    selectedValue?: string;
-}
-
-const SelectContent = ({
-    className,
-    children,
-    isOpen,
-    onSelect,
-    selectedValue,
-    ...props
-}: SelectContentProps) => {
-    if (!isOpen) return null;
-
-    return (
-        <div
-            className={['select__content', className].filter(Boolean).join(' ')}
-            {...props}
-        >
-            {React.Children.map(children, (child) => {
-                if (React.isValidElement(child) && child.type === SelectItem) {
-                    return React.cloneElement(
-                        child as React.ReactElement<SelectItemProps>,
-                        {
-                            onSelect,
-                            isSelected: child.props.value === selectedValue,
-                        },
-                    );
-                }
-                return child;
-            })}
-        </div>
-    );
-};
-
-interface SelectItemProps extends React.HTMLAttributes<HTMLDivElement> {
-    value: string;
-    onSelect?: (value: string) => void;
-    isSelected?: boolean;
-}
-
-const SelectItem = ({
-    className,
-    children,
-    value,
-    onSelect,
-    isSelected,
-    ...props
-}: SelectItemProps) => {
-    const handleItemClick = () => {
-        onSelect?.(value);
-    };
-
-    return (
-        <div
-            className={[
-                'select__item',
-                isSelected ? 'select__item--selected' : '',
-                className,
-            ]
-                .filter(Boolean)
-                .join(' ')}
-            onClick={handleItemClick}
-            role="option"
-            aria-selected={isSelected}
-            {...props}
-        >
-            {children}
-        </div>
-    );
-};
-
-const SelectGroup = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
-    return (
-        <div
-            className={['select__group', className].filter(Boolean).join(' ')}
-            {...props}
-        />
-    );
-};
-
-const SelectLabel = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
-    return (
-        <div
-            className={['select__label', className].filter(Boolean).join(' ')}
-            {...props}
-        />
-    );
-};
-
-const SelectSeparator = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
-    return (
-        <div
-            className={['select__separator', className]
-                .filter(Boolean)
-                .join(' ')}
-            {...props}
-        />
-    );
-};
-
-export {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectSeparator,
-    SelectTrigger,
-    SelectValue,
-};
+export { Select };

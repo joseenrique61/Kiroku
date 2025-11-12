@@ -6,14 +6,14 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/card';
-import { Checkbox } from '@/components/checkbox';
 import InputError from '@/components/input-error';
 import { Input } from '@/components/input';
 import { Label } from '@/components/label';
 import { Select } from '@/components/select';
 import AppLayout from '@/layouts/app-layout';
-import { Device, Maintenance } from '@/types/globals';
+import { Device } from '@/types/globals';
 import { Head, useForm } from '@inertiajs/react';
+import { Checkbox } from '@/components/checkbox';
 
 type MaintenanceFormData = {
     device_id: number;
@@ -22,32 +22,32 @@ type MaintenanceFormData = {
     is_preventive: boolean;
 };
 
-export default function MaintenanceEdit({ maintenance, devices }: { maintenance: Maintenance, devices: Device[] }) {
-    const { data, setData, put, errors } = useForm<MaintenanceFormData>({
-        device_id: maintenance.device_id,
-        cost: maintenance.cost,
-        datetime: maintenance.datetime,
-        is_preventive: maintenance.is_preventive,
+export default function MaintenanceCreate({ devices }: { devices: Device[] }) {
+    const { data, setData, post, errors } = useForm<MaintenanceFormData>({
+        device_id: devices[0]?.id || 0,
+        cost: 0,
+        datetime: '',
+        is_preventive: false,
     });
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        put(route('maintenances.update', maintenance.id));
+        post(route('maintenances.store'));
     }
 
     return (
         <AppLayout>
-            <Head title="Edit Maintenance" />
+            <Head title="Create Maintenance" />
             <Card>
                 <CardHeader>
-                    <CardTitle>Edit Maintenance</CardTitle>
+                    <CardTitle>Create Maintenance</CardTitle>
                     <CardDescription>
-                        Update the details of the maintenance record.
+                        Create a new maintenance record to add to the system.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="maintenance-edit-page__form">
-                        <div className="maintenance-edit-page__form-group">
+                    <form onSubmit={handleSubmit} className="maintenance-create-page__form">
+                        <div className="maintenance-create-page__form-group">
                             <Label htmlFor="device_id">Device</Label>
                             <Select
                                 name="device_id"
@@ -63,7 +63,7 @@ export default function MaintenanceEdit({ maintenance, devices }: { maintenance:
                             />
                             <InputError message={errors.device_id} />
                         </div>
-                        <div className="maintenance-edit-page__form-group">
+                        <div className="maintenance-create-page__form-group">
                             <Label htmlFor="cost">Cost</Label>
                             <Input
                                 id="cost"
@@ -77,7 +77,7 @@ export default function MaintenanceEdit({ maintenance, devices }: { maintenance:
                             />
                             <InputError message={errors.cost} />
                         </div>
-                        <div className="maintenance-edit-page__form-group">
+                        <div className="maintenance-create-page__form-group">
                             <Label htmlFor="datetime">Date</Label>
                             <Input
                                 id="datetime"
@@ -90,7 +90,7 @@ export default function MaintenanceEdit({ maintenance, devices }: { maintenance:
                             />
                             <InputError message={errors.datetime} />
                         </div>
-                        <div className="maintenance-edit-page__form-group--row">
+                        <div className="maintenance-create-page__form-group--row">
                             <Label htmlFor="is_preventive">Is Preventive?</Label>
                             <Checkbox
                                 id="is_preventive"
@@ -102,7 +102,7 @@ export default function MaintenanceEdit({ maintenance, devices }: { maintenance:
                             />
                             <InputError message={errors.is_preventive} />
                         </div>
-                        <Button type="submit">Update</Button>
+                        <Button type="submit">Create</Button>
                     </form>
                 </CardContent>
             </Card>
