@@ -1,10 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    //
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(): Response
+    {
+        return Inertia::render('admin/dashboard');
+    }
 }
