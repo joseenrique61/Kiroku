@@ -19,7 +19,7 @@ type UserFormData = {
     email: string;
     password?: string | null;
     password_confirmation?: string | null;
-    role: string;
+    role_id: number;
 };
 
 export default function UserEdit({
@@ -34,7 +34,7 @@ export default function UserEdit({
         email: user.email,
         password: '',
         password_confirmation: '',
-        role: user.role.name,
+        role_id: user.role_id,
     });
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -118,9 +118,9 @@ export default function UserEdit({
                             <Label htmlFor="role">Role</Label>
                             <Select
                                 name="role"
-                                value={data.role}
+                                value={data.role_id.toString()}
                                 onValueChange={(value) =>
-                                    setData('role', value)
+                                    setData('role_id', parseInt(value))
                                 }
                                 options={roles.map((role) => ({
                                     value: role.name,
@@ -128,7 +128,7 @@ export default function UserEdit({
                                 }))}
                                 placeholder="Select a role"
                             />
-                            <InputError message={errors.role} />
+                            <InputError message={errors.role_id} />
                         </div>
                         <Button type="submit">Update</Button>
                     </form>
