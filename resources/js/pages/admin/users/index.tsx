@@ -15,22 +15,15 @@ import {
     TableRow,
 } from '@/components/table';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, User } from '@/types';
+import { User } from '@/types/user';
 import { Head, Link, usePage } from '@inertiajs/react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Users',
-        href: route('users.index') as string,
-    },
-];
-
 export default function UserIndex({ users }: { users: User[] }) {
-    const { auth } = usePage().props;
-    const role = auth.user.role.role;
+    const { auth } = usePage<PageProps>().props;
+    const role = auth.user.role.name;
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Users" />
             <Card>
                 <CardHeader>
@@ -63,7 +56,7 @@ export default function UserIndex({ users }: { users: User[] }) {
                                 <TableRow key={user.id}>
                                     <TableCell>{user.name}</TableCell>
                                     <TableCell>{user.email}</TableCell>
-                                    <TableCell>{user.role.role}</TableCell>
+                                    <TableCell>{user.role.name}</TableCell>
                                     <TableCell className="user-index-page__table-actions">
                                         <Button variant={'outline'} asChild>
                                             <Link
@@ -75,38 +68,39 @@ export default function UserIndex({ users }: { users: User[] }) {
                                                 View
                                             </Link>
                                         </Button>
-                                        {(role === 'admin' && user.role.role !== 'admin') && (
-                                            <>
-                                                <Button
-                                                    variant={'outline'}
-                                                    asChild
-                                                >
-                                                    <Link
-                                                        href={route(
-                                                            'users.edit',
-                                                            user.id,
-                                                        )}
+                                        {role === 'admin' &&
+                                            user.role.name !== 'admin' && (
+                                                <>
+                                                    <Button
+                                                        variant={'outline'}
+                                                        asChild
                                                     >
-                                                        Edit
-                                                    </Link>
-                                                </Button>
-                                                <Button
-                                                    variant={'destructive'}
-                                                    asChild
-                                                >
-                                                    <Link
-                                                        href={route(
-                                                            'users.destroy',
-                                                            user.id,
-                                                        )}
-                                                        method="delete"
-                                                        as="button"
+                                                        <Link
+                                                            href={route(
+                                                                'users.edit',
+                                                                user.id,
+                                                            )}
+                                                        >
+                                                            Edit
+                                                        </Link>
+                                                    </Button>
+                                                    <Button
+                                                        variant={'destructive'}
+                                                        asChild
                                                     >
-                                                        Delete
-                                                    </Link>
-                                                </Button>
-                                            </>
-                                        )}
+                                                        <Link
+                                                            href={route(
+                                                                'users.destroy',
+                                                                user.id,
+                                                            )}
+                                                            method="delete"
+                                                            as="button"
+                                                        >
+                                                            Delete
+                                                        </Link>
+                                                    </Button>
+                                                </>
+                                            )}
                                     </TableCell>
                                 </TableRow>
                             ))}

@@ -49,6 +49,24 @@
         text-align: center;
         font-size: 0.875rem; // Equivalent to 14px
         font-weight: 500;
-        color: var(--color-success, #28a745); // Using a placeholder for success color
+        color: var(
+            --color-success,
+            #28a745
+        ); // Using a placeholder for success color
+    }
+
+    &__loader {
+        height: 1rem;
+        width: 1rem;
+        animation: spin 1s linear infinite;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }

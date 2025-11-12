@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Inventory\Failures;
 
+use App\Http\Controllers\Controller;
 use App\Models\Failure;
 use Illuminate\Http\Request;
 

@@ -10,7 +10,114 @@ declare module 'ziggy-js' {
     "sanctum.csrf-cookie": [],
     "home": [],
     "dashboard": [],
-    "users": [],
+    "users.index": [],
+    "users.create": [],
+    "users.store": [],
+    "users.show": [
+        {
+            "name": "user",
+            "required": true
+        }
+    ],
+    "users.edit": [
+        {
+            "name": "user",
+            "required": true
+        }
+    ],
+    "users.update": [
+        {
+            "name": "user",
+            "required": true
+        }
+    ],
+    "users.destroy": [
+        {
+            "name": "user",
+            "required": true
+        }
+    ],
+    "devices.index": [],
+    "devices.create": [],
+    "devices.store": [],
+    "devices.show": [
+        {
+            "name": "device",
+            "required": true
+        }
+    ],
+    "devices.edit": [
+        {
+            "name": "device",
+            "required": true
+        }
+    ],
+    "devices.update": [
+        {
+            "name": "device",
+            "required": true
+        }
+    ],
+    "devices.destroy": [
+        {
+            "name": "device",
+            "required": true
+        }
+    ],
+    "failures.index": [],
+    "failures.create": [],
+    "failures.store": [],
+    "failures.show": [
+        {
+            "name": "failure",
+            "required": true
+        }
+    ],
+    "failures.edit": [
+        {
+            "name": "failure",
+            "required": true
+        }
+    ],
+    "failures.update": [
+        {
+            "name": "failure",
+            "required": true
+        }
+    ],
+    "failures.destroy": [
+        {
+            "name": "failure",
+            "required": true
+        }
+    ],
+    "maintenances.index": [],
+    "maintenances.create": [],
+    "maintenances.store": [],
+    "maintenances.show": [
+        {
+            "name": "maintenance",
+            "required": true
+        }
+    ],
+    "maintenances.edit": [
+        {
+            "name": "maintenance",
+            "required": true
+        }
+    ],
+    "maintenances.update": [
+        {
+            "name": "maintenance",
+            "required": true
+        }
+    ],
+    "maintenances.destroy": [
+        {
+            "name": "maintenance",
+            "required": true
+        }
+    ],
     "profile.edit": [],
     "profile.update": [],
     "profile.destroy": [],

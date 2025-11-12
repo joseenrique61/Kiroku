@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Controllers\DeviceController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Inventory\Devices\DeviceController;
+use App\Http\Controllers\Inventory\Failures\FailureController;
+use App\Http\Controllers\Inventory\Reports\MaintenanceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -14,9 +16,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    Route::get('users', [UserController::class, 'index'] )->name('users');
-    Route::get('devices', [DeviceController::class, 'index'] )->name('devices');
+    Route::resource('users', UserController::class );
+    Route::resource('devices', DeviceController::class );
+    Route::resource('failures', FailureController::class );
+    Route::resource('maintenances', MaintenanceController::class );
 });
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
+require __DIR__.'/api.php';

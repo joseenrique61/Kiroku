@@ -1,0 +1,18 @@
+@use "/resources/scss/base";
+
+.maintenance-index-page {
+    &__card-content {
+        padding: 1.25rem;
+    }
+
+    &__actions {
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    &__table-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+}
