@@ -63,6 +63,8 @@ jobs:
           echo ${{ secrets.SSH_PRIVATE_KEY }} > key.pem
           ssh-add key.pem
 
+          rm key.pem
+
           mkdir -p ~/.ssh
           [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
