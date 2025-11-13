@@ -1,4 +1,7 @@
 name: Deploy app
+permissions:
+  contents: read
+  packages: write
 
 on:
   push:
