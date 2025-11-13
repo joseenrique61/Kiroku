@@ -1,0 +1,39 @@
+@use "/resources/scss/base";
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+
+    &__header {
+        border-bottom: 1px solid base.$color-border;
+    }
+
+    &__head {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        font-weight: 600;
+        color: base.$color-muted-foreground;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+    }
+
+    &__row {
+        border-bottom: 1px solid base.$color-border;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    &__cell {
+        padding: 0.75rem 1rem;
+        vertical-align: middle;
+    }
+
+    &__caption {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        color: base.$color-muted-foreground;
+        text-align: left;
+    }
+}

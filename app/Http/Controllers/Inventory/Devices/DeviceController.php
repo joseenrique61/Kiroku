@@ -1,0 +1,156 @@
+<?php
+
+namespace App\Http\Controllers\Inventory\Devices;
+
+use App\Models\Device;
+use App\Models\DeviceCategory;
+use App\Models\DeviceModel;
+use App\Models\DeviceStatus;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use App\Http\Controllers\Controller;
+
+class DeviceController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {   
+        $devices = Device::with([
+            'acquisition',
+            'organization',
+            'deviceCategory',
+            'deviceModel',
+            'deviceModel.deviceBrand',
+            'deviceStatus'
+        ])->get(); // ->paginate(20); // Use pagination to manage the optimization // TODO: Reactivate pagination
+
+        return Inertia::render('inventory/devices/index',[
+            'devices' => $devices
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $deviceModels = DeviceModel::with('deviceBrand')->get();
+        $deviceStatus = DeviceStatus::get();
+        $deviceCategories = DeviceCategory::get();
+        
+        return Inertia::render('inventory/devices/create',[
+            'deviceModels' => $deviceModels,
+            'deviceStatus' => $deviceStatus,
+            'deviceCategories' => $deviceCategories
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'serial_number' => 'required|string|max:255|unique: '.Device::class,
+            'description' => 'nullable|string|max:255',
+            'acquisition_id' => 'required|int|exists:acquisitions,id',
+            'organization_id' => 'required|int|exists:organizations,id',
+            'device_category_id' => 'required|int|exists:device_categories,id',
+            'device_model_id' => 'required|int|exists:device_models,id',
+            'device_status_id' => 'required|int|exists:device_status,id'
+        ]);
+
+        Device::create([
+            'serial_number' => $request->serial_number,
+            'description' => $request->description,
+            'acquisition_id' => $request->acquisition_id,
+            'organization_id' => $request->organization_id,
+            'device_category_id' => $request->device_category_id,
+            'device_model_id' => $request->device_model_id,
+            'device_status_id' => $request->device_status_id
+        ]);
+
+        return redirect()->intended(route('devices', absolute: false));
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Device $device)
+    {   
+        $device->load([
+            'acquisition',
+            'organization',
+            'deviceCategory',
+            'deviceModel',
+            'deviceModel.deviceBrand',
+            'deviceStatus'
+        ]);
+
+        return Inertia::render('inventory/devices/show',[
+            'device' => $device
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Device $device)
+    {
+        $device->load([
+            'acquisition',
+            'organization',
+            'deviceCategory',
+            'deviceModel',
+            'deviceModel.deviceBrand',
+            'deviceStatus'
+        ]);
+
+        $deviceModels = DeviceModel::with('deviceBrand')->get();
+        $deviceStatus = DeviceStatus::get();
+        $deviceCategories = DeviceCategory::get();
+        
+        return Inertia::render('inventory/devices/edit',[
+            'device' => $device,
+            'deviceModels' => $deviceModels,
+            'deviceStatus' => $deviceStatus,
+            'deviceCategories' => $deviceCategories
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Device $device)
+    {
+        $request->validate([
+            'description' => 'nullable|string|max:255',
+            'acquisition_id' => 'required|int|exists:acquisitions,id',
+            'organization_id' => 'required|int|exists:organizations,id',
+            'device_category_id' => 'required|int|exists:device_categories,id',
+            'device_model_id' => 'required|int|exists:device_models,id',
+            'device_status_id' => 'required|int|exists:device_status,id'
+        ]);
+
+         $device->update([
+            'acquisition_id' => $request->acquisition_id,
+            'organization_id' => $request->organization_id,
+            'device_category_id' => $request->device_category_id,
+            'device_model_id' => $request->device_model_id,
+            'device_status_id' => $request->device_status_id
+        ]);
+
+        return redirect()->intended(route('devices', absolute: false));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Device $device)
+    {
+        $device->delete();
+        return redirect()->intended(route('devices', absolute: false))->with('success','Device was deleted successfully!');
+    }
+}

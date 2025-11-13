@@ -1,0 +1,85 @@
+@use "/resources/scss/base";
+
+.select {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+
+    &__trigger {
+        display: flex;
+        height: 2.5rem;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: base.$radius;
+        border: 1px solid base.$color-input;
+        background-color: base.$color-background;
+        padding: 0 0.75rem;
+        font-size: 0.875rem;
+        color: base.$color-foreground;
+        box-shadow: base.$shadow-sm;
+        cursor: pointer;
+
+        &:focus {
+            outline: none;
+            border-color: base.$color-ring;
+        }
+
+        &--placeholder {
+            color: base.$color-muted-foreground;
+        }
+
+        &[aria-expanded="true"] {
+            border-color: base.$color-ring;
+        }
+    }
+
+    &__value {
+        flex: 1;
+        line-height: 1;
+    }
+
+    &__icon {
+        margin-left: 0.5rem;
+        height: 1.25rem;
+        width: 1.25rem;
+        color: base.$color-muted-foreground;
+    }
+
+    &__content {
+        position: absolute;
+        z-index: 50;
+        min-width: 8rem;
+        overflow: hidden;
+        border-radius: base.$radius;
+        border: 1px solid base.$color-border;
+        background-color: base.$color-popover;
+        color: base.$color-popover-foreground;
+        box-shadow: base.$shadow-md;
+        margin-top: 0.25rem;
+    }
+
+    &__item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        cursor: default;
+        user-select: none;
+
+        &[data-disabled] {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        &--focused {
+            background-color: base.$color-accent;
+            color: base.$color-accent-foreground;
+        }
+
+        &--selected {
+            font-weight: 600;
+        }
+    }
+}

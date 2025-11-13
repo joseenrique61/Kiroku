@@ -1,0 +1,66 @@
+@use "/resources/scss/base";
+
+.settings-layout {
+    padding: 1.5rem 1rem;
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+
+        @media (min-width: 64em) {
+            // Equivalent to 1024px
+            flex-direction: row;
+            gap: 3rem; // Equivalent to 48px
+        }
+    }
+
+    &__aside {
+        width: 100%;
+        max-width: 40rem; // Equivalent to 640px
+
+        @media (min-width: 64em) {
+            // Equivalent to 1024px
+            width: 12rem; // Equivalent to 192px
+        }
+    }
+
+    &__nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem; // Equivalent to 4px
+    }
+
+    &__separator {
+        margin: 1.5rem 0;
+
+        @media (min-width: 64em) {
+            // Equivalent to 1024px
+            display: none;
+        }
+    }
+
+    &__main {
+        flex: 1;
+
+        @media (min-width: 48em) {
+            // Equivalent to 768px
+            max-width: 40rem; // Equivalent to 640px
+        }
+    }
+
+    &__section {
+        max-width: 40rem; // Equivalent to 640px
+        display: flex;
+        flex-direction: column;
+        gap: 3rem; // Equivalent to 48px
+    }
+}
+
+.settings-layout-button {
+    width: 100%;
+    justify-content: flex-start;
+
+    &--active {
+        background-color: base.$color-muted; // bg-muted
+    }
+}

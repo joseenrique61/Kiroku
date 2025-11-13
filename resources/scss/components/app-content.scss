@@ -1,0 +1,7 @@
+@use "/resources/scss/base";
+
+.app-content {
+    flex-grow: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+}

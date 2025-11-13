@@ -1,0 +1,25 @@
+@use "/resources/scss/base";
+
+.log-view-page {
+    &__card-content {
+        padding: 1.25rem; // Equivalent to 20px
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem; // Equivalent to 8px
+    }
+
+    &__detail-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__detail-label {
+        font-weight: 600;
+    }
+
+    &__detail-value {
+        font-family: monospace;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+}

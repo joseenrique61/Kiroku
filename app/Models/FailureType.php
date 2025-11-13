@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class FailureType extends Model
+{
+    protected $fillable = [
+        'name',
+        'severity'
+    ];
+
+    public function failures(): HasMany 
+    {
+        return $this->hasMany(Failure::class);
+    }
+}

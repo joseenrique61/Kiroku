@@ -1,0 +1,8 @@
+@use "/resources/scss/base";
+
+.label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    color: base.$color-foreground;
+}

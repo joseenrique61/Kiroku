@@ -1,0 +1,6 @@
+@use "/resources/scss/base";
+
+.separator {
+    border-bottom: 1px solid base.$color-border;
+    margin: 1rem 0;
+}

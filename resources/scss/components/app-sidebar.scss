@@ -1,0 +1,70 @@
+@use "/resources/scss/base";
+
+.app-sidebar {
+    width: 16rem;
+    flex-shrink: 0;
+    background-color: base.$color-sidebar-background;
+    color: base.$color-sidebar-foreground;
+    border-right: 1px solid base.$color-border;
+    display: flex;
+    flex-direction: column;
+
+    &__header {
+        display: flex;
+        gap: 1rem;
+        align-items: end;
+        padding: 1rem;
+        border-bottom: 1px solid base.$color-border;
+
+        &-icon {
+            height: 2rem;
+        }
+    }
+
+    &__nav {
+        flex-grow: 1;
+        padding: 1rem;
+    }
+
+    &__nav-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    &__nav-item {
+        margin-bottom: 0.5rem;
+    }
+
+    &__nav-link {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0.75rem;
+        border-radius: base.$radius;
+        color: base.$color-sidebar-foreground;
+        text-decoration: none;
+
+        &:hover {
+            background-color: base.$color-sidebar-hover;
+        }
+
+        &--active {
+            background-color: base.$color-sidebar-active;
+            color: base.$color-sidebar-active-foreground;
+        }
+    }
+
+    &__nav-icon {
+        margin-right: 0.5rem;
+    }
+
+    &__footer {
+        padding: 1rem;
+    }
+
+    &__footer-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+}
