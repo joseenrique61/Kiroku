@@ -56,22 +56,26 @@ jobs:
     needs: build_and_push_image
     steps:
       - name: "Configure SSH"
+        env: 
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
           eval $(ssh-agent -s)
 
-          echo ${{ secrets.SSH_PRIVATE_KEY }} > key.pem
-          ssh-add key.pem
-
-          rm key.pem
+          echo $SSH_PRIVATE_KEY | ssh-add -
 
           mkdir -p ~/.ssh
           [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
       - name: "Upload image"
+        env:
+          USER: ${{ secrets.USER }}
+          HOST: ${{ secrets.HOST }}
+          DOCKER_PATH: ${{ secrets.DOCKER_PATH }}
+          ENV_PATH: ${{ secrets.ENV_PATH }}
         run: |
           echo "Updating image in host..."
-          ssh ${{ secrets.USER }}:${{ secrets.HOST }} "
+          ssh $USER:$HOST "
             sudo systemctl start docker;
 
             docker stop kiroku || true;
@@ -85,8 +89,8 @@ jobs:
               --name kiroku \
               --restart unless-stopped \
               -p 9000:9000 \
-              -v ${{ secrets.DOCKER_PATH }}:/var/www \
-              -v ${{ secrets.ENV_PATH }}/.env:/var/www/.env \
+              -v $DOCKER_PATH:/var/www \
+              -v $ENV_PATH/.env:/var/www/.env \
               ghcr.io/${{ github.repository_owner }}/kiroku:latest;
           "
 
