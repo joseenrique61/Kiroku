@@ -87,14 +87,14 @@ jobs:
           ssh -i key.pem $USER@$HOST "
             sudo systemctl start docker;
 
-            docker stop kiroku || true;
-            docker rm kiroku || true;
+            sudo docker stop kiroku || true;
+            sudo docker rm kiroku || true;
 
-            docker image prune -af;
+            sudo docker image prune -af;
 
-            docker pull ghcr.io/${{ github.repository_owner }}/kiroku:latest;
+            sudo docker pull ghcr.io/${{ github.repository_owner }}/kiroku:latest;
 
-            docker run -d \
+            sudo docker run -d \
               --name kiroku \
               --restart unless-stopped \
               -p 9000:9000 \
