@@ -25,7 +25,7 @@ export default function FailureCreate() {
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        post(route('failures.store'));
+        post(route('failureTypes.store'));
     }
 
     return (

@@ -21,7 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('users', UserController::class );
     Route::resource('devices', DeviceController::class );
-    Route::resource('failures', FailureTypeController::class );
+    Route::resource('failureTypes', FailureTypeController::class );
     Route::resource('maintenances', MaintenanceController::class );
 
     Route::get('logs', [AuditLogController::class, 'index'])->name('logs.index');

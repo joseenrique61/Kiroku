@@ -30,7 +30,7 @@ export default function FailureEdit({
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        put(route('failures.update', failureType.id));
+        put(route('failureTypes.update', failureType.id));
     }
 
     return (

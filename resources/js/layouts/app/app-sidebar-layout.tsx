@@ -32,7 +32,7 @@ export default function AppSidebarLayout({
         },
         {
             title: "Failure Types",
-            href: route("failures.index"),
+            href: route("failureTypes.index"),
             icon: TriangleAlert
         },
         {

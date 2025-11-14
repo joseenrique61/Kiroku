@@ -41,7 +41,7 @@ class FailureTypeController extends Controller
 
         FailureType::create($request->all());
 
-        return redirect()->route('failures.index')->with('success', 'Failure type created successfully.');
+        return redirect()->route('failureTypes.index')->with('success', 'Failure type created successfully.');
     }
 
     /**
@@ -59,7 +59,9 @@ class FailureTypeController extends Controller
      */
     public function edit(FailureType $failureType)
     {
-        //
+        return Inertia::render('reports/failures/edit', [
+            'failureType' => $failureType
+        ]);
     }
 
     /**
@@ -67,7 +69,14 @@ class FailureTypeController extends Controller
      */
     public function update(Request $request, FailureType $failureType)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+            'severity' => 'required|string',
+        ]);
+
+        $failureType->update($request->all());
+
+        return redirect()->route('failureTypes.index')->with('success', 'Failure type updated successfully.');
     }
 
     /**
@@ -75,6 +84,7 @@ class FailureTypeController extends Controller
      */
     public function destroy(FailureType $failureType)
     {
-        //
+        $failureType->delete();
+        return redirect()->route('failureTypes.index')->with('success', 'Failure type deleted successfully.');
     }
 }

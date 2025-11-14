@@ -36,7 +36,7 @@ export default function FailureIndex({
                 <CardContent className="failure-index-page__card-content">
                     <div className="failure-index-page__actions">
                         <Button asChild>
-                            <Link href={route('failures.create')}>
+                            <Link href={route('failureTypes.create')}>
                                 Create Failure
                             </Link>
                         </Button>
@@ -60,7 +60,7 @@ export default function FailureIndex({
                                         <Button variant={'outline'} asChild>
                                             <Link
                                                 href={route(
-                                                    'failures.show',
+                                                    'failureTypes.show',
                                                     failureType.id,
                                                 )}
                                             >
@@ -70,7 +70,7 @@ export default function FailureIndex({
                                         <Button variant={'outline'} asChild>
                                             <Link
                                                 href={route(
-                                                    'failures.edit',
+                                                    'failureTypes.edit',
                                                     failureType.id,
                                                 )}
                                             >
@@ -80,7 +80,7 @@ export default function FailureIndex({
                                         <Button variant={'destructive'} asChild>
                                             <Link
                                                 href={route(
-                                                    'failures.destroy',
+                                                    'failureTypes.destroy',
                                                     failureType.id,
                                                 )}
                                                 method="delete"
