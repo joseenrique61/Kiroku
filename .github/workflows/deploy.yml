@@ -83,7 +83,7 @@ jobs:
           ENV_PATH: ${{ secrets.ENV_PATH }}
         run: |
           echo "Updating image in host..."
-          ssh $USER:$HOST "
+          ssh $USER@$HOST "
             sudo systemctl start docker;
 
             docker stop kiroku || true;
