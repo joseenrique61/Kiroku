@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('organization_id')->constrained('organizations');
             $table->foreignId('device_category_id')->constrained('device_categories');
             $table->foreignId('device_model_id')->constrained('device_models');
-            $table->foreignId('device_status_id')->constrained('device_status');
+            $table->foreignId('device_status_id')->constrained('device_statuses');
             $table->timestamps();
         });
     }

@@ -47,13 +47,15 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => 'required|string|exists:roles,name'
+            'organization_id' => 'required|integer|exists:organizations,id',
+            'role_id' => 'required|integer|exists:roles,id',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'organization_id' => $request->organization_id,
         ]);
 
         $user->syncRoles($request->role);

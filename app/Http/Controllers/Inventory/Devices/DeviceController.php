@@ -53,13 +53,13 @@ class DeviceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'serial_number' => 'required|string|max:255|unique: '.Device::class,
+            'serial_number' => 'required|string|max:255|unique:devices,serial_number',
             'description' => 'nullable|string|max:255',
             'acquisition_id' => 'required|int|exists:acquisitions,id',
             'organization_id' => 'required|int|exists:organizations,id',
             'device_category_id' => 'required|int|exists:device_categories,id',
             'device_model_id' => 'required|int|exists:device_models,id',
-            'device_status_id' => 'required|int|exists:device_status,id'
+            'device_status_id' => 'required|int|exists:device_statuses,id'
         ]);
 
         Device::create([
@@ -72,7 +72,7 @@ class DeviceController extends Controller
             'device_status_id' => $request->device_status_id
         ]);
 
-        return redirect()->intended(route('devices', absolute: false));
+        return redirect()->intended(route('devices.index', absolute: false));
     }
 
     /**
@@ -131,10 +131,11 @@ class DeviceController extends Controller
             'organization_id' => 'required|int|exists:organizations,id',
             'device_category_id' => 'required|int|exists:device_categories,id',
             'device_model_id' => 'required|int|exists:device_models,id',
-            'device_status_id' => 'required|int|exists:device_status,id'
+            'device_status_id' => 'required|int|exists:device_statuses,id'
         ]);
 
          $device->update([
+            'description' => $request->description,
             'acquisition_id' => $request->acquisition_id,
             'organization_id' => $request->organization_id,
             'device_category_id' => $request->device_category_id,
@@ -142,7 +143,7 @@ class DeviceController extends Controller
             'device_status_id' => $request->device_status_id
         ]);
 
-        return redirect()->intended(route('devices', absolute: false));
+        return redirect()->intended(route('devices.index', absolute: false));
     }
 
     /**
@@ -151,6 +152,6 @@ class DeviceController extends Controller
     public function destroy(Device $device)
     {
         $device->delete();
-        return redirect()->intended(route('devices', absolute: false))->with('success','Device was deleted successfully!');
+        return redirect()->intended(route('devices.index', absolute: false))->with('success','Device was deleted successfully!');
     }
 }
