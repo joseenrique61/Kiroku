@@ -91,12 +91,17 @@ jobs:
 
             sudo docker pull ghcr.io/${{ github.repository_owner }}/kiroku:latest;
 
+            sudo docker create --name kiroku_temp ghcr.io/${{ github.repository_owner }}/kiroku:latest;
+            sudo docker cp kiroku_temp:/var/www/public/. $DOCKER_PATH/;
+            sudo docker rm kiroku_temp;
+
             sudo docker run -d \
               --name kiroku \
               --restart unless-stopped \
               -p 9000:9000 \
-              -v $DOCKER_PATH:/var/www \
               -v $ENV_PATH/.env:/var/www/.env \
+              -v $DOCKER_PATH:/var/www/public \
+              -v kiroku-storage:/var/www/storage \
               ghcr.io/${{ github.repository_owner }}/kiroku:latest;
           "
 
