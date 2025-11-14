@@ -24,7 +24,6 @@ test('new devices can be registered', function () {
         'serial_number' => 'SN-1234567890',
         'description' => 'Mi dispositivo de prueba',
         'acquisition_id' => $acquisition->id,
-        'organization_id' => $user->organization_id,
         'device_category_id' => $category->id,
         'device_model_id' => $model->id,
         'device_status_id' => $status->id
