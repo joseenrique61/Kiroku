@@ -116,4 +116,9 @@ class RoleController extends Controller
 
         return redirect()->intended(route('roles', absolute: false))->with('success','Role was deleted successfully!'); 
     }
+
+    public function __contruct()
+    {
+        $this->middleware('role:admin');
+    }
 }

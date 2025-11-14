@@ -94,18 +94,27 @@ jobs:
 
             sudo docker pull ghcr.io/${{ github.repository_owner }}/kiroku:latest;
 
+            sudo rm -rf $DOCKER_PATH/*;
+            sudo docker create --name kiroku_temp ghcr.io/${{ github.repository_owner }}/kiroku:latest;
+            sudo docker cp kiroku_temp:/var/www/public/. $DOCKER_PATH/;
+            sudo docker rm kiroku_temp;
+            sudo chmod -R 755 $DOCKER_PATH;
+
             sudo docker run -d \
               --name kiroku \
               --restart unless-stopped \
               -p 9000:9000 \
-              -v $DOCKER_PATH:/var/www \
               -v $ENV_PATH/.env:/var/www/.env \
+              -v $DOCKER_PATH:/var/www/public \
+              -v kiroku-storage:/var/www/storage \
               ghcr.io/${{ github.repository_owner }}/kiroku:latest;
           "
 
       - name: Check health
+        env:
+          HEALTH_CHECK_TOKEN: ${{ secrets.HEALTH_CHECK_TOKEN }}
         run: |
           echo "Checking API health..."
           # Wait 15 seconds to ensure the API is up and running
           sleep 15
-          curl --fail --silent --show-error https://${{ vars.APP_DOMAIN }}/health
+          curl --fail --silent --show-error -H "X-Health-Check-Token: $HEALTH_CHECK_TOKEN" https://${{ vars.APP_DOMAIN }}/health

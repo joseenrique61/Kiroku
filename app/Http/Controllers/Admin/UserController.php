@@ -58,8 +58,7 @@ class UserController extends Controller
             'organization_id' => $request->organization_id,
         ]);
 
-        $role = Role::find($request->role_id);
-        $user->assignRole($role);
+        $user->syncRoles($request->role);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
@@ -96,7 +95,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:users,email,'.$user->id,
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'role_id' => 'required|integer|exists:roles,id'
+            'role' => 'nullable|string|exists:roles,name'
         ]);
 
         $user->update([
@@ -109,9 +108,11 @@ class UserController extends Controller
                 'password' => Hash::make($request->password),
             ]);
         }
-            
-        $role = Role::find($request->role_id);
-        $user->syncRoles($role);
+        
+        if (!empty($request->role))
+        {
+            $user->syncRoles($request->role);
+        }
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
@@ -123,5 +124,10 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('users.index')->with('success','User was deleted successfully!');
+    }
+
+    public function __construct()
+    {
+        $this->middleware('role:admin');
     }
 }

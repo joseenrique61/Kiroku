@@ -12,7 +12,11 @@ Route::get('/', function () {
     return redirect('dashboard');
 })->name('home');
 
-Route::middleware(['auth'])->group(function () {
+Route::get('/health', function () {
+    return response("Healthy", 200);
+})->name('health');
+
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('users', UserController::class );
