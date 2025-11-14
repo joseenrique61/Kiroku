@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('organization_policies', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 50);
-            $table->smallInteger('device_lifespan_policy');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('organization_id')->after('email')->constrained('organizations');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('organization_policies');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('organization_id');
+        });
     }
 };
