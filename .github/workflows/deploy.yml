@@ -73,7 +73,7 @@ jobs:
           mkdir -p ~/.ssh
 
           echo "Configure no host checking..."
-          [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+          echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
       - name: "Upload image"
         env:
