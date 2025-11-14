@@ -67,7 +67,7 @@ jobs:
           eval $(ssh-agent -s)
 
           echo "Adding key..."
-          echo $SSH_PRIVATE_KEY | base64 -d - | ssh-add -
+          echo "$SSH_PRIVATE_KEY" > key.pem
 
           echo "Creating SSH directory..."
           mkdir -p ~/.ssh
@@ -83,7 +83,7 @@ jobs:
           ENV_PATH: ${{ secrets.ENV_PATH }}
         run: |
           echo "Updating image in host..."
-          ssh $USER@$HOST "
+          ssh -i key.pem $USER@$HOST "
             sudo systemctl start docker;
 
             docker stop kiroku || true;
