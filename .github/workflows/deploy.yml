@@ -111,8 +111,10 @@ jobs:
           "
 
       - name: Check health
+        env:
+          HEALTH_CHECK_TOKEN: ${{ secrets.HEALTH_CHECK_TOKEN }}
         run: |
           echo "Checking API health..."
           # Wait 15 seconds to ensure the API is up and running
           sleep 15
-          curl --fail --silent --show-error https://${{ vars.APP_DOMAIN }}/health
+          curl --fail --silent --show-error -H "X-Health-Check-Token: $HEALTH_CHECK_TOKEN" https://${{ vars.APP_DOMAIN }}/health
