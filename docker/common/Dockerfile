@@ -3,9 +3,10 @@ FROM php:8.4-fpm AS builder
 
 # Install system dependencies and PHP extensions required for Laravel + PostgreSQL support
 # Some dependencies are required for PHP extensions only in the build stage
-# We don't need to install Node.js or build assets, as it was done in the Nginx image
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
+    nodejs \
+    npm \
     unzip \
     libpq-dev \
     libonig-dev \
@@ -52,6 +53,8 @@ COPY . /var/www
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer install --no-dev --optimize-autoloader --no-interaction --no-progress --prefer-dist
 
+# Generate build assets
+RUN npm install && npm run build
 
 # Stage 2: Production environment
 FROM php:8.4-fpm AS production
