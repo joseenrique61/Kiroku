@@ -15,13 +15,17 @@ import {
     TableRow,
 } from '@/components/table';
 import AppLayout from '@/layouts/app-layout';
-import { Failure } from '@/types/globals';
+import { FailureType } from '@/types/globals';
 import { Head, Link } from '@inertiajs/react';
 
-export default function FailureIndex({ failures }: { failures: Failure[] }) {
+export default function FailureIndex({
+    failureTypes,
+}: {
+    failureTypes: FailureType[];
+}) {
     return (
         <AppLayout>
-            <Head title="Failures" />
+            <Head title="Failure Types" />
             <Card>
                 <CardHeader>
                     <CardTitle>Failures</CardTitle>
@@ -40,30 +44,24 @@ export default function FailureIndex({ failures }: { failures: Failure[] }) {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Description</TableHead>
-                                <TableHead>Cause</TableHead>
-                                <TableHead>Type</TableHead>
-                                <TableHead>Maintenance ID</TableHead>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Severity</TableHead>
                                 <TableHead>Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {failures.map((failure) => (
-                                <TableRow key={failure.id}>
-                                    <TableCell>{failure.description}</TableCell>
-                                    <TableCell>{failure.cause}</TableCell>
+                            {failureTypes.map((failureType) => (
+                                <TableRow key={failureType.id}>
+                                    <TableCell>{failureType.name}</TableCell>
                                     <TableCell>
-                                        {failure.failure_type.name}
-                                    </TableCell>
-                                    <TableCell>
-                                        {failure.maintenance_id}
+                                        {failureType.severity}
                                     </TableCell>
                                     <TableCell className="failure-index-page__table-actions">
                                         <Button variant={'outline'} asChild>
                                             <Link
                                                 href={route(
                                                     'failures.show',
-                                                    failure.id,
+                                                    failureType.id,
                                                 )}
                                             >
                                                 View
@@ -73,7 +71,7 @@ export default function FailureIndex({ failures }: { failures: Failure[] }) {
                                             <Link
                                                 href={route(
                                                     'failures.edit',
-                                                    failure.id,
+                                                    failureType.id,
                                                 )}
                                             >
                                                 Edit
@@ -83,7 +81,7 @@ export default function FailureIndex({ failures }: { failures: Failure[] }) {
                                             <Link
                                                 href={route(
                                                     'failures.destroy',
-                                                    failure.id,
+                                                    failureType.id,
                                                 )}
                                                 method="delete"
                                                 as="button"

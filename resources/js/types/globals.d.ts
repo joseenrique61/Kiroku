@@ -71,6 +71,7 @@ export interface Failure {
 export interface FailureType {
     id: number;
     name: string;
+    severity: string;
 }
 
 export interface Maintenance {

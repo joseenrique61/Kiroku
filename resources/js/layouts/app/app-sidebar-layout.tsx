@@ -26,14 +26,14 @@ export default function AppSidebarLayout({
             icon: Computer
         },
         {
-            title: "Failures",
-            href: route("failures.index"),
-            icon: TriangleAlert
-        },
-        {
             title: "Maintenances",
             href: route("maintenances.index"),
             icon: Wrench
+        },
+        {
+            title: "Failure Types",
+            href: route("failures.index"),
+            icon: TriangleAlert
         },
         {
             title: "Logs",
