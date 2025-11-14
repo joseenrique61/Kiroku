@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class UserController extends Controller
      */
     public function index(): Response
     {
-        $users = User::with('role')->get();
+        $users = User::all();
         
         return Inertia::render('admin/users/index', [
             'users' => $users
@@ -57,7 +58,7 @@ class UserController extends Controller
 
         $user->syncRoles($request->role);
 
-        return redirect()->intended(route('users', absolute: false));
+        return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
     /**
@@ -90,7 +91,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:users,email,'.$user->id,
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'role' => 'nullable|string|exists:roles,name'
         ]);
@@ -111,7 +112,7 @@ class UserController extends Controller
             $user->syncRoles($request->role);
         }
 
-        return redirect()->intended(route('users', absolute: false));
+        return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
     /**
@@ -120,7 +121,7 @@ class UserController extends Controller
     public function destroy(User $user) : RedirectResponse
     {
         $user->delete();
-        return redirect()->intended(route('users', absolute: false))->with('success','User was deleted successfully!');
+        return redirect()->route('users.index')->with('success','User was deleted successfully!');
     }
 
     public function __construct()

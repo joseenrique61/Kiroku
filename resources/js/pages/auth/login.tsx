@@ -90,9 +90,8 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 disabled={processing}
                                 data-test="login-button"
                             >
-                                {/* TODO: Change to Sass and bem */}
                                 {processing && (
-                                    <LoaderCircle className="h-4 w-4 animate-spin" />
+                                    <LoaderCircle className="login-page__loader" />
                                 )}
                                 Log in
                             </Button>

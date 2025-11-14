@@ -1,10 +1,10 @@
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
-import { type BreadcrumbItem } from '@/types';
 import { type ReactNode } from 'react';
+import { BreadcrumbItem } from '@/types'; // Import BreadcrumbItem
 
 interface AppLayoutProps {
     children: ReactNode;
-    breadcrumbs?: BreadcrumbItem[];
+    breadcrumbs?: BreadcrumbItem[]; // Add breadcrumbs prop
 }
 
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (

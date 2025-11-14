@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Inventory\Devices;
 
 use App\Models\Device;
 use App\Models\DeviceCategory;
@@ -8,6 +8,7 @@ use App\Models\DeviceModel;
 use App\Models\DeviceStatus;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Controllers\Controller;
 
 class DeviceController extends Controller
 {
@@ -23,7 +24,7 @@ class DeviceController extends Controller
             'deviceModel',
             'deviceModel.deviceBrand',
             'deviceStatus'
-        ])->paginate(20); // Use pagination to manage the optimization
+        ])->get(); // ->paginate(20); // Use pagination to manage the optimization // TODO: Reactivate pagination
 
         return Inertia::render('inventory/devices/index',[
             'devices' => $devices

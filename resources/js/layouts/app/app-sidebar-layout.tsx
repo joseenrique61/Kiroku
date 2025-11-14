@@ -1,20 +1,45 @@
 import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import AppSidebar from '@/components/app-sidebar';
-import { NavItem, type BreadcrumbItem } from '@/types';
-import { LayoutDashboard, Settings } from 'lucide-react';
+import { NavItem } from '@/types';
+import { Computer, FileCog, LayoutDashboard, Settings, TriangleAlert, Wrench } from 'lucide-react';
+import { BreadcrumbItem } from '@/types'; // Import BreadcrumbItem
 import { type PropsWithChildren } from 'react';
+
+interface AppSidebarLayoutProps extends PropsWithChildren {
+    breadcrumbs?: BreadcrumbItem[];
+}
 
 export default function AppSidebarLayout({
     children,
-    breadcrumbs = [],
-}: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[] }>) {
+    breadcrumbs,
+}: AppSidebarLayoutProps) {
     const navItems: NavItem[] = [
         {
             title: "Dashboard",
             href: route("dashboard"),
             icon: LayoutDashboard
-        }
+        },
+        {
+            title: "Devices",
+            href: route("devices.index"),
+            icon: Computer
+        },
+        {
+            title: "Failures",
+            href: route("failures.index"),
+            icon: TriangleAlert
+        },
+        {
+            title: "Maintenances",
+            href: route("maintenances.index"),
+            icon: Wrench
+        },
+        {
+            title: "Logs",
+            href: route("logs.index"),
+            icon: FileCog
+        },
     ];
 
     const footerItems: NavItem[] = [
@@ -30,7 +55,7 @@ export default function AppSidebarLayout({
             <AppSidebar navItems={navItems} footerItems={footerItems}/>
 
             {/* TODO: Create sass file for AppSidebarLayout */}
-            <AppContent className="overflow-x-hidden">
+            <AppContent className="overflow-x-hidden" breadcrumbs={breadcrumbs}>
                 {/* <AppSidebarHeader breadcrumbs={breadcrumbs} /> */}
                 {children}
             </AppContent>

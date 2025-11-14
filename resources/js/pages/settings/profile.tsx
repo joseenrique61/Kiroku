@@ -1,8 +1,9 @@
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import { send } from '@/routes/verification';
-import { type BreadcrumbItem, type SharedData } from '@/types';
+import { type BreadcrumbItem } from '@/types';
+import { type SharedData } from '@/types/globals';
 import { Transition } from '@headlessui/react';
-import { Form, Head, Link, usePage } from '@inertiajs/react';
+import { Form, Head, Link, usePage, useForm } from '@inertiajs/react';
 
 import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
@@ -29,6 +30,30 @@ export default function Profile({
     status?: string;
 }) {
     const { auth } = usePage<SharedData>().props;
+
+    // For DeleteUser component
+    const {
+        setData: setDeleteForm,
+        delete: destroy,
+        reset: deleteReset,
+    } = useForm({
+        password: '',
+    });
+
+    const deleteUser = (password: string) => {
+        setDeleteForm('password', password);
+        destroy(route('profile.destroy'), {
+            preserveScroll: true,
+            onSuccess: () => deleteReset(),
+            onError: () => console.error('Error deleting user'),
+        });
+    };
+
+    const cancelDelete = () => {
+        deleteReset();
+        // Close modal if one was open
+        console.log('Delete cancelled');
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -133,7 +158,7 @@ export default function Profile({
                     </Form>
                 </div>
 
-                <DeleteUser />
+                <DeleteUser onDelete={deleteUser} onCancel={cancelDelete} />
             </SettingsLayout>
         </AppLayout>
     );

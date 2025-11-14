@@ -6,29 +6,13 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/card';
+import InputError from '@/components/input-error';
 import { Input } from '@/components/input';
 import { Label } from '@/components/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/select';
+import { Select } from '@/components/select';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, Role, User } from '@/types';
+import { User, Role } from '@/types/user';
 import { Head, useForm } from '@inertiajs/react';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Users',
-        href: route('users.index') as string,
-    },
-    {
-        title: 'Edit',
-        href: '',
-    },
-];
 
 type UserFormData = {
     name: string;
@@ -59,7 +43,7 @@ export default function UserEdit({
     }
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Edit User" />
             <Card>
                 <CardHeader>
@@ -81,11 +65,7 @@ export default function UserEdit({
                                 }
                                 placeholder="Enter user name"
                             />
-                            {errors.name && (
-                                <p className="text-sm text-destructive">
-                                    {errors.name}
-                                </p>
-                            )}
+                            <InputError message={errors.name} />
                         </div>
                         <div className="user-edit-page__form-group">
                             <Label htmlFor="email">Email</Label>
@@ -99,11 +79,7 @@ export default function UserEdit({
                                 }
                                 placeholder="Enter user email"
                             />
-                            {errors.email && (
-                                <p className="text-sm text-destructive">
-                                    {errors.email}
-                                </p>
-                            )}
+                            <InputError message={errors.email} />
                         </div>
                         <div className="user-edit-page__form-group">
                             <Label htmlFor="password">Password</Label>
@@ -117,11 +93,7 @@ export default function UserEdit({
                                 }
                                 placeholder="Leave blank to keep current password"
                             />
-                            {errors.password && (
-                                <p className="text-sm text-destructive">
-                                    {errors.password}
-                                </p>
-                            )}
+                            <InputError message={errors.password} />
                         </div>
                         <div className="user-edit-page__form-group">
                             <Label htmlFor="password_confirmation">
@@ -140,40 +112,23 @@ export default function UserEdit({
                                 }
                                 placeholder="Confirm new password"
                             />
-                            {errors.password_confirmation && (
-                                <p className="text-sm text-destructive">
-                                    {errors.password_confirmation}
-                                </p>
-                            )}
+                            <InputError message={errors.password_confirmation} />
                         </div>
                         <div className="user-edit-page__form-group">
-                            <Label htmlFor="role_id">Role</Label>
+                            <Label htmlFor="role">Role</Label>
                             <Select
-                                name="role_id"
+                                name="role"
                                 value={data.role_id.toString()}
                                 onValueChange={(value) =>
                                     setData('role_id', parseInt(value))
                                 }
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select a role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {roles.map((role) => (
-                                        <SelectItem
-                                            key={role.id}
-                                            value={role.id.toString()}
-                                        >
-                                            {role.role}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {errors.role_id && (
-                                <p className="text-sm text-destructive">
-                                    {errors.role_id}
-                                </p>
-                            )}
+                                options={roles.map((role) => ({
+                                    value: role.name,
+                                    label: role.name,
+                                }))}
+                                placeholder="Select a role"
+                            />
+                            <InputError message={errors.role_id} />
                         </div>
                         <Button type="submit">Update</Button>
                     </form>
