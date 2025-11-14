@@ -46,6 +46,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => 'required|string|exists:roles,name'
         ]);
 
         $user = User::create([
@@ -53,11 +54,6 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
-        if (empty($request->role))
-        {
-            $user->syncRoles('guest');
-        }
 
         $user->syncRoles($request->role);
 
@@ -96,7 +92,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'role' => 'required|string|exists:roles,name'
+            'role' => 'nullable|string|exists:roles,name'
         ]);
 
         $user->update([
@@ -109,8 +105,11 @@ class UserController extends Controller
                 'password' => Hash::make($request->password),
             ]);
         }
-            
-        $user->syncRoles($request->role);
+        
+        if (!empty($request->role))
+        {
+            $user->syncRoles($request->role);
+        }
 
         return redirect()->intended(route('users', absolute: false));
     }
@@ -122,5 +121,10 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->intended(route('users', absolute: false))->with('success','User was deleted successfully!');
+    }
+
+    public function __construct()
+    {
+        $this->middleware('role:admin');
     }
 }
