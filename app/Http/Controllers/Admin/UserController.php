@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller as BaseController;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,14 +12,14 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
     public function index(): Response
     {
-        $users = User::all();
+        $users = User::with(['roles','organization'])->get();
         
         return Inertia::render('admin/users/index', [
             'users' => $users
@@ -126,8 +126,8 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success','User was deleted successfully!');
     }
 
-    public function __construct()
-    {
-        $this->middleware('role:admin');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('role:admin');
+    // }
 }

@@ -51,7 +51,7 @@ export default function UserIndex({ users }: { users: User[] }) {
                                 <TableRow key={user.id}>
                                     <TableCell>{user.name}</TableCell>
                                     <TableCell>{user.email}</TableCell>
-                                    <TableCell>{user.role.name}</TableCell>
+                                    <TableCell>{user.roles[0]?.name}</TableCell>
                                     <TableCell className="user-index-page__table-actions">
                                         <Button variant={'outline'} asChild>
                                             <Link

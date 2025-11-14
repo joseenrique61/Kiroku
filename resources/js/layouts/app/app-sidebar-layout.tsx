@@ -2,7 +2,7 @@ import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import AppSidebar from '@/components/app-sidebar';
 import { NavItem } from '@/types';
-import { Computer, FileCog, LayoutDashboard, Settings, TriangleAlert, Wrench } from 'lucide-react';
+import { Computer, FileCog, LayoutDashboard, Settings, TriangleAlert, Wrench, User } from 'lucide-react';
 import { BreadcrumbItem } from '@/types'; // Import BreadcrumbItem
 import { type PropsWithChildren } from 'react';
 
@@ -39,6 +39,11 @@ export default function AppSidebarLayout({
             title: "Logs",
             href: route("logs.index"),
             icon: FileCog
+        },
+        {
+            title: "Users",
+            href: route("users.index"),
+            icon: User
         },
     ];
 
