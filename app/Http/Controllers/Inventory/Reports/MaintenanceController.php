@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Inventory\Reports;
 
 use App\Http\Controllers\Controller;
 use App\Models\Device;
+use App\Models\DeviceStatus;
 use App\Models\FailureType;
 use App\Models\Maintenance;
 use Illuminate\Http\RedirectResponse;
@@ -33,7 +34,7 @@ class MaintenanceController extends Controller
     public function create(): Response
     {
         return Inertia::render('reports/create', [
-            'devices' => Device::all(),
+            'devices' => Device::where('device_status_id', '=', DeviceStatus::where('name', '=', 'In service')->first()->id)->with('deviceModel')->get(),
             'failure_types' => FailureType::all()
         ]);
     }
@@ -65,6 +66,17 @@ class MaintenanceController extends Controller
                     'cause' => $fields['failure_cause'],
                 ]);
             }
+
+            if (!$fields['datetime']) {
+                Device::find($fields['device_id'])->first()->update([
+                    'device_status_id' => DeviceStatus::where('name', '=', 'In maintenance')->first()->id
+                ]);
+            }
+            else {
+                Device::find($fields['device_id'])->first()->update([
+                    'device_status_id' => DeviceStatus::where('name', '=', 'In service')->first()->id
+                ]);
+            }
         });
 
         return redirect()->route('maintenances.index')->with('success', 'Maintenance created successfully.');
@@ -87,9 +99,13 @@ class MaintenanceController extends Controller
     public function edit(Maintenance $maintenance): Response
     {
         $maintenance->load("failure");
+
+        $devices = Device::where('device_status_id', '=', DeviceStatus::where('name', '=', 'In service')->first()->id)->with('deviceModel')->get();
+        $devices = $devices->merge(Device::where('id', '=', $maintenance->device_id)->with('deviceModel')->get());
+
         return Inertia::render('reports/edit', [
             'maintenance' => $maintenance,
-            'devices' => Device::all(),
+            'devices' => $devices,
             'failure_types' => FailureType::all()
         ]);
     }
@@ -119,6 +135,17 @@ class MaintenanceController extends Controller
                     'failure_type_id' => $fields['failure_type_id'],
                     'description' => $fields['failure_description'],
                     'cause' => $fields['failure_cause'],
+                ]);
+            }
+
+            if (!$fields['datetime']) {
+                Device::find($fields['device_id'])->first()->update([
+                    'device_status_id' => DeviceStatus::where('name', '=', 'In maintenance')->first()->id
+                ]);
+            }
+            else {
+                Device::find($fields['device_id'])->first()->update([
+                    'device_status_id' => DeviceStatus::where('name', '=', 'In service')->first()->id
                 ]);
             }
         });

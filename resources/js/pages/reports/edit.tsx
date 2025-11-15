@@ -19,7 +19,7 @@ import { Separator } from '@/components/separator';
 type MaintenanceFormData = {
     device_id: number;
     cost: number;
-    datetime: string;
+    datetime?: string;
     out_of_service_datetime: string;
     is_preventive: boolean;
 
@@ -29,20 +29,24 @@ type MaintenanceFormData = {
 };
 
 export default function MaintenanceEdit({ maintenance, devices, failure_types }: { maintenance: Maintenance, devices: Device[], failure_types: FailureType[] }) {
-    const { data, setData, put, errors } = useForm<MaintenanceFormData>({
+    const { data, setData, put, errors, setError } = useForm<MaintenanceFormData>({
         device_id: maintenance.device_id,
         cost: maintenance.cost,
-        datetime: maintenance.datetime,
+        datetime: maintenance.datetime || '',
         out_of_service_datetime: maintenance.out_of_service_datetime,
         is_preventive: maintenance.is_preventive,
 
-        failure_type_id: maintenance.failure?.failure_type_id || 0,
+        failure_type_id: maintenance.failure?.failure_type_id || 1,
         failure_cause: maintenance.failure?.cause || '',
         failure_description: maintenance.failure?.description || ''
     });
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        if (data.datetime && data.out_of_service_datetime && new Date(data.out_of_service_datetime) > new Date(data.datetime)) {
+            setError('datetime', 'The Rehabilitation date cannot be greater than the Out of service date');
+            return;
+        }
         put(route('maintenances.update', maintenance.id));
     }
 
@@ -71,7 +75,7 @@ export default function MaintenanceEdit({ maintenance, devices, failure_types }:
                                 }
                                 options={devices.map((device) => ({
                                     value: device.id.toString(),
-                                    label: device.serial_number,
+                                    label: `${device.device_model.name} - ${device.serial_number}`,
                                 }))}
                                 placeholder="Select a device"
                             />
@@ -107,7 +111,7 @@ export default function MaintenanceEdit({ maintenance, devices, failure_types }:
                                     )
                                 }
                             />
-                            <InputError message={errors.datetime} />
+                            <InputError message={errors.out_of_service_datetime} />
                         </div>
                         <div className="maintenance-create-page__form-group">
                             <Label htmlFor="datetime">

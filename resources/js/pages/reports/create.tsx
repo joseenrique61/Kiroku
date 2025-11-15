@@ -42,7 +42,7 @@ export default function MaintenanceCreate({
         out_of_service_datetime: '',
         is_preventive: true,
 
-        failure_type_id: failure_types[0]?.id || 0,
+        failure_type_id: failure_types[0]?.id || 1,
         failure_description: '',
         failure_cause: '',
     });
@@ -81,7 +81,7 @@ export default function MaintenanceCreate({
                                 }
                                 options={devices.map((device) => ({
                                     value: device.id.toString(),
-                                    label: device.serial_number,
+                                    label: `${device.device_model.name} - ${device.serial_number}`,
                                 }))}
                                 placeholder="Select a device"
                             />
