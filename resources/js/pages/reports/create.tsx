@@ -19,7 +19,7 @@ import { Head, useForm } from '@inertiajs/react';
 type MaintenanceFormData = {
     device_id: number;
     cost: number;
-    datetime: string;
+    datetime?: string;
     out_of_service_datetime: string;
     is_preventive: boolean;
 
@@ -35,7 +35,7 @@ export default function MaintenanceCreate({
     devices: Device[];
     failure_types: FailureType[];
 }) {
-    const { data, setData, post, errors } = useForm<MaintenanceFormData>({
+    const { data, setData, post, errors, setError } = useForm<MaintenanceFormData>({
         device_id: devices[0]?.id || 0,
         cost: 0,
         datetime: '',
@@ -49,6 +49,10 @@ export default function MaintenanceCreate({
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        if (data.datetime && data.out_of_service_datetime && new Date(data.out_of_service_datetime) > new Date(data.datetime)) {
+            setError('datetime', 'The Rehabilitation date cannot be greater than the Out of service date');
+            return;
+        }
         post(route('maintenances.store'));
     }
 
@@ -113,7 +117,7 @@ export default function MaintenanceCreate({
                                     )
                                 }
                             />
-                            <InputError message={errors.datetime} />
+                            <InputError message={errors.out_of_service_datetime} />
                         </div>
                         <div className="maintenance-create-page__form-group">
                             <Label htmlFor="datetime">

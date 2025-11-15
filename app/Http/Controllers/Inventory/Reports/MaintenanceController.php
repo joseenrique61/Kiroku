@@ -43,31 +43,29 @@ class MaintenanceController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $fields = $request->validate([
             'device_id' => 'required|exists:devices,id',
             'cost' => 'required|numeric',
-            'datetime' => 'required|date',
             'out_of_service_datetime' => 'required|date',
+            'datetime' => 'nullable|date|after_or_equal:start_date',
             'is_preventive' => 'required|boolean',
 
-            'failure_type_id' => 'required_if:is_preventive,false|exists:failure_types,id',
-            'failure_description' => 'required_if:is_preventive,false|string|max:400',
-            'failure_cause' => 'required_if:is_preventive,false|string|max:400'
+            'failure_type_id' => 'required_if:is_preventive,false|nullable|exists:failure_types,id',
+            'failure_description' => 'required_if:is_preventive,false|nullable|string|max:400',
+            'failure_cause' => 'required_if:is_preventive,false|nullable|string|max:400'
         ]);
 
-        DB::transaction(function () use ($request) {
-            $maintenance = Maintenance::create(Arr::only($request, ['device_id', 'cost', 'datetime', 'out_of_service_datetime', 'is_preventive']));
+        DB::transaction(function () use ($fields) {
+            $maintenance = Maintenance::create(Arr::only($fields, ['device_id', 'cost', 'datetime', 'out_of_service_datetime', 'is_preventive']));
 
-            if (!$request['is_preventive']) {
+            if (!$fields['is_preventive']) {
                 $maintenance->failure()->create([
-                    'failure_type_id' => $request['failure_type_id'],
-                    'description' => $request['failure_description'],
-                    'cause' => $request['failure_cause'],
+                    'failure_type_id' => $fields['failure_type_id'],
+                    'description' => $fields['failure_description'],
+                    'cause' => $fields['failure_cause'],
                 ]);
             }
         });
-
-        Maintenance::create($request->all());
 
         return redirect()->route('maintenances.index')->with('success', 'Maintenance created successfully.');
     }
@@ -101,26 +99,26 @@ class MaintenanceController extends Controller
      */
     public function update(Request $request, Maintenance $maintenance): RedirectResponse
     {
-        $request->validate([
+        $fields = $request->validate([
             'device_id' => 'required|exists:devices,id',
             'cost' => 'required|numeric',
-            'datetime' => 'required|date',
             'out_of_service_datetime' => 'required|date',
+            'datetime' => 'nullable|date|after_or_equal:start_date',
             'is_preventive' => 'required|boolean',
 
-            'failure_type_id' => 'required_if:is_preventive,false|exists:failure_types,id',
-            'failure_description' => 'required_if:is_preventive,false|string|max:400',
-            'failure_cause' => 'required_if:is_preventive,false|string|max:400'
+            'failure_type_id' => 'required_if:is_preventive,false|nullable|exists:failure_types,id',
+            'failure_description' => 'required_if:is_preventive,false|nullable|string|max:400',
+            'failure_cause' => 'required_if:is_preventive,false|nullable|string|max:400'
         ]);
 
-        DB::transaction(function () use ($request, $maintenance) {
-            $maintenance->update(Arr::only($request, ['device_id', 'cost', 'datetime', 'out_of_service_datetime', 'is_preventive']));
+        DB::transaction(function () use ($fields, $maintenance) {
+            $maintenance->update(Arr::only($fields, ['device_id', 'cost', 'datetime', 'out_of_service_datetime', 'is_preventive']));
 
-            if (!$request['is_preventive']) {
+            if (!$fields['is_preventive']) {
                 $maintenance->failure()->update([
-                    'failure_type_id' => $request['failure_type_id'],
-                    'description' => $request['failure_description'],
-                    'cause' => $request['failure_cause'],
+                    'failure_type_id' => $fields['failure_type_id'],
+                    'description' => $fields['failure_description'],
+                    'cause' => $fields['failure_cause'],
                 ]);
             }
         });
