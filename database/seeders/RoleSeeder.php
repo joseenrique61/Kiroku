@@ -51,7 +51,7 @@ class RoleSeeder extends Seeder
 
         // Synchronize permissions for the IT Supervisor
         $supervisorRole->syncPermissions([
-            'view-dashboards',
+            'view-dashboard',
             'view-organization-policies',
             'manage-organization-policies',
         ]);
