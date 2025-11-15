@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Inventory\Failures;
 
+use App\Http\Controllers\Controller;
 use App\Models\FailureType;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class FailureTypeController extends Controller
 {
@@ -12,7 +14,11 @@ class FailureTypeController extends Controller
      */
     public function index()
     {
-        //
+        $failureTypes = FailureType::get();
+
+        return Inertia::render('reports/failures/index', [
+            'failureTypes' => $failureTypes
+        ]);
     }
 
     /**
@@ -20,7 +26,7 @@ class FailureTypeController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('reports/failures/create');
     }
 
     /**
@@ -28,7 +34,14 @@ class FailureTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+            'severity' => 'required|string',
+        ]);
+
+        FailureType::create($request->all());
+
+        return redirect()->route('failureTypes.index')->with('success', 'Failure type created successfully.');
     }
 
     /**
@@ -36,7 +49,9 @@ class FailureTypeController extends Controller
      */
     public function show(FailureType $failureType)
     {
-        //
+        return Inertia::render('reports/failures/view', [
+            'failureType' => $failureType
+        ]);
     }
 
     /**
@@ -44,7 +59,9 @@ class FailureTypeController extends Controller
      */
     public function edit(FailureType $failureType)
     {
-        //
+        return Inertia::render('reports/failures/edit', [
+            'failureType' => $failureType
+        ]);
     }
 
     /**
@@ -52,7 +69,14 @@ class FailureTypeController extends Controller
      */
     public function update(Request $request, FailureType $failureType)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+            'severity' => 'required|string',
+        ]);
+
+        $failureType->update($request->all());
+
+        return redirect()->route('failureTypes.index')->with('success', 'Failure type updated successfully.');
     }
 
     /**
@@ -60,6 +84,7 @@ class FailureTypeController extends Controller
      */
     public function destroy(FailureType $failureType)
     {
-        //
+        $failureType->delete();
+        return redirect()->route('failureTypes.index')->with('success', 'Failure type deleted successfully.');
     }
 }

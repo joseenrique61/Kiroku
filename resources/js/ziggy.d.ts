@@ -9,6 +9,7 @@ declare module 'ziggy-js' {
     "password.confirm.store": [],
     "sanctum.csrf-cookie": [],
     "home": [],
+    "health": [],
     "dashboard": [],
     "users.index": [],
     "users.create": [],
@@ -72,33 +73,33 @@ declare module 'ziggy-js' {
             "binding": "id"
         }
     ],
-    "failures.index": [],
-    "failures.create": [],
-    "failures.store": [],
-    "failures.show": [
+    "failureTypes.index": [],
+    "failureTypes.create": [],
+    "failureTypes.store": [],
+    "failureTypes.show": [
         {
-            "name": "failure",
+            "name": "failureType",
             "required": true,
             "binding": "id"
         }
     ],
-    "failures.edit": [
+    "failureTypes.edit": [
         {
-            "name": "failure",
+            "name": "failureType",
             "required": true,
             "binding": "id"
         }
     ],
-    "failures.update": [
+    "failureTypes.update": [
         {
-            "name": "failure",
+            "name": "failureType",
             "required": true,
             "binding": "id"
         }
     ],
-    "failures.destroy": [
+    "failureTypes.destroy": [
         {
-            "name": "failure",
+            "name": "failureType",
             "required": true,
             "binding": "id"
         }
