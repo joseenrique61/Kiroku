@@ -29,7 +29,7 @@ class DeviceFactory extends Factory
             'device_status_id' => DeviceStatus::inRandomOrder()->first()->id,
             'device_category_id' => DeviceCategory::inRandomOrder()->first()->id,
             'acquisition_id' => Acquisition::factory(),
-            'organization_id' => Organization::factory(),
+            'organization_id' => Organization::first()->id,
         ];
     }
 }
