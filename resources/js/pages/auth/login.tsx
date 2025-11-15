@@ -2,13 +2,11 @@ import '@/../scss/pages/auth/login.scss'
 
 import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
 import InputError from '@/components/input-error';
-import TextLink from '@/components/text-link';
 import { Button } from '@/components/button';
 import { Checkbox } from '@/components/checkbox';
 import { Input } from '@/components/input';
 import { Label } from '@/components/label';
 import AuthLayout from '@/layouts/auth-layout';
-import { register } from '@/routes';
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
@@ -84,13 +82,6 @@ export default function Login({ status }: LoginProps) {
                                 )}
                                 Log in
                             </Button>
-                        </div>
-
-                        <div className="login-page__signup-link">
-                            Don't have an account?{' '}
-                            <TextLink href={register().url} tabIndex={5}>
-                                Sign up
-                            </TextLink>
                         </div>
                     </>
                 )}
