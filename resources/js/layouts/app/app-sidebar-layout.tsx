@@ -53,6 +53,7 @@ export default function AppSidebarLayout({
             title: "Failure Types",
             href: route("failureTypes.index"),
             icon: TriangleAlert
+            permission: "view-failure-types"
         },
         {
             title: "Logs",

@@ -31,6 +31,7 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'update-devices']);
         Permission::create(['name' => 'delete-devices']);
         Permission::create(['name' => 'import-devices']);
+        
         Permission::create(['name' => 'manage-device-categories']);
         Permission::create(['name' => 'manage-device-models']);
         Permission::create(['name' => 'manage-device-brands']);
@@ -46,6 +47,11 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'update-failures']);
         Permission::create(['name' => 'delete-failures']);
         
+        Permission::create(['name' => 'view-failure-types']);
+        Permission::create(['name' => 'create-failure-types']);
+        Permission::create(['name' => 'update-failure-types']);
+        Permission::create(['name' => 'delete-failure-types']);
+
         /** IT Supervisor Role*/
         Permission::create(['name' => 'view-dashboard']);
         Permission::create(['name' => 'view-organization-policies']);
