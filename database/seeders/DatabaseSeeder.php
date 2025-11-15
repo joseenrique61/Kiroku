@@ -18,7 +18,13 @@ class DatabaseSeeder extends Seeder
             OrganizationPolicySeeder::class,
             OrganizationSeeder::class,
             PermissionSeeder::class,
-            UserSeeder::class
+            UserSeeder::class,
+            DeviceStatusSeeder::class,
+            DeviceBrandSeeder::class,
+            DeviceCategorySeeder::class,
+            DeviceModelSeeder::class,
+            FailureTypeSeeder::class,
+            MaintenanceSeeder::class
         ]);
     }
 }
