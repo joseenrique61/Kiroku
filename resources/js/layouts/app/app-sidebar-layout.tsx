@@ -44,16 +44,15 @@ export default function AppSidebarLayout({
             permission: "view-devices"
         },
         {
-            title: "Failures",
-            href: route("failures.index"),
-            icon: TriangleAlert,
-            permission: "view-failures"
-        },
-        {
             title: "Maintenances",
             href: route("maintenances.index"),
             icon: Wrench,
             permission: "view-maintenances"
+        },
+        {
+            title: "Failure Types",
+            href: route("failureTypes.index"),
+            icon: TriangleAlert
         },
         {
             title: "Logs",

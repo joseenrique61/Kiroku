@@ -38,7 +38,7 @@ export default function Home() {
                             </CardContent>
                         </Card>
                     </Link>
-                    <Link href={route('failures.index')}>
+                    <Link href={route('failureTypes.index')}>
                         <Card>
                             <CardHeader>
                                 <CardTitle>Failures</CardTitle>
