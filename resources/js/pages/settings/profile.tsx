@@ -12,12 +12,11 @@ import { Input } from '@/components/input';
 import { Label } from '@/components/label';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
-import { edit } from '@/routes/profile';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Profile settings',
-        href: edit().url,
+        href: route('profile.edit'),
     },
 ];
 
