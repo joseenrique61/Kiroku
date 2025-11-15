@@ -47,7 +47,7 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'delete-failures']);
         
         /** IT Supervisor Role*/
-        Permission::create(['name' => 'view-dashboards']);
+        Permission::create(['name' => 'view-dashboard']);
         Permission::create(['name' => 'view-organization-policies']);
         Permission::create(['name' => 'manage-organization-policies']);
     }
