@@ -87,7 +87,7 @@ class MaintenanceController extends Controller
      */
     public function show(Maintenance $maintenance): Response
     {
-        $maintenance->load(['device', 'failure']);
+        $maintenance->load(['device', 'failure', 'failure.failureType']);
         return Inertia::render('reports/view', [
             'maintenance' => $maintenance
         ]);

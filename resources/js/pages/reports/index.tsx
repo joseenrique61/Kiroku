@@ -68,7 +68,7 @@ export default function MaintenanceIndex({
                                     <TableCell>
                                         {maintenance.device.serial_number}
                                     </TableCell>
-                                    <TableCell>{maintenance.cost}</TableCell>
+                                    <TableCell>${maintenance.cost}</TableCell>
                                     <TableCell>
                                         {maintenance.out_of_service_datetime}
                                     </TableCell>
