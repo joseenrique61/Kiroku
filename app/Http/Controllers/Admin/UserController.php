@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Organization;
 use Illuminate\Routing\Controller as BaseController;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -31,9 +32,11 @@ class UserController extends BaseController
      */
     public function create(): Response
     {
+        $organizations = Organization::all();
         $roles = Role::all();
 
         return Inertia::render('admin/users/create', [
+            'organizations' => $organizations,
             'roles' => $roles
         ]);
     }
@@ -50,16 +53,21 @@ class UserController extends BaseController
             'organization_id' => 'required|integer|exists:organizations,id',
             'role_id' => 'required|integer|exists:roles,id',
         ]);
-
+        
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'organization_id' => $request->organization_id,
         ]);
-
-        $user->syncRoles($request->role);
-
+        
+        $role = Role::findById($request->role_id);
+        
+        if ($role)
+        {
+            $user->syncRoles($role);
+        }
+            
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 

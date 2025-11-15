@@ -13,6 +13,7 @@ import { Select } from '@/components/select';
 import AppLayout from '@/layouts/app-layout';
 import { Role } from '@/types/user';
 import { Head, useForm } from '@inertiajs/react';
+import { Organization } from '@/types/globals';
 
 type UserFormData = {
     name: string;
@@ -20,15 +21,17 @@ type UserFormData = {
     password: string;
     password_confirmation: string;
     role_id: number;
+    organization_id: number;
 };
 
-export default function UserCreate({ roles }: { roles: Role[] }) {
+export default function UserCreate({ roles, organizations }: { roles: Role[], organizations: Organization[] }) {
     const { data, setData, post, errors } = useForm<UserFormData>({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
         role_id: roles[0]?.id || 0,
+        organization_id: organizations[0]?.id || 0,
     });
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -107,6 +110,22 @@ export default function UserCreate({ roles }: { roles: Role[] }) {
                                 placeholder="Confirm user password"
                             />
                             <InputError message={errors.password_confirmation} />
+                        </div>
+                        <div className="user-create-page__form-group">
+                            <Label htmlFor="organization_id">Organization</Label>
+                            <Select
+                                name="organization_id"
+                                value={data.organization_id.toString()}
+                                onValueChange={(value) =>
+                                    setData('organization_id', parseInt(value))
+                                }
+                                options={organizations.map((organization) => ({
+                                    value: organization.id.toString(),
+                                    label: organization.name,
+                                }))}
+                                placeholder="Select a Organization"
+                            />
+                            <InputError message={errors.organization_id} />
                         </div>
                         <div className="user-create-page__form-group">
                             <Label htmlFor="role_id">Role</Label>
