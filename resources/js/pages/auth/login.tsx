@@ -9,16 +9,14 @@ import { Input } from '@/components/input';
 import { Label } from '@/components/label';
 import AuthLayout from '@/layouts/auth-layout';
 import { register } from '@/routes';
-import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
 interface LoginProps {
     status?: string;
-    canResetPassword: boolean;
 }
 
-export default function Login({ status, canResetPassword }: LoginProps) {
+export default function Login({ status }: LoginProps) {
     return (
         <AuthLayout
             title="Log in to your account"
@@ -52,15 +50,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             <div className="login-page__form-group">
                                 <div className="login-page__password-group">
                                     <Label htmlFor="password">Password</Label>
-                                    {canResetPassword && (
-                                        <TextLink
-                                            href={request().url}
-                                            className="login-page__forgot-password-link"
-                                            tabIndex={5}
-                                        >
-                                            Forgot password?
-                                        </TextLink>
-                                    )}
                                 </div>
                                 <Input
                                     id="password"
