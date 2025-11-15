@@ -18,11 +18,6 @@ const sidebarNavItems: NavItem[] = [
         icon: null,
     },
     {
-        title: 'Two-Factor Auth',
-        href: route('two-factor.show'),
-        icon: null,
-    },
-    {
         title: 'Appearance',
         href: route('appearance.edit'),
         icon: null,
