@@ -47,6 +47,10 @@ class RoleSeeder extends Seeder
             'create-failures',
             'update-failures',
             'delete-failures',
+            'view-failure-types',
+            'create-failure-types',
+            'update-failure-types',
+            'delete-failure-types',
         ]);
 
         // Synchronize permissions for the IT Supervisor
