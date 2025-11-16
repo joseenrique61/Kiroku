@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\DeviceBrand;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,8 +18,8 @@ class DeviceModelFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->word('Model X', 'Model Y', 'Model Z', 'Model A'),
-            'device_brand_id' => \App\Models\DeviceBrand::factory(),
+            'name' => $this->faker->words(2, true),
+            'device_brand_id' => DeviceBrand::inRandomOrder()->first()->id,
         ];
     }
 }

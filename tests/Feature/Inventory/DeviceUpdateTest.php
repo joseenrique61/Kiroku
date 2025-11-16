@@ -2,18 +2,24 @@
 
 use App\Models\Acquisition;
 use App\Models\Device;
+use App\Models\DeviceBrand;
 use App\Models\DeviceCategory;
 use App\Models\DeviceModel;
 use App\Models\DeviceStatus;
+use App\Models\Organization;
 use App\Models\User;
 
 test('update device screen can be rendered', function () {
-    // --- Preparación ---
-    // 1. Crea las dependencias primero (Org y User)
-    $user = User::factory()->create();
+    Organization::factory()->create();
+    Acquisition::factory()->create();
+    DeviceCategory::factory()->create();
+    DeviceBrand::factory()->create();
+    DeviceModel::factory()->create();
+    DeviceStatus::factory()->create();
 
-    // 2. ¡Loguea al usuario AHORA!
-    $this->actingAs($user);
+    $device = Device::factory()->create();
+    
+    $this->actingAs($user = User::factory()->create());
 
     // 3. Ahora crea el dispositivo. El trait Auditable
     //    encontrará al $user logueado y guardará el log.
@@ -27,13 +33,14 @@ test('the device can be update', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
 
-    $device = Device::factory()->create();
-    
     $updatedAcquisition = Acquisition::factory()->create();
     $updatedCategory = DeviceCategory::factory()->create();
+    $updatedBrand = DeviceBrand::factory()->create();
     $updatedModel = DeviceModel::factory()->create();
     $updatedStatus = DeviceStatus::factory()->create();
     $updatedDescription = 'Mi dispositivo de prueba ha sido actualizado';
+
+    $device = Device::factory()->create();
 
     $deviceData = [
         'description' => 'Mi dispositivo de prueba',

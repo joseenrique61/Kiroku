@@ -1,6 +1,7 @@
 <?php 
 
 use App\Models\Acquisition;
+use App\Models\DeviceBrand;
 use App\Models\DeviceCategory;
 use App\Models\DeviceModel;
 use App\Models\DeviceStatus;
@@ -17,6 +18,7 @@ test('new devices can be registered', function () {
 
     $acquisition = Acquisition::factory()->create();
     $category = DeviceCategory::factory()->create();
+    $brand = DeviceBrand::factory()->create();
     $model = DeviceModel::factory()->create();
     $status = DeviceStatus::factory()->create();
 

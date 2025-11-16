@@ -23,6 +23,16 @@ export default function MaintenanceIndex({
 }: {
     maintenances: Maintenance[];
 }) {
+    const sortedMaintenances = [...maintenances].sort((a, b) => {
+        if (a.out_of_service_datetime < b.out_of_service_datetime) {
+            return -1;
+        }
+        if (a.out_of_service_datetime > b.out_of_service_datetime) {
+            return 1;
+        }
+        return 0;
+    });
+
     return (
         <AppLayout>
             <Head title="Maintenances" />
@@ -46,18 +56,22 @@ export default function MaintenanceIndex({
                             <TableRow>
                                 <TableHead>Device</TableHead>
                                 <TableHead>Cost</TableHead>
-                                <TableHead>Date</TableHead>
+                                <TableHead>Out of Service Date</TableHead>
+                                <TableHead>Rehabilitation Date</TableHead>
                                 <TableHead>Type</TableHead>
                                 <TableHead>Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {maintenances.map((maintenance) => (
+                            {sortedMaintenances.map((maintenance) => (
                                 <TableRow key={maintenance.id}>
                                     <TableCell>
                                         {maintenance.device.serial_number}
                                     </TableCell>
-                                    <TableCell>{maintenance.cost}</TableCell>
+                                    <TableCell>${maintenance.cost}</TableCell>
+                                    <TableCell>
+                                        {maintenance.out_of_service_datetime}
+                                    </TableCell>
                                     <TableCell>
                                         {maintenance.datetime}
                                     </TableCell>

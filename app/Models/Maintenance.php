@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Maintenance extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'is_preventive',
         'cost',
         'datetime',
+        'out_of_service_datetime',
         'device_id',
     ];
 
@@ -20,8 +23,8 @@ class Maintenance extends Model
         return $this->hasOne(Failure::class);
     }
 
-    public function devices(): HasMany
+    public function device(): BelongsTo
     {
-        return $this->hasMany(Device::class);
+        return $this->belongsTo(Device::class);
     }
 }
