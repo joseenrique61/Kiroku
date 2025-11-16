@@ -16,7 +16,7 @@ return new class extends Migration
             $table->boolean('is_preventive')->default(true);
             $table->decimal('cost', 10, 3);
             $table->timestampTz('datetime')->nullable();
-            $table->timestampTz('out_of_service_datetime');
+            $table->timestampTz('out_of_service_datetime')->useCurrent();
             $table->foreignId('device_id')->constrained('devices');
             $table->timestamps();
         });

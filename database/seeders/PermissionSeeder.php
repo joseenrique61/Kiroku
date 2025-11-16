@@ -25,6 +25,11 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'manage-roles']);
         Permission::create(['name' => 'view-audit-logs']);
 
+        Permission::create(['name' => 'view-organization']);
+        Permission::create(['name' => 'create-organizations']);
+        Permission::create(['name' => 'update-organizations']);
+        Permission::create(['name' => 'delete-organizations']);
+
         /** Technical Agent Role */
         Permission::create(['name' => 'view-devices']);
         Permission::create(['name' => 'create-devices']);

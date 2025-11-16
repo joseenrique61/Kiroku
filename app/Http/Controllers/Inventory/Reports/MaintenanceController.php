@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Inventory\Reports;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller as BaseController;
 use App\Models\Device;
 use App\Models\DeviceStatus;
 use App\Models\FailureType;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class MaintenanceController extends Controller
+class MaintenanceController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -160,5 +160,13 @@ class MaintenanceController extends Controller
     {
         $maintenance->delete();
         return redirect()->route('maintenances.index')->with('success', 'Maintenance deleted successfully.');
+    }
+
+    public function __construct()
+    {
+        $this->middleware('permission:view-maintenances')->only(['index', 'show']);
+        $this->middleware('permission:create-maintenances')->only(['create', 'store']);
+        $this->middleware('permission:update-maintenances')->only(['edit', 'update']);
+        $this->middleware('permission:delete-maintenances')->only(['destroy']);
     }
 }

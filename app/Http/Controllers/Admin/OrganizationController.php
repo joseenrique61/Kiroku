@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Routing\Controller as BaseController;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class OrganizationController extends Controller
+class OrganizationController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -67,5 +68,11 @@ class OrganizationController extends Controller
     public function destroy(Organization $organization)
     {
         //
+    }
+
+    public function __construct()
+    {
+        $this->middleware('permission:view-organization-policies')->only(['index', 'show']);
+        $this->middleware('permission:manage-organization-policies')->only(['create', 'store', 'edit', 'update', 'destroy']);
     }
 }

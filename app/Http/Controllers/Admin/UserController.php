@@ -140,8 +140,11 @@ class UserController extends BaseController
         return redirect()->route('users.index')->with('success','User was deleted successfully!');
     }
 
-    // public function __construct()
-    // {
-    //     $this->middleware('role:admin');
-    // }
+    public function __construct()
+    {
+        $this->middleware('permission:view-users')->only(['index', 'show']);
+        $this->middleware('permission:create-users')->only(['create', 'store']);
+        $this->middleware('permission:edit-users')->only(['edit', 'update']);
+        $this->middleware('permission:delete-users')->only(['destroy']);
+    }
 }
