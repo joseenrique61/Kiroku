@@ -123,13 +123,13 @@ class DeviceController extends BaseController
         ]);
 
         $deviceModels = DeviceModel::with('deviceBrand')->get();
-        $deviceStatus = DeviceStatus::get();
+        $deviceStatuses = DeviceStatus::get();
         $deviceCategories = DeviceCategory::get();
         
         return Inertia::render('inventory/devices/edit',[
             'device' => $device,
             'deviceModels' => $deviceModels,
-            'deviceStatus' => $deviceStatus,
+            'deviceStatuses' => $deviceStatuses,
             'deviceCategories' => $deviceCategories
         ]);
     }
@@ -144,12 +144,24 @@ class DeviceController extends BaseController
             'acquisition_id' => 'required|int|exists:acquisitions,id',
             'device_category_id' => 'required|int|exists:device_categories,id',
             'device_model_id' => 'required|int|exists:device_models,id',
-            'device_status_id' => 'required|int|exists:device_statuses,id'
+            'device_status_id' => 'required|int|exists:device_statuses,id',
+            'organization_id' => 'required|int|exists:organizations,id',
+            'acquired_at' => 'nullable|date',
+            'warranty_end_date' => 'nullable|date|after_or_equal:acquired_at',
+            'price' => 'nullable|numeric|min:0'
         ]);
+
+        if ($request->has(['acquired_at', 'warranty_end_date', 'price'])) {
+            $acquisition = Acquisition::find($request->acquisition_id);
+            $acquisition->update([
+                'acquired_at' => $request->acquired_at,
+                'warranty_end_date' => $request->warranty_end_date,
+                'price' => $request->price
+            ]);
+        }
 
          $device->update([
             'description' => $request->description,
-            'acquisition_id' => $request->acquisition_id,
             'device_category_id' => $request->device_category_id,
             'device_model_id' => $request->device_model_id,
             'device_status_id' => $request->device_status_id
