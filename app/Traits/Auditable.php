@@ -40,12 +40,17 @@ trait Auditable
         $value_after = null;
 
         if ($operation === 'create') {
+            $value_before = 'N/A';
             $value_after = $model->getAttributes();
+            $operation = 'C';
         } elseif ($operation === 'update') {
             $value_before = $model->getOriginal(); 
             $value_after = $model->getAttributes();
+            $operation = 'U';
         } elseif ($operation === 'delete') {
             $value_before = $model->getAttributes();
+            $value_after = 'N/A';
+            $operation = 'D';
         }
 
         AuditLog::create([
