@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('device_model_id')->constrained('device_models');
             $table->foreignId('device_status_id')->constrained('device_statuses');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

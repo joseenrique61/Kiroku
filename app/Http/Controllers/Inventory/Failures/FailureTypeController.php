@@ -92,7 +92,7 @@ class FailureTypeController extends BaseController
     {
         $this->middleware('permission:view-failure-types')->only(['index', 'show']);
         $this->middleware('permission:create-failure-types')->only(['create', 'store']);
-        $this->middleware('permission:edit-failure-types')->only(['edit', 'update']);
+        $this->middleware('permission:update-failure-types')->only(['edit', 'update']);
         $this->middleware('permission:delete-failure-types')->only(['destroy']);
     }
 }

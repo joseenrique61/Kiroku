@@ -77,18 +77,6 @@ export default function FailureIndex({
                                                 Edit
                                             </Link>
                                         </Button>
-                                        <Button variant={'destructive'} asChild>
-                                            <Link
-                                                href={route(
-                                                    'failureTypes.destroy',
-                                                    failureType.id,
-                                                )}
-                                                method="delete"
-                                                as="button"
-                                            >
-                                                Delete
-                                            </Link>
-                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))}

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->timestampTz('out_of_service_datetime')->useCurrent();
             $table->foreignId('device_id')->constrained('devices');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
