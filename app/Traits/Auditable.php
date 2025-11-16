@@ -36,6 +36,10 @@ trait Auditable
      */
     protected static function logAudit(string $operation, Model $model): void
     {
+        if (!Auth::id()) {
+            return;
+        }
+
         $value_before = null;
         $value_after = null;
 
