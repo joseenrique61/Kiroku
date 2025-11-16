@@ -14,8 +14,7 @@
     line-height: 1;
 
     &:focus-visible {
-        outline: 2px solid base.$color-ring;
-        outline-offset: 2px;
+        outline: none;
     }
 
     &--primary {
@@ -74,7 +73,7 @@
         background-color: transparent;
         color: base.$color-primary;
         border-color: transparent;
-        text-decoration: underline;
+        text-decoration: none;
         text-underline-offset: 4px;
 
         &:hover {

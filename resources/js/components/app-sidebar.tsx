@@ -75,6 +75,7 @@ const AppSidebarItem = ({
             <Link
                 href={navItem.href}
                 className={`app-sidebar__nav-link ${isActive ? 'app-sidebar__nav-link--active' : ''}`}
+                method={navItem.method}
                 prefetch
             >
                 {navItem.icon && (

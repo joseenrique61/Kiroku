@@ -21,11 +21,17 @@ test('update device screen can be rendered', function () {
     
     $this->actingAs($user = User::factory()->create());
 
+    // 3. Ahora crea el dispositivo. El trait Auditable
+    //    encontrará al $user logueado y guardará el log.
+    $device = Device::factory()->create(['organization_id' => $user->organization_id]);
+    
+    // --- Actuación y Afirmación ---
     $this->get(route('devices.edit', $device))->assertOk();
 });
 
 test('the device can be update', function () {
     $user = User::factory()->create();
+    $this->actingAs($user);
 
     $updatedAcquisition = Acquisition::factory()->create();
     $updatedCategory = DeviceCategory::factory()->create();
@@ -46,7 +52,7 @@ test('the device can be update', function () {
         'description' => $updatedDescription
     ];
 
-    $response = $this->actingAs($user)->put(route('devices.update', $device), $deviceData);
+    $response = $this->put(route('devices.update', $device), $deviceData);
 
     $response->assertRedirect(route('devices.index', absolute: false));
 });

@@ -76,7 +76,9 @@ class UserController extends BaseController
      */
     public function show(User $user): Response
     {
-        return Inertia::render('admin/users/show',[
+        $user->load('roles','organization');
+
+        return Inertia::render('admin/users/view',[
             'user' => $user
         ]);
     }
@@ -86,10 +88,14 @@ class UserController extends BaseController
      */
     public function edit(User $user): Response
     {
+        $user->load('roles','organization');
+
+        $organizations = Organization::all();
         $roles = Role::all();
 
         return Inertia::render('admin/users/edit',[
             'user' => $user,
+            'organizations' => $organizations,
             'roles' => $roles
         ]);
     }

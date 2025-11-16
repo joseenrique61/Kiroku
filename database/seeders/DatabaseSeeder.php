@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             OrganizationSeeder::class,
             PermissionSeeder::class,
             UserSeeder::class,
+            RoleSeeder::class,
             DeviceStatusSeeder::class,
             DeviceBrandSeeder::class,
             DeviceCategorySeeder::class,

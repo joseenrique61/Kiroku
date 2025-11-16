@@ -4,15 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Organization;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class OrganizationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index() : Response
     {
-        //
+        $organizations = Organization::whit('organizationPolicy')->get();
+
+        return Inertia::render('admin/organizations/index', [
+            'organizations' => $organizations
+        ]);
     }
 
     /**
@@ -20,7 +26,7 @@ class OrganizationController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('admin/organizations/create');
     }
 
     /**
