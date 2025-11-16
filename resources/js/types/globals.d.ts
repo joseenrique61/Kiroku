@@ -37,9 +37,15 @@ export interface DeviceCategory {
     name: string;
 }
 
+export interface DeviceBrand {
+    id: number;
+    name: string;
+}
+
 export interface DeviceModel {
     id: number;
     name: string;
+    device_brand: DeviceBrand;
 }
 
 export interface DeviceStatus {

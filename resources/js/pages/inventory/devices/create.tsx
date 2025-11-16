@@ -115,7 +115,7 @@ export default function DeviceCreate({
                                 }
                                 options={models.map((model) => ({
                                     value: model.id.toString(),
-                                    label: model.name,
+                                    label: `${model.device_brand.name} - ${model.name}`,
                                 }))}
                                 placeholder="Select a model"
                             />
