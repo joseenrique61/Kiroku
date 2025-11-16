@@ -17,6 +17,7 @@ import { Head, useForm } from '@inertiajs/react';
 type DeviceFormData = {
     serial_number: string;
     description: string;
+    acquisition_id: number;
     device_category_id: number;
     device_model_id: number;
     device_status_id: number;
@@ -28,20 +29,19 @@ type DeviceFormData = {
 
 export default function DeviceEdit({ 
     device,
-    categories, 
-    models, 
-    statuses, 
-    organizations 
+    deviceModels, 
+    deviceStatuses, 
+    deviceCategories, 
 }: { 
     device: Device,
-    categories: DeviceCategory[], 
-    models: DeviceModel[], 
-    statuses: DeviceStatus[], 
-    organizations: Organization[] 
+    deviceModels: DeviceModel[], 
+    deviceStatuses: DeviceStatus[], 
+    deviceCategories: DeviceCategory[], 
 }) {
     const { data, setData, put, errors } = useForm<DeviceFormData>({
         serial_number: device.serial_number,
         description: device.description,
+        acquisition_id: device.acquisition.id,
         device_category_id: device.device_category_id,
         device_model_id: device.device_model_id,
         device_status_id: device.device_status_id,
@@ -102,7 +102,7 @@ export default function DeviceEdit({
                                 onValueChange={(value) =>
                                     setData('device_category_id', parseInt(value))
                                 }
-                                options={categories.map((category) => ({
+                                options={deviceCategories.map((category) => ({
                                     value: category.id.toString(),
                                     label: category.name,
                                 }))}
@@ -118,7 +118,7 @@ export default function DeviceEdit({
                                 onValueChange={(value) =>
                                     setData('device_model_id', parseInt(value))
                                 }
-                                options={models.map((model) => ({
+                                options={deviceModels.map((model) => ({
                                     value: model.id.toString(),
                                     label: model.name,
                                 }))}
@@ -134,29 +134,13 @@ export default function DeviceEdit({
                                 onValueChange={(value) =>
                                     setData('device_status_id', parseInt(value))
                                 }
-                                options={statuses.map((status) => ({
+                                options={deviceStatuses.map((status) => ({
                                     value: status.id.toString(),
                                     label: status.name,
                                 }))}
                                 placeholder="Select a status"
                             />
                             <InputError message={errors.device_status_id} />
-                        </div>
-                        <div className="device-edit-page__form-group">
-                            <Label htmlFor="organization_id">Organization</Label>
-                            <Select
-                                name="organization_id"
-                                value={data.organization_id.toString()}
-                                onValueChange={(value) =>
-                                    setData('organization_id', parseInt(value))
-                                }
-                                options={organizations.map((organization) => ({
-                                    value: organization.id.toString(),
-                                    label: organization.name,
-                                }))}
-                                placeholder="Select an organization"
-                            />
-                            <InputError message={errors.organization_id} />
                         </div>
                         <div className="device-edit-page__form-group">
                             <Label htmlFor="price">Price</Label>
@@ -190,7 +174,7 @@ export default function DeviceEdit({
                             <Input
                                 id="warranty_end_date"
                                 name="warranty_end_date"
-                                type="date"
+                                type="timestamp"
                                 value={data.warranty_end_date}
                                 onChange={(e) =>
                                     setData('warranty_end_date', e.target.value)
