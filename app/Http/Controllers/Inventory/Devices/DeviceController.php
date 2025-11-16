@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Inventory\Devices;
 
+use App\Models\Acquisition;
 use App\Models\Device;
 use App\Models\DeviceCategory;
 use App\Models\DeviceModel;
@@ -55,10 +56,12 @@ class DeviceController extends BaseController
         $request->validate([
             'serial_number' => 'required|string|max:255|unique:devices,serial_number',
             'description' => 'nullable|string|max:255',
-            'acquisition_id' => 'required|int|exists:acquisitions,id',
             'device_category_id' => 'required|int|exists:device_categories,id',
             'device_model_id' => 'required|int|exists:device_models,id',
-            'device_status_id' => 'required|int|exists:device_statuses,id'
+            'device_status_id' => 'required|int|exists:device_statuses,id',
+            'acquired_at' => 'required|date',
+            'warranty_end_date' => 'nullable|date|after_or_equal:acquired_at',
+            'price' => 'nullable|numeric|min:0'
         ]);
 
         $user = $request->user();
@@ -67,10 +70,16 @@ class DeviceController extends BaseController
             return back()->withErrors(['organization_id' => 'El usuario no está asignado a una organización.']);
         }
 
+        $acquisition = Acquisition::create([
+            'acquired_at' => $request->acquired_at,
+            'warranty_end_date' => $request->warranty_end_date,
+            'price' => $request->price,
+        ]);
+
         Device::create([
             'serial_number' => $request->serial_number,
             'description' => $request->description,
-            'acquisition_id' => $request->acquisition_id,
+            'acquisition_id' => $acquisition->id,
             'organization_id' => $user->organization_id,
             'device_category_id' => $request->device_category_id,
             'device_model_id' => $request->device_model_id,
@@ -162,7 +171,7 @@ class DeviceController extends BaseController
     {
         $this->middleware('permission:view-devices')->only(['index', 'show']);
         $this->middleware('permission:create-devices')->only(['create', 'store']);
-        $this->middleware('permission:edit-devices')->only(['edit', 'update']);
+        $this->middleware('permission:update-devices')->only(['edit', 'update']);
         $this->middleware('permission:delete-devices')->only(['destroy']);
     }
 }
