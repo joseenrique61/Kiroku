@@ -1,8 +1,8 @@
 ![PHP](https://img.shields.io/badge/php-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)
-![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 
 # Kiroku - Sistema de Gestión de Activos
@@ -154,8 +154,7 @@ Este proyecto combina un robusto backend en PHP con un frontend moderno y reacti
 | **Docker** | Plataforma de contenedores para un entorno de desarrollo y despliegue consistente. |
 | **Spatie/Permission** | Manejo de roles y permisos en el backend. |
 | **Laravel Fortify** | Lógica de autenticación de backend. |
-| **Tailwind CSS** | Framework CSS (base para los componentes de UI). |
-| **Pest + PHPUnit** | Frameworks para Pruebas Unitarias y de Features. |
+| **SCSS** | Preprocesador de CSS para estilos avanzados y componentizados. |
 | **Ziggy** | Permite el uso de las rutas nombradas de Laravel en JavaScript. |
 
 -----
@@ -185,7 +184,7 @@ kiroku/
 │   └── views/           # Vista raíz app.blade.php
 ├── routes/              # Definición de rutas (web.php, auth.php)
 └── tests/
-    └── Feature/         # Pruebas de la aplicación (Pest)
+    └── Feature/         # Pruebas de la aplicación
 ```
 
 -----
