@@ -12,7 +12,8 @@ import { Label } from '@/components/label';
 import { Select } from '@/components/select';
 import AppLayout from '@/layouts/app-layout';
 import { User, Role } from '@/types/user';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
+import { Organization } from '@/types/globals';
 
 type UserFormData = {
     name: string;
@@ -20,21 +21,17 @@ type UserFormData = {
     password?: string | null;
     password_confirmation?: string | null;
     role_id: number;
+    organization_id: number;
 };
 
-export default function UserEdit({
-    user,
-    roles,
-}: {
-    user: User;
-    roles: Role[];
-}) {
+export default function UserEdit({ user, roles, organizations }: { user: User; roles: Role[]; organizations: Organization[] }) {
     const { data, setData, put, errors } = useForm<UserFormData>({
         name: user.name,
         email: user.email,
         password: '',
         password_confirmation: '',
-        role_id: user.role_id,
+        role_id: user.roles[0]?.id || 0,
+        organization_id: user.organization?.id || 1,
     });
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -53,6 +50,13 @@ export default function UserEdit({
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
+                    <div className="user-index-page__actions">
+                        <Button asChild>
+                            <Link href={route('users.index')}>
+                                Go Back
+                            </Link>
+                        </Button>
+                    </div>
                     <form onSubmit={handleSubmit} className="user-edit-page__form">
                         <div className="user-edit-page__form-group">
                             <Label htmlFor="name">Name</Label>
@@ -115,6 +119,22 @@ export default function UserEdit({
                             <InputError message={errors.password_confirmation} />
                         </div>
                         <div className="user-edit-page__form-group">
+                            <Label htmlFor="organization">Organization</Label>
+                            <Select
+                                name="organization"
+                                value={data.organization_id.toString()}
+                                onValueChange={(value) =>
+                                    setData('organization_id', parseInt(value))
+                                }
+                                options={organizations.map((organization) => ({
+                                    value: organization.id.toString(),
+                                    label: organization.name,
+                                }))}
+                                placeholder="Select a role"
+                            />
+                            <InputError message={errors.role_id} />
+                        </div>
+                        <div className="user-edit-page__form-group">
                             <Label htmlFor="role">Role</Label>
                             <Select
                                 name="role"
@@ -123,7 +143,7 @@ export default function UserEdit({
                                     setData('role_id', parseInt(value))
                                 }
                                 options={roles.map((role) => ({
-                                    value: role.name,
+                                    value: role.id.toString(),
                                     label: role.name,
                                 }))}
                                 placeholder="Select a role"

@@ -71,6 +71,7 @@ export interface Failure {
 export interface FailureType {
     id: number;
     name: string;
+    severity: string;
 }
 
 export interface Maintenance {
@@ -78,8 +79,10 @@ export interface Maintenance {
     device_id: number;
     cost: number;
     datetime: string;
+    out_of_service_datetime: string;
     is_preventive: boolean;
     device: Device;
+    failure?: Failure;
 }
 
 export interface AuditLog {

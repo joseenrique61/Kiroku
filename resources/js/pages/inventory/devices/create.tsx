@@ -20,21 +20,19 @@ type DeviceFormData = {
     device_category_id: number;
     device_model_id: number;
     device_status_id: number;
-    organization_id: number;
     price: number;
     acquired_at: string;
     warranty_end_date: string;
 };
 
 export default function DeviceCreate({ 
-    categories, 
-    models, 
-    statuses, 
-    organizations 
+    deviceCategories: categories, 
+    deviceModels: models, 
+    deviceStatus: statuses, 
 }: { 
-    categories: DeviceCategory[], 
-    models: DeviceModel[], 
-    statuses: DeviceStatus[], 
+    deviceCategories: DeviceCategory[], 
+    deviceModels: DeviceModel[], 
+    deviceStatus: DeviceStatus[], 
     organizations: Organization[] 
 }) {
     const { data, setData, post, errors } = useForm<DeviceFormData>({
@@ -43,7 +41,6 @@ export default function DeviceCreate({
         device_category_id: categories[0]?.id || 0,
         device_model_id: models[0]?.id || 0,
         device_status_id: statuses[0]?.id || 0,
-        organization_id: organizations[0]?.id || 0,
         price: 0,
         acquired_at: '',
         warranty_end_date: '',
@@ -139,22 +136,6 @@ export default function DeviceCreate({
                                 placeholder="Select a status"
                             />
                             <InputError message={errors.device_status_id} />
-                        </div>
-                        <div className="device-create-page__form-group">
-                            <Label htmlFor="organization_id">Organization</Label>
-                            <Select
-                                name="organization_id"
-                                value={data.organization_id.toString()}
-                                onValueChange={(value) =>
-                                    setData('organization_id', parseInt(value))
-                                }
-                                options={organizations.map((organization) => ({
-                                    value: organization.id.toString(),
-                                    label: organization.name,
-                                }))}
-                                placeholder="Select an organization"
-                            />
-                            <InputError message={errors.organization_id} />
                         </div>
                         <div className="device-create-page__form-group">
                             <Label htmlFor="price">Price</Label>

@@ -7,9 +7,10 @@ export interface User {
     two_factor_enabled?: boolean;
     created_at: string;
     updated_at: string;
-
-    role: Role;
-    role_id: number;
+    
+    roles: Role[];
+    organization: Organization;
+    organization_id: number;
 
     [key: string]: unknown; // This allows for additional properties...
 }

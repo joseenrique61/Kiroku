@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Organization;
+use Illuminate\Routing\Controller as BaseController;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,14 +13,14 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
     public function index(): Response
     {
-        $users = User::all();
+        $users = User::with(['roles','organization'])->get();
         
         return Inertia::render('admin/users/index', [
             'users' => $users
@@ -31,9 +32,11 @@ class UserController extends Controller
      */
     public function create(): Response
     {
+        $organizations = Organization::all();
         $roles = Role::all();
 
         return Inertia::render('admin/users/create', [
+            'organizations' => $organizations,
             'roles' => $roles
         ]);
     }
@@ -47,17 +50,24 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => 'required|string|exists:roles,name'
+            'organization_id' => 'required|integer|exists:organizations,id',
+            'role_id' => 'required|integer|exists:roles,id',
         ]);
-
+        
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'organization_id' => $request->organization_id,
         ]);
-
-        $user->syncRoles($request->role);
-
+        
+        $role = Role::findById($request->role_id);
+        
+        if ($role)
+        {
+            $user->syncRoles($role);
+        }
+            
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
@@ -66,7 +76,9 @@ class UserController extends Controller
      */
     public function show(User $user): Response
     {
-        return Inertia::render('admin/users/show',[
+        $user->load('roles','organization');
+
+        return Inertia::render('admin/users/view',[
             'user' => $user
         ]);
     }
@@ -76,10 +88,14 @@ class UserController extends Controller
      */
     public function edit(User $user): Response
     {
+        $user->load('roles','organization');
+
+        $organizations = Organization::all();
         $roles = Role::all();
 
         return Inertia::render('admin/users/edit',[
             'user' => $user,
+            'organizations' => $organizations,
             'roles' => $roles
         ]);
     }
@@ -124,8 +140,8 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success','User was deleted successfully!');
     }
 
-    public function __construct()
-    {
-        $this->middleware('role:admin');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('role:admin');
+    // }
 }

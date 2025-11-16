@@ -18,7 +18,7 @@ export default function MaintenanceShow({ maintenance }: { maintenance: Maintena
                     </div>
                     <div className="maintenance-show-page__detail-group">
                         <h3 className="maintenance-show-page__detail-label">Cost</h3>
-                        <p>{maintenance.cost}</p>
+                        <p>${maintenance.cost}</p>
                     </div>
                     <div className="maintenance-show-page__detail-group">
                         <h3 className="maintenance-show-page__detail-label">Date</h3>
@@ -28,6 +28,24 @@ export default function MaintenanceShow({ maintenance }: { maintenance: Maintena
                         <h3 className="maintenance-show-page__detail-label">Type</h3>
                         <p>{maintenance.is_preventive ? 'Preventive' : 'Corrective'}</p>
                     </div>
+
+                    {!maintenance.is_preventive && maintenance.failure && (
+                        <>
+                            <h2 className="maintenance-show-page__section-title">Failure Details</h2>
+                            <div className="maintenance-show-page__detail-group">
+                                <h3 className="maintenance-show-page__detail-label">Failure Type</h3>
+                                <p>{maintenance.failure.failure_type?.name || 'N/A'}</p>
+                            </div>
+                            <div className="maintenance-show-page__detail-group">
+                                <h3 className="maintenance-show-page__detail-label">Description</h3>
+                                <p>{maintenance.failure.description}</p>
+                            </div>
+                            <div className="maintenance-show-page__detail-group">
+                                <h3 className="maintenance-show-page__detail-label">Cause</h3>
+                                <p>{maintenance.failure.cause}</p>
+                            </div>
+                        </>
+                    )}
                 </CardContent>
             </Card>
         </AppLayout>

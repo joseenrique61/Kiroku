@@ -4,9 +4,13 @@ namespace App\Http\Controllers\Inventory\Reports;
 
 use App\Http\Controllers\Controller;
 use App\Models\Device;
+use App\Models\DeviceStatus;
+use App\Models\FailureType;
 use App\Models\Maintenance;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,7 +22,7 @@ class MaintenanceController extends Controller
     public function index(): Response
     {
         $maintenances = Maintenance::with('device')->get();
-        
+
         return Inertia::render('reports/index', [
             'maintenances' => $maintenances
         ]);
@@ -30,7 +34,8 @@ class MaintenanceController extends Controller
     public function create(): Response
     {
         return Inertia::render('reports/create', [
-            'devices' => Device::all(),
+            'devices' => Device::where('device_status_id', '=', DeviceStatus::where('name', '=', 'In service')->first()->id)->with('deviceModel')->get(),
+            'failure_types' => FailureType::all()
         ]);
     }
 
@@ -39,14 +44,40 @@ class MaintenanceController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $fields = $request->validate([
             'device_id' => 'required|exists:devices,id',
             'cost' => 'required|numeric',
-            'datetime' => 'required|date',
+            'out_of_service_datetime' => 'required|date',
+            'datetime' => 'nullable|date|after_or_equal:start_date',
             'is_preventive' => 'required|boolean',
+
+            'failure_type_id' => 'required_if:is_preventive,false|nullable|exists:failure_types,id',
+            'failure_description' => 'required_if:is_preventive,false|nullable|string|max:400',
+            'failure_cause' => 'required_if:is_preventive,false|nullable|string|max:400'
         ]);
 
-        Maintenance::create($request->all());
+        DB::transaction(function () use ($fields) {
+            $maintenance = Maintenance::create(Arr::only($fields, ['device_id', 'cost', 'datetime', 'out_of_service_datetime', 'is_preventive']));
+
+            if (!$fields['is_preventive']) {
+                $maintenance->failure()->create([
+                    'failure_type_id' => $fields['failure_type_id'],
+                    'description' => $fields['failure_description'],
+                    'cause' => $fields['failure_cause'],
+                ]);
+            }
+
+            if (!$fields['datetime']) {
+                Device::find($fields['device_id'])->first()->update([
+                    'device_status_id' => DeviceStatus::where('name', '=', 'In maintenance')->first()->id
+                ]);
+            }
+            else {
+                Device::find($fields['device_id'])->first()->update([
+                    'device_status_id' => DeviceStatus::where('name', '=', 'In service')->first()->id
+                ]);
+            }
+        });
 
         return redirect()->route('maintenances.index')->with('success', 'Maintenance created successfully.');
     }
@@ -56,7 +87,7 @@ class MaintenanceController extends Controller
      */
     public function show(Maintenance $maintenance): Response
     {
-        $maintenance->load('device');
+        $maintenance->load(['device', 'failure', 'failure.failureType']);
         return Inertia::render('reports/view', [
             'maintenance' => $maintenance
         ]);
@@ -67,9 +98,15 @@ class MaintenanceController extends Controller
      */
     public function edit(Maintenance $maintenance): Response
     {
+        $maintenance->load("failure");
+
+        $devices = Device::where('device_status_id', '=', DeviceStatus::where('name', '=', 'In service')->first()->id)->with('deviceModel')->get();
+        $devices = $devices->merge(Device::where('id', '=', $maintenance->device_id)->with('deviceModel')->get());
+
         return Inertia::render('reports/edit', [
             'maintenance' => $maintenance,
-            'devices' => Device::all(),
+            'devices' => $devices,
+            'failure_types' => FailureType::all()
         ]);
     }
 
@@ -78,14 +115,40 @@ class MaintenanceController extends Controller
      */
     public function update(Request $request, Maintenance $maintenance): RedirectResponse
     {
-        $request->validate([
+        $fields = $request->validate([
             'device_id' => 'required|exists:devices,id',
             'cost' => 'required|numeric',
-            'datetime' => 'required|date',
+            'out_of_service_datetime' => 'required|date',
+            'datetime' => 'nullable|date|after_or_equal:start_date',
             'is_preventive' => 'required|boolean',
+
+            'failure_type_id' => 'required_if:is_preventive,false|nullable|exists:failure_types,id',
+            'failure_description' => 'required_if:is_preventive,false|nullable|string|max:400',
+            'failure_cause' => 'required_if:is_preventive,false|nullable|string|max:400'
         ]);
 
-        $maintenance->update($request->all());
+        DB::transaction(function () use ($fields, $maintenance) {
+            $maintenance->update(Arr::only($fields, ['device_id', 'cost', 'datetime', 'out_of_service_datetime', 'is_preventive']));
+
+            if (!$fields['is_preventive']) {
+                $maintenance->failure()->update([
+                    'failure_type_id' => $fields['failure_type_id'],
+                    'description' => $fields['failure_description'],
+                    'cause' => $fields['failure_cause'],
+                ]);
+            }
+
+            if (!$fields['datetime']) {
+                Device::find($fields['device_id'])->first()->update([
+                    'device_status_id' => DeviceStatus::where('name', '=', 'In maintenance')->first()->id
+                ]);
+            }
+            else {
+                Device::find($fields['device_id'])->first()->update([
+                    'device_status_id' => DeviceStatus::where('name', '=', 'In service')->first()->id
+                ]);
+            }
+        });
 
         return redirect()->route('maintenances.index')->with('success', 'Maintenance updated successfully.');
     }

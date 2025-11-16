@@ -9,6 +9,7 @@ use App\Models\DeviceStatus;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 
 class DeviceController extends Controller
 {
@@ -53,26 +54,31 @@ class DeviceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'serial_number' => 'required|string|max:255|unique: '.Device::class,
+            'serial_number' => 'required|string|max:255|unique:devices,serial_number',
             'description' => 'nullable|string|max:255',
             'acquisition_id' => 'required|int|exists:acquisitions,id',
-            'organization_id' => 'required|int|exists:organizations,id',
             'device_category_id' => 'required|int|exists:device_categories,id',
             'device_model_id' => 'required|int|exists:device_models,id',
-            'device_status_id' => 'required|int|exists:device_status,id'
+            'device_status_id' => 'required|int|exists:device_statuses,id'
         ]);
+
+        $user = $request->user();
+
+        if (!$user->organization_id) {
+            return back()->withErrors(['organization_id' => 'El usuario no está asignado a una organización.']);
+        }
 
         Device::create([
             'serial_number' => $request->serial_number,
             'description' => $request->description,
             'acquisition_id' => $request->acquisition_id,
-            'organization_id' => $request->organization_id,
+            'organization_id' => $user->organization_id,
             'device_category_id' => $request->device_category_id,
             'device_model_id' => $request->device_model_id,
             'device_status_id' => $request->device_status_id
         ]);
 
-        return redirect()->intended(route('devices', absolute: false));
+        return redirect()->intended(route('devices.index', absolute: false));
     }
 
     /**
@@ -128,21 +134,20 @@ class DeviceController extends Controller
         $request->validate([
             'description' => 'nullable|string|max:255',
             'acquisition_id' => 'required|int|exists:acquisitions,id',
-            'organization_id' => 'required|int|exists:organizations,id',
             'device_category_id' => 'required|int|exists:device_categories,id',
             'device_model_id' => 'required|int|exists:device_models,id',
-            'device_status_id' => 'required|int|exists:device_status,id'
+            'device_status_id' => 'required|int|exists:device_statuses,id'
         ]);
 
          $device->update([
+            'description' => $request->description,
             'acquisition_id' => $request->acquisition_id,
-            'organization_id' => $request->organization_id,
             'device_category_id' => $request->device_category_id,
             'device_model_id' => $request->device_model_id,
             'device_status_id' => $request->device_status_id
         ]);
 
-        return redirect()->intended(route('devices', absolute: false));
+        return redirect()->intended(route('devices.index', absolute: false));
     }
 
     /**
@@ -151,6 +156,6 @@ class DeviceController extends Controller
     public function destroy(Device $device)
     {
         $device->delete();
-        return redirect()->intended(route('devices', absolute: false))->with('success','Device was deleted successfully!');
+        return redirect()->intended(route('devices.index', absolute: false))->with('success','Device was deleted successfully!');
     }
 }

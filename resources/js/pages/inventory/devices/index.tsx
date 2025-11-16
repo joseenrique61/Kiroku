@@ -1,4 +1,5 @@
 import { Button } from '@/components/button';
+
 import {
     Card,
     CardContent,
@@ -6,6 +7,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/card';
+
 import {
     Table,
     TableBody,
@@ -14,6 +16,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/table';
+
 import AppLayout from '@/layouts/app-layout';
 import { Device } from '@/types/globals';
 import { Head, Link } from '@inertiajs/react';

@@ -7,7 +7,7 @@ export interface Auth {
 
 export interface BreadcrumbItem {
     title: string;
-    href: string;
+    href?: string;
 }
 
 export interface NavGroup {
@@ -20,4 +20,6 @@ export interface NavItem {
     href: string;
     icon?: LucideIcon | null;
     isActive?: boolean;
+    permission?: string;
+    method?: 'get' | 'post' | 'put' | 'patch' | 'delete'; // HTTP method for the link
 }
