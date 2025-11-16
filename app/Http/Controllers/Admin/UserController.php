@@ -78,7 +78,7 @@ class UserController extends BaseController
     {
         $user->load('roles','organization');
 
-        return Inertia::render('admin/users/show',[
+        return Inertia::render('admin/users/view',[
             'user' => $user
         ]);
     }

@@ -8,8 +8,8 @@ declare module 'ziggy-js' {
     "password.confirmation": [],
     "password.confirm.store": [],
     "sanctum.csrf-cookie": [],
-    "home": [],
     "health": [],
+    "home": [],
     "dashboard": [],
     "users.index": [],
     "users.create": [],
@@ -135,6 +135,33 @@ declare module 'ziggy-js' {
             "binding": "id"
         }
     ],
+    "organizations.index": [],
+    "organizations.create": [],
+    "organizations.store": [],
+    "organizations.show": [
+        {
+            "name": "organization",
+            "required": true
+        }
+    ],
+    "organizations.edit": [
+        {
+            "name": "organization",
+            "required": true
+        }
+    ],
+    "organizations.update": [
+        {
+            "name": "organization",
+            "required": true
+        }
+    ],
+    "organizations.destroy": [
+        {
+            "name": "organization",
+            "required": true
+        }
+    ],
     "logs.index": [],
     "logs.show": [
         {
@@ -149,30 +176,6 @@ declare module 'ziggy-js' {
     "password.edit": [],
     "password.update": [],
     "appearance.edit": [],
-    "two-factor.show": [],
-    "register": [],
-    "register.store": [],
-    "password.request": [],
-    "password.email": [],
-    "password.reset": [
-        {
-            "name": "token",
-            "required": true
-        }
-    ],
-    "password.store": [],
-    "verification.notice": [],
-    "verification.verify": [
-        {
-            "name": "id",
-            "required": true
-        },
-        {
-            "name": "hash",
-            "required": true
-        }
-    ],
-    "verification.send": [],
     "storage.local": [
         {
             "name": "path",

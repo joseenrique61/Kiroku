@@ -12,7 +12,7 @@ import { Label } from '@/components/label';
 import { Select } from '@/components/select';
 import AppLayout from '@/layouts/app-layout';
 import { User, Role } from '@/types/user';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { Organization } from '@/types/globals';
 
 type UserFormData = {
@@ -50,6 +50,13 @@ export default function UserEdit({ user, roles, organizations }: { user: User; r
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
+                    <div className="user-index-page__actions">
+                        <Button asChild>
+                            <Link href={route('users.index')}>
+                                Go Back
+                            </Link>
+                        </Button>
+                    </div>
                     <form onSubmit={handleSubmit} className="user-edit-page__form">
                         <div className="user-edit-page__form-group">
                             <Label htmlFor="name">Name</Label>

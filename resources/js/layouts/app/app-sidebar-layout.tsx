@@ -5,7 +5,7 @@ import { NavItem } from '@/types';
 import { Computer, FileCog, LayoutDashboard, Settings, TriangleAlert, Wrench, User, Building2, Warehouse, Home, LogOut} from 'lucide-react';
 import { BreadcrumbItem } from '@/types';
 import { type PropsWithChildren } from 'react';
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 
 interface AppSidebarLayoutProps extends PropsWithChildren {
     breadcrumbs?: BreadcrumbItem[];
