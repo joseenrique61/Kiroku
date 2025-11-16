@@ -8,10 +8,9 @@ use App\Models\DeviceModel;
 use App\Models\DeviceStatus;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Http\Controllers\Controller;
-use App\Models\User;
+use Illuminate\Routing\Controller as BaseController;
 
-class DeviceController extends Controller
+class DeviceController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -157,5 +156,13 @@ class DeviceController extends Controller
     {
         $device->delete();
         return redirect()->intended(route('devices.index', absolute: false))->with('success','Device was deleted successfully!');
+    }
+
+    public function __construct()
+    {
+        $this->middleware('permission:view-devices')->only(['index', 'show']);
+        $this->middleware('permission:create-devices')->only(['create', 'store']);
+        $this->middleware('permission:edit-devices')->only(['edit', 'update']);
+        $this->middleware('permission:delete-devices')->only(['destroy']);
     }
 }

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Inventory\Failures;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller as BaseController;
 use App\Models\FailureType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class FailureTypeController extends Controller
+class FailureTypeController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -86,5 +86,13 @@ class FailureTypeController extends Controller
     {
         $failureType->delete();
         return redirect()->route('failureTypes.index')->with('success', 'Failure type deleted successfully.');
+    }
+
+    public function __construct()
+    {
+        $this->middleware('permission:view-failure-types')->only(['index', 'show']);
+        $this->middleware('permission:create-failure-types')->only(['create', 'store']);
+        $this->middleware('permission:edit-failure-types')->only(['edit', 'update']);
+        $this->middleware('permission:delete-failure-types')->only(['destroy']);
     }
 }
