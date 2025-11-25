@@ -58,7 +58,7 @@ class DeviceAnalyticService
     {
         $devices = Device::with('aqquisition')
             ->whereHas('acquisition', function ($query) {
-                $query->where('warranty_end_date', '>=', now());
+                $query->where('warranty_end_date', '<=', now());
             })
             ->selectRaw('COUNT(*) as count')
             ->get();
@@ -76,7 +76,7 @@ class DeviceAnalyticService
     {
         $devices = Device::with('aqquisition')
             ->whereHas('acquisition', function ($query) {
-                $query->where('warranty_end_date', '<=', now());
+                $query->where('warranty_end_date', '>=', now());
             })
             ->selectRaw('COUNT(*) as count')
             ->get();

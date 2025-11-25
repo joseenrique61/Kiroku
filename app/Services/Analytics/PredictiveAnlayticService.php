@@ -3,8 +3,6 @@
 namespace App\Services\Analytics;
 
 use App\Models\Device;
-use App\Models\DeviceModel;
-use App\Models\Maintenance;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +26,7 @@ class PredictiveAnalyticService
      * @param int $monthsFuture Meses en el futuro para la proyección.
      * @return array Estructura de riesgo y falla probable.
      */
-    public function calculateDeviceRisk(Device $device, int $monthsFuture, ?float $modelMtbfDays = null): array
+    private function calculateDeviceRisk(Device $device, int $monthsFuture, ?float $modelMtbfDays = null): array
     {
         // 1. Calcular MTBF del Dispositivo (Promedio de días entre sus fallas)
         $maintenancesWithFailures = $device->maintenances()
@@ -99,7 +97,7 @@ class PredictiveAnalyticService
      * @param int $deviceModelId ID del modelo a analizar.
      * @return array
      */
-    public function analyzeModelFailureProbability(int $deviceModelId): array
+    private function analyzeModelFailureProbability(int $deviceModelId): array
     {
         // 1. Obtener Top 3 Fallas más comunes
         $failures = DB::table('failures')
@@ -149,6 +147,7 @@ class PredictiveAnalyticService
             ->join('devices', 'maintenances.device_id', '=', 'devices.id')
             ->leftJoin('acquisitions', 'devices.acquisition_id', '=', 'acquisitions.id') 
             ->where('devices.id', $deviceId)
+            ->where('is_preventive', '=', false) // Filtro para conseguir los mantenimientos que presentaron fallos
             ->orderBy('maintenances.out_of_service_datetime', 'asc') // Orden cronológico vital
             ->select([
                 'devices.created_at as device_created_at',
@@ -194,7 +193,7 @@ class PredictiveAnalyticService
             ->join('devices', 'maintenances.device_id', '=', 'devices.id')
             ->leftJoin('acquisitions', 'devices.acquisition_id', '=', 'acquisitions.id') // Unir adquisiciones
             ->where('devices.device_model_id', $deviceModelId)
-            // ->whereNotNull('maintenances.out_of_service_datetime') // Solo nos sirven mantenimientos con fecha de falla
+            ->where('is_preventive', '=', false) // Filtro para conseguir los mantenimientos que presentaron fallos
             ->orderBy('devices.id')
             ->orderBy('maintenances.out_of_service_datetime', 'asc') // Orden cronológico vital
             ->select([
@@ -219,22 +218,20 @@ class PredictiveAnalyticService
             $currentBackToService = $maintenance->back_to_service_datetime ? Carbon::parse($maintenance->back_to_service_datetime) : null;
 
             if (!isset($lastBackToServiceDates[$deviceId])) {
-                // CASO 1: Primer fallo del dispositivo.
-                // Calculamos desde Fecha Adquisición (o Creación) -> Hasta Primera Falla
+                // Se calcula desde Fecha Adquisición (o Creación) -> Hasta Primera Falla Registrada
                 $originDate = $maintenance->acquisition_date ? Carbon::parse($maintenance->acquisition_date) : Carbon::parse($maintenance->device_created_at);   
                 $intervals[] = $originDate->diffInDays($failureDate);
             } else {
-                // CASO 2: Fallos subsecuentes.
-                // Calculamos desde Último Arreglo -> Hasta Nueva Falla
+                // Se calcula desde Último Arreglo -> Hasta Nueva Falla
                 $lastBackToServiceDate = $lastBackToServiceDates[$deviceId];
                 $intervals[] = $lastBackToServiceDate->diffInDays($failureDate);
             }
 
-            // Actualizamos la fecha base para la siguiente vuelta del bucle
+            // Se actualiza la fecha base para la siguiente vuelta del bucle
             if ($currentBackToService) {
                 $lastBackToServiceDates[$deviceId] = $currentBackToService;
             } else {
-                // Si no se ha arreglado, eliminamos la referencia para no calcular intervalos erróneos futuros
+                // Si no se ha arreglado, se elimina la referencia para no calcular intervalos erróneos futuros
                 unset($lastBackToServiceDates[$deviceId]); 
             }
         }
@@ -252,7 +249,7 @@ class PredictiveAnalyticService
             ->join('devices', 'maintenances.device_id', '=', 'devices.id')
             ->join('failure_types', 'failures.failure_type_id', '=', 'failure_types.id')
             ->where('devices.id', $deviceId)
-            ->select('failure_types.name', DB::raw('count(*) as total'))
+            ->selectRaw('failure_types.name, count(*) as total')
             ->groupBy('failure_types.name')
             ->orderByDesc('total')
             ->first();
@@ -270,7 +267,7 @@ class PredictiveAnalyticService
             ->join('devices', 'maintenances.device_id', '=', 'devices.id')
             ->join('failure_types', 'failures.failure_type_id', '=', 'failure_types.id')
             ->where('devices.device_model_id', $modelId)
-            ->select('failure_types.name', DB::raw('count(*) as total'))
+            ->selectRaw('failure_types.name, count(*) as total')
             ->groupBy('failure_types.name')
             ->orderByDesc('total')
             ->first();
@@ -285,7 +282,7 @@ class PredictiveAnalyticService
     {
         $status = self::RISK_LOW;
         $action = self::ACTION_LOW;
-        $color = 'text-green-600'; // Útil para frontend
+        $color = 'text-green-600';
 
         if ($percentage >= 30 && $percentage < 70) {
             $status = self::RISK_MEDIUM;
