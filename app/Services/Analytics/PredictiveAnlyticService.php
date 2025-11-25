@@ -33,78 +33,44 @@ class PredictiveAnalyticService
     {
         // 1. Calcular MTBF del Dispositivo (Promedio de días entre sus fallas)
         $maintenances = $device->maintenances()
-            ->whereHas('failure') // Solo mantenimientos correctivos
-            ->orderBy('datetime')
+            ->whereHas('failure')
+            ->orderBy('datetime', 'desc')
             ->get();
 
-        // MTBF en días (si solo hay 1 falla, usamos un valor base o la antigüedad, aquí evitamos división por 0)
-        if ($maintenances->count() < 2) {
-            // Si no hay suficientes datos, usar MTBF del modelo si se pasó
-            if ($modelMtbfDays) {
-                $deviceMtbfDays = $modelMtbfDays;
-            } else {
-                $deviceMtbfDays = $this->calculateModelMTBF($device->device_model_id);
-            }
-        } else {
-        $deviceMtbfDays = $this->calculateDeviceMTBF($maintenances);
+        $hasHistoricalData = $maintenances->isNotEmpty() || $maintenances->count() > 1; 
 
-        // 2. Tiempo desde el último evento (Falla o Compra)
-        $lastEventDate = $lastDate ?? $device->acquisition?->acquisition_date ?? $device->created_at;
-        $daysSinceLastEvent = Carbon::now()->diffInDays(Carbon::parse($lastEventDate));
+        // Si no se pasó el MTBF del modelo, calcularlo
+        if ($hasHistoricalData) {
+            $deviceMtbfDays = $this->calculateDeviceMTBF($maintenances);
+            
+            // 2. Tiempo desde la última falla
+            $lastFailureDate = Carbon::parse($maintenances->first()->out_of_service_datetime);
+            $daysSinceLastEvent = Carbon::now()->diffInDays(Carbon::parse($lastFailureDate));
 
-        // 3. Cálculo de Probabilidad
+            // 3. Falla más probable (Moda de este dispositivo)
+            $mostProbableFailure = $this->getMostCommonFailureForDevice($device->id);
+        }
+        else
+        {   
+            // 2. Tiempo desde que el equipo fue adquirido
+            $deviceMtbfDays = 1825.0; // Si no hay datos suficientes se utiliza el MTBF del modelo (5 años)
+            $acquisitionDate = Carbon::parse($device->acquisition?->acquisition_date ?? $device->created_at);
+            $daysSinceLastEvent = Carbon::now()->diffInDays(Carbon::parse($acquisitionDate));
+
+            // 3. Falla más probable (Moda del MODELO completo)
+            $mostProbableFailure = $this->getMostCommonFailureForModel($device->device_model_id);
+        }
+        
+        // 4. Cálculo de Probabilidad
         $futureDays = $monthsFuture * 30;
         $riskScore = (($daysSinceLastEvent + $futureDays) / $deviceMtbfDays) * 100;
         $riskPercentage = min(100, round($riskScore, 2));
 
-        // 4. Falla más probable (Moda de este dispositivo)
-        $mostProbableFailure = $maintenances->groupBy('failure.failure_type_id')
-            ->sortByDesc(fn($group) => $group->count())
-            ->first()
-            ?->first()
-            ->failure->failureType->name ?? 'Indeterminado';
-
         return $this->formatRiskOutput($riskPercentage, $mostProbableFailure);
     }
 
-    // /**
-    //  * ESCENARIO 2: Cálculo Sin Historial (Basado en Modelo)
-    //  * Utiliza el MTBF del modelo y la fecha de compra del equipo.
-    //  * * @param Device $device Dispositivo sin historial.
-    //  * @param int $monthsFuture Meses en el futuro.
-    //  * @param float|null $modelMtbfDays MTBF pre-calculado del modelo (opcional para optimizar loops).
-    //  * @return array
-    //  */
-    // public function calculateModelBasedRisk(Device $device, int $monthsFuture, ?float $modelMtbfDays = null): array
-    // {
-    //     // 1. Obtener MTBF del Modelo si no se pasó
-    //     if (!$modelMtbfDays) {
-    //         $modelMtbfDays = $this->calculateModelMTBF($device->device_model_id);
-    //     }
-
-    //     // 2. Tiempo de Vida (Fecha Actual - Fecha de Compra)
-    //     // Asumimos que $device->acquisition->acquisition_date existe, si no, created_at
-    //     $purchaseDate = $device->acquisition?->acquisition_date ?? $device->created_at;
-    //     $lifetimeDays = Carbon::now()->diffInDays(Carbon::parse($purchaseDate));
-
-    //     // 3. Cálculo de Probabilidad (Riesgo aumenta con la antigüedad vs MTBF del modelo)
-    //     $futureDays = $monthsFuture * 30;
-        
-    //     // Aquí la lógica es: Si un equipo ha vivido X días sin fallar, y el promedio de fallo es Y,
-    //     // su riesgo acumulado es alto.
-    //     $riskScore = (($lifetimeDays + $futureDays) / $modelMtbfDays) * 100;
-    //     $riskPercentage = min(100, round($riskScore, 2));
-
-    //     // 4. Falla más probable (Moda del MODELO completo)
-    //     $mostProbableFailure = $this->getMostCommonFailureForModel($device->device_model_id);
-
-    //     return $this->formatRiskOutput($riskPercentage, $mostProbableFailure);
-    // }
-
     /**
-     * =================================================================================
      * MÉTODO INTEGRADOR (Lista de Riesgos)
-     * =================================================================================
      * Decide qué escenario usar para cada dispositivo y retorna la lista completa.
      */
     public function getPredictiveRiskList(int $monthsFuture): array
@@ -112,7 +78,6 @@ class PredictiveAnalyticService
         $devices = Device::with(['maintenances.failure.failureType', 'acquisition', 'deviceModel'])->get();
         $results = [];
 
-        // Pre-calcular MTBFs de modelos para evitar N+1 queries en el Escenario 2
         $modelMtbfs = [];
 
         foreach ($devices as $device) {
@@ -133,9 +98,7 @@ class PredictiveAnalyticService
     }
 
     /**
-     * =================================================================================
-     * ESCENARIO 3: Análisis de Probabilidad por Modelo
-     * =================================================================================
+     * ESCENARIO 2: Análisis de Probabilidad de fallo por Modelo
      * Retorna top 3 fallas y tiempos estimados para umbrales de riesgo.
      * @param int $deviceModelId ID del modelo a analizar.
      * @return array
@@ -182,10 +145,6 @@ class PredictiveAnalyticService
         ];
     }
 
-    // =================================================================================
-    // MÉTODOS AUXILIARES (HELPERS)
-    // =================================================================================
-
      /**
      * Calcula el MTBF de un modelo específico basado en todos sus dispositivos.
      */
@@ -214,7 +173,6 @@ class PredictiveAnalyticService
             
             $lastBackToServiceDate = $currentBackToServiceDate;
         }
-        
         // MTBF en días (si solo hay 1 falla, usamos un valor base o la antigüedad, aquí evitamos división por 0)
         return count($intervals) > 0 ? (array_sum($intervals) / count($intervals)) : 365;
     }
@@ -222,11 +180,11 @@ class PredictiveAnalyticService
     /**
      * Calcula el MTBF de un modelo específico basado en todos sus dispositivos.
      */
-    private function calculateModelMTBF(int $modelId): float
+    private function calculateModelMTBF(int $deviceModelId): float
     {
         $maintenances = DB::table('maintenances')
             ->join('devices', 'maintenances.device_id', '=', 'devices.id')
-            ->where('devices.device_model_id', $modelId)
+            ->where('devices.device_model_id', $deviceModelId)
             ->orderBy('devices.id')
             ->orderBy('maintenances.datetime')
             ->get(['devices.id as device_id', 'maintenances.datetime']);
@@ -252,8 +210,26 @@ class PredictiveAnalyticService
 
             $lastDates[$deviceId] = $current;
         }
-
+        // MTBF en días (si solo hay 1 falla, usamos un valor base o la antigüedad, aquí evitamos división por 0)
         return count($intervals) > 0 ? (array_sum($intervals) / count($intervals)) : 365;
+    }
+
+    /**
+     * Obtiene el nombre de la falla más común de un modelo.
+     */
+    private function getMostCommonFailureForDevice(int $deviceId): string
+    {
+        $result = DB::table('failures')
+            ->join('maintenances', 'failures.maintenance_id', '=', 'maintenances.id')
+            ->join('devices', 'maintenances.device_id', '=', 'devices.id')
+            ->join('failure_types', 'failures.failure_type_id', '=', 'failure_types.id')
+            ->where('devices.id', $deviceId)
+            ->select('failure_types.name', DB::raw('count(*) as total'))
+            ->groupBy('failure_types.name')
+            ->orderByDesc('total')
+            ->first();
+
+        return $result ? $result->name : 'Indeterminada';
     }
 
     /**
@@ -271,7 +247,7 @@ class PredictiveAnalyticService
             ->orderByDesc('total')
             ->first();
 
-        return $result ? $result->name : 'Desconocida';
+        return $result ? $result->name : 'Indeterminada';
     }
 
     /**
@@ -302,3 +278,9 @@ class PredictiveAnalyticService
         ];
     }
 }
+
+// $mostProbableFailure = $maintenances->groupBy('failure.failure_type_id')
+// ->sortByDesc(fn($group) => $group->count())
+// ->first()
+// ?->first()
+// ->failure->failureType->name ?? 'Indeterminado';
