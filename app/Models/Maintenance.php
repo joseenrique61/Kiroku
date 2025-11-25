@@ -16,6 +16,7 @@ class Maintenance extends Model
         'is_preventive',
         'cost',
         'datetime',
+        'back_to_service_datetime',
         'out_of_service_datetime',
         'device_id',
     ];
