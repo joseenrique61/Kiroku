@@ -42,7 +42,7 @@ class PredictiveAnalyticService
             
             // 2. Tiempo desde la última falla
             $lastFailureDate = Carbon::parse($maintenancesWithFailures->first()->out_of_service_datetime);
-            $daysSinceLastEvent = Carbon::now()->diffInDays(Carbon::parse($lastFailureDate));
+            $daysSinceLastEvent = $lastFailureDate->diffInDays(Carbon::now());
 
             // 3. Falla más probable (Moda de este dispositivo)
             $mostProbableFailure = $this->getMostCommonFailureForDevice($device->id);
@@ -51,8 +51,8 @@ class PredictiveAnalyticService
         {   
             // 2. Tiempo desde que el equipo fue adquirido
             $deviceMtbfDays = 1825.0; // Si no hay datos suficientes se utiliza un MTBF de 5 años en días
-            $acquisitionDate = Carbon::parse($device->acquisition?->acquisition_date ?? $device->created_at);
-            $daysSinceLastEvent = Carbon::now()->diffInDays(Carbon::parse($acquisitionDate));
+            $acquisitionDate = Carbon::parse($device->acquisition?->acquired_at ?? $device->created_at);
+            $daysSinceLastEvent = $acquisitionDate->diffInDays(Carbon::now());
 
             // 3. Falla más probable (Moda del MODELO completo)
             $mostProbableFailure = $this->getMostCommonFailureForModel($device->device_model_id);
@@ -151,7 +151,7 @@ class PredictiveAnalyticService
             ->orderBy('maintenances.out_of_service_datetime', 'asc') // Orden cronológico vital
             ->select([
                 'devices.created_at as device_created_at',
-                'acquisitions.acquisition_date',
+                'acquisitions.acquired_at',
                 'maintenances.out_of_service_datetime',
                 'maintenances.back_to_service_datetime'
             ])
@@ -167,7 +167,7 @@ class PredictiveAnalyticService
 
             // Tiempo entre la fecha de compra/creación del equipo hasta su primer mantenimiento
             if (!$lastBackToServiceDate) {
-                $acquiredDate = Carbon::parse($maintenance->acquisition_date ?? $maintenance->created_at);
+                $acquiredDate = Carbon::parse($maintenance->acquired_at ?? $maintenance->created_at);
                 $intervals[] = $acquiredDate->diffInDays($failureDate);
             }
             else
@@ -199,7 +199,7 @@ class PredictiveAnalyticService
             ->select([
                 'devices.id as device_id',
                 'devices.created_at as device_created_at',
-                'acquisitions.acquisition_date',
+                'acquisitions.acquired_at',
                 'maintenances.out_of_service_datetime',
                 'maintenances.back_to_service_datetime'
             ])
@@ -219,7 +219,7 @@ class PredictiveAnalyticService
 
             if (!isset($lastBackToServiceDates[$deviceId])) {
                 // Se calcula desde Fecha Adquisición (o Creación) -> Hasta Primera Falla Registrada
-                $originDate = $maintenance->acquisition_date ? Carbon::parse($maintenance->acquisition_date) : Carbon::parse($maintenance->device_created_at);   
+                $originDate = $maintenance->acquired_at ? Carbon::parse($maintenance->acquired_at) : Carbon::parse($maintenance->device_created_at);   
                 $intervals[] = $originDate->diffInDays($failureDate);
             } else {
                 // Se calcula desde Último Arreglo -> Hasta Nueva Falla
