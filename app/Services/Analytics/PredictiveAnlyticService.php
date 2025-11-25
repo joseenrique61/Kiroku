@@ -3,8 +3,6 @@
 namespace App\Services\Analytics;
 
 use App\Models\Device;
-use App\Models\DeviceModel;
-use App\Models\Maintenance;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -285,7 +283,7 @@ class PredictiveAnalyticService
     {
         $status = self::RISK_LOW;
         $action = self::ACTION_LOW;
-        $color = 'text-green-600'; // Útil para frontend
+        $color = 'text-green-600';
 
         if ($percentage >= 30 && $percentage < 70) {
             $status = self::RISK_MEDIUM;
