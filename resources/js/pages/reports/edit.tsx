@@ -19,7 +19,7 @@ import { Separator } from '@/components/separator';
 type MaintenanceFormData = {
     device_id: number;
     cost: number;
-    datetime?: string;
+    back_to_service_datetime?: string;
     out_of_service_datetime: string;
     is_preventive: boolean;
 
@@ -32,7 +32,7 @@ export default function MaintenanceEdit({ maintenance, devices, failure_types }:
     const { data, setData, put, errors, setError } = useForm<MaintenanceFormData>({
         device_id: maintenance.device_id,
         cost: maintenance.cost,
-        datetime: maintenance.datetime || '',
+        back_to_service_datetime: maintenance.back_to_service_datetime || '',
         out_of_service_datetime: maintenance.out_of_service_datetime,
         is_preventive: maintenance.is_preventive,
 
@@ -43,8 +43,8 @@ export default function MaintenanceEdit({ maintenance, devices, failure_types }:
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        if (data.datetime && data.out_of_service_datetime && new Date(data.out_of_service_datetime) > new Date(data.datetime)) {
-            setError('datetime', 'The Rehabilitation date cannot be greater than the Out of service date');
+        if (data.back_to_service_datetime && data.out_of_service_datetime && new Date(data.out_of_service_datetime) > new Date(data.back_to_service_datetime)) {
+            setError('back_to_service_datetime', 'The Rehabilitation date cannot be greater than the Out of service date');
             return;
         }
         put(route('maintenances.update', maintenance.id));
@@ -114,19 +114,19 @@ export default function MaintenanceEdit({ maintenance, devices, failure_types }:
                             <InputError message={errors.out_of_service_datetime} />
                         </div>
                         <div className="maintenance-create-page__form-group">
-                            <Label htmlFor="datetime">
+                            <Label htmlFor="back_to_service_datetime">
                                 Rehabilitation Date
                             </Label>
                             <Input
-                                id="datetime"
-                                name="datetime"
+                                id="back_to_service_datetime"
+                                name="back_to_service_datetime"
                                 type="date"
-                                value={data.datetime}
+                                value={data.back_to_service_datetime}
                                 onChange={(e) =>
-                                    setData('datetime', e.target.value)
+                                    setData('back_to_service_datetime', e.target.value)
                                 }
                             />
-                            <InputError message={errors.datetime} />
+                            <InputError message={errors.back_to_service_datetime} />
                         </div>
                         <div className="maintenance-create-page__form-group--row">
                             <Label htmlFor="is_preventive">

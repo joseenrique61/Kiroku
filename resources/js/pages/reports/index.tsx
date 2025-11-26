@@ -73,7 +73,7 @@ export default function MaintenanceIndex({
                                         {maintenance.out_of_service_datetime}
                                     </TableCell>
                                     <TableCell>
-                                        {maintenance.datetime}
+                                        {maintenance.back_to_service_datetime}
                                     </TableCell>
                                     <TableCell>
                                         {maintenance.is_preventive
