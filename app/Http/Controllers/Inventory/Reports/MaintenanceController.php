@@ -48,7 +48,7 @@ class MaintenanceController extends BaseController
             'device_id' => 'required|exists:devices,id',
             'cost' => 'required|numeric',
             'out_of_service_datetime' => 'required|date',
-            'datetime' => 'nullable|date|after_or_equal:out_of_service_datetime',
+            'back_to_service_datetime' => 'nullable|date|after_or_equal:out_of_service_datetime',
             'is_preventive' => 'required|boolean',
 
             'failure_type_id' => 'required_if:is_preventive,false|nullable|exists:failure_types,id',
@@ -57,7 +57,7 @@ class MaintenanceController extends BaseController
         ]);
 
         DB::transaction(function () use ($fields) {
-            $maintenance = Maintenance::create(Arr::only($fields, ['device_id', 'cost', 'datetime', 'out_of_service_datetime', 'is_preventive']));
+            $maintenance = Maintenance::create(Arr::only($fields, ['device_id', 'cost', 'back_to_service_datetime', 'out_of_service_datetime', 'is_preventive']));
 
             if (!$fields['is_preventive']) {
                 $maintenance->failure()->create([
@@ -67,7 +67,7 @@ class MaintenanceController extends BaseController
                 ]);
             }
 
-            if (!$fields['datetime']) {
+            if (!$fields['back_to_service_datetime']) {
                 Device::find($fields['device_id'])->first()->update([
                     'device_status_id' => DeviceStatus::where('name', '=', 'In maintenance')->first()->id
                 ]);
@@ -119,8 +119,7 @@ class MaintenanceController extends BaseController
             'device_id' => 'required|exists:devices,id',
             'cost' => 'required|numeric',
             'out_of_service_datetime' => 'required|date',
-            'back_to_service_dateime' => 'nullable|date|after_or_equal:out_of_service_datetime',
-            'datetime' => 'nullable|date|after_or_equal:out_of_service_datetime',
+            'back_to_service_datetime' => 'nullable|date|after_or_equal:out_of_service_datetime',
             'is_preventive' => 'required|boolean',
 
             'failure_type_id' => 'required_if:is_preventive,false|nullable|exists:failure_types,id',
@@ -136,12 +135,6 @@ class MaintenanceController extends BaseController
                     'failure_type_id' => $fields['failure_type_id'],
                     'description' => $fields['failure_description'],
                     'cause' => $fields['failure_cause'],
-                ]);
-            }
-
-            if ($fields['datetime']) {
-                Device::find($fields['device_id'])->first()->update([
-                    'device_status_id' => DeviceStatus::where('name', '=', 'In maintenance')->first()->id
                 ]);
             }
 
