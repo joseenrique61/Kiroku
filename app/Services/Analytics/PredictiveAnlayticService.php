@@ -30,6 +30,7 @@ class PredictiveAnalyticService
     {
         // 1. Calcular MTBF del Dispositivo (Promedio de días entre sus fallas)
         $maintenancesWithFailures = $device->maintenances()
+            ->with('failure')
             ->whereHas('failure')
             ->orderBy('out_of_service_datetime', 'desc')
             ->get();
@@ -97,7 +98,7 @@ class PredictiveAnalyticService
      * @param int $deviceModelId ID del modelo a analizar.
      * @return array
      */
-    private function analyzeModelFailureProbability(int $deviceModelId): array
+    public function analyzeModelFailureProbability(int $deviceModelId): array
     {
         // 1. Obtener Top 3 Fallas más comunes
         $failures = DB::table('failures')
