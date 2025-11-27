@@ -97,7 +97,7 @@ class PredictiveAnalyticService
      * @param int $deviceModelId ID del modelo a analizar.
      * @return array
      */
-    private function analyzeModelFailureProbability(int $deviceModelId): array
+    public function analyzeModelFailureProbability(int $deviceModelId): array
     {
         // 1. Obtener Top 3 Fallas más comunes
         $failures = DB::table('failures')
