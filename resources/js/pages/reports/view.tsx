@@ -22,7 +22,7 @@ export default function MaintenanceShow({ maintenance }: { maintenance: Maintena
                     </div>
                     <div className="maintenance-show-page__detail-group">
                         <h3 className="maintenance-show-page__detail-label">Date</h3>
-                        <p>{maintenance.datetime}</p>
+                        <p>{maintenance.back_to_service_datetime}</p>
                     </div>
                     <div className="maintenance-show-page__detail-group">
                         <h3 className="maintenance-show-page__detail-label">Type</h3>
