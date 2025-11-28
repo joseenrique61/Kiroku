@@ -96,6 +96,7 @@ export interface AuditLog {
     table_name: string;
     record_primary_key: number;
     operation: string;
+    operation_name: string;
     value_before: string;
     value_after: string;
     host_ip: string;

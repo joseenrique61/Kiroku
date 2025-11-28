@@ -43,6 +43,10 @@
 @use 'pages/admin/logs/log-index';
 @use 'pages/admin/logs/log-view';
 @use 'pages/admin/admin-dashboard';
+@use 'pages/admin/organizations/organization-index';
+@use 'pages/admin/organizations/organization-create';
+@use 'pages/admin/organizations/organization-edit';
+@use 'pages/admin/organizations/organization-show';
 @use 'pages/reports/maintenance-index';
 @use 'pages/reports/maintenance-create';
 @use 'pages/reports/maintenance-view';

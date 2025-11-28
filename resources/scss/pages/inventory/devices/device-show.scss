@@ -15,4 +15,10 @@
     &__detail-label {
         font-weight: 600;
     }
+
+    &__actions {
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: flex-end;
+    }
 }
