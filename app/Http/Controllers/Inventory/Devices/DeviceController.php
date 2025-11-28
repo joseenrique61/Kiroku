@@ -25,7 +25,7 @@ class DeviceController extends BaseController
             'deviceModel',
             'deviceModel.deviceBrand',
             'deviceStatus'
-        ])->get(); // ->paginate(20); // Use pagination to manage the optimization // TODO: Reactivate pagination
+        ])->get(); // ->paginate(20); // Use pagination to manage the optimization // ToDo: Reactivate pagination
 
         return Inertia::render('inventory/devices/index',[
             'devices' => $devices

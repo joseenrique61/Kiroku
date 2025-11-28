@@ -44,7 +44,7 @@ export default function LogIndex({ logs }: { logs: AuditLog[] }) {
                             {logs.map((log) => (
                                 <TableRow key={log.id}>
                                     <TableCell>{log.table_name}</TableCell>
-                                    <TableCell>{log.operation}</TableCell>
+                                    <TableCell>{log.operation_name}</TableCell>
                                     <TableCell>{log.user.name}</TableCell>
                                     <TableCell>{log.host_ip}</TableCell>
                                     <TableCell className="log-index-page__table-actions">

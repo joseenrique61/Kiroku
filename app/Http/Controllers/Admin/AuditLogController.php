@@ -28,6 +28,7 @@ class AuditLogController extends BaseCotroller
     public function show(AuditLog $log): Response
     {
         $log->load('user');
+
         return Inertia::render('admin/logs/view', [
             'log' => $log
         ]);

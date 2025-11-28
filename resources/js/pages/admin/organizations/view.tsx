@@ -13,7 +13,7 @@ export default function OrganizationView({ organization }: { organization: Organ
                     <CardTitle>{organization.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="organization-show-page__card-content">
-                    <div className="organization-index-page__actions">
+                    <div className="organization-show-page__actions">
                         <Button asChild>
                             <Link href={route('organizations.index')}>
                                 Go Back

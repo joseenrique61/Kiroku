@@ -18,7 +18,7 @@ export default function LogShow({ log }: { log: AuditLog }) {
                     </div>
                     <div className="log-view-page__detail-group">
                         <h3 className="log-view-page__detail-label">Operation</h3>
-                        <p>{log.operation}</p>
+                        <p>{log.operation_name}</p>
                     </div>
                     <div className="log-view-page__detail-group">
                         <h3 className="log-view-page__detail-label">User</h3>
