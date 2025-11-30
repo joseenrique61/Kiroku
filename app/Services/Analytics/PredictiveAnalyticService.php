@@ -43,14 +43,15 @@ class PredictiveAnalyticService
             // 2. Tiempo desde la última falla
             $lastFailureDate = Carbon::parse($maintenancesWithFailures->first()->out_of_service_datetime);
             $daysSinceLastEvent = $lastFailureDate->diffInDays(Carbon::now());
-
+            
             // 3. Falla más probable (Moda de este dispositivo)
             $mostProbableFailure = $this->getMostCommonFailureForDevice($device->id);
         }
         else
         {   
-            // 2. Tiempo desde que el equipo fue adquirido
-            $deviceMtbfDays = 1825.0; // Si no hay datos suficientes se utiliza un MTBF de 5 años en días
+            $deviceMtbfDays = $this->calculateModelMTBF($device->device_model_id);
+                
+            // 2. Tiempo desde la última falla
             $acquisitionDate = Carbon::parse($device->acquisition?->acquired_at ?? $device->created_at);
             $daysSinceLastEvent = $acquisitionDate->diffInDays(Carbon::now());
 
@@ -119,6 +120,7 @@ class PredictiveAnalyticService
             ];
         });
 
+        
         // 2. Calcular Tiempo Promedio para Riesgo 30% y 70%
         // Fórmula inversa: Si Riesgo = (Tiempo / MTBF) * 100  =>  Tiempo = (Riesgo / 100) * MTBF
         $mtbfDays = $this->calculateModelMTBF($deviceModelId);
@@ -204,6 +206,14 @@ class PredictiveAnalyticService
                 'maintenances.back_to_service_datetime'
             ])
             ->get();
+
+        // Se valida que los registros tengan mínimo 3 fallos registrados para ese modelo (Tomando la información de todos los dispositivos que son parte de dicho modelo)
+        $hasHistoricalData = $maintenances->count() > 3;
+        
+        if (!$hasHistoricalData)
+        {
+            return 1825.0; // Si no hay datos suficientes se utiliza un MTBF para ese modelo de 5 años calculado días
+        }
 
         $intervals = [];
         $lastBackToServiceDates = [];
