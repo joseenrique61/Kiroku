@@ -5,6 +5,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/card';
+import { Select } from '@/components/select';
 import {
     Table,
     TableBody,
@@ -14,7 +15,8 @@ import {
     TableRow,
 } from '@/components/table';
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
+import { useState } from 'react';
 
 interface PredictiveRiskItem {
     device_id: number;
@@ -27,22 +29,315 @@ interface PredictiveRiskItem {
     ui_color: string;
 }
 
+interface FailureRateItem {
+    name: string;
+    percentage: number;
+}
+
+interface MttrItem {
+    name: string;
+    mttr: number;
+}
+
+interface DeviceStatusItem {
+    name: string;
+    count: number;
+}
+
+interface ModelItem {
+    model_name: string;
+    quantity: number;
+}
+
 interface AdminDashboardProps {
     predictiveRiskList: PredictiveRiskItem[];
+    failureRateByFailureType: FailureRateItem[];
+    failureRateByBrand: FailureRateItem[];
+    generalMttr: number;
+    mttrByCategory: MttrItem[];
+    mttrByBrand: MttrItem[];
+    deviceCountByStatus: DeviceStatusItem[];
+    mostCommonModels: ModelItem[];
 }
 
 export default function AdminDashboard({
     predictiveRiskList,
+    failureRateByFailureType,
+    failureRateByBrand,
+    generalMttr,
+    mttrByCategory,
+    mttrByBrand,
+    deviceCountByStatus,
+    mostCommonModels
 }: AdminDashboardProps) {
+    const [months, setMonths] = useState('3');
+
+    const handleMonthsChange = (e: string) => {
+        const newMonths = e;
+        setMonths(newMonths);
+
+        router.get(
+            route('dashboard'), // La misma ruta actual
+            { months: newMonths }, // Enviamos el parámetro como query string (?months=6)
+            {
+                preserveState: true, // Mantiene el estado de React (no resetea otros componentes)
+                preserveScroll: true, // No mueve el scroll de la página
+                only: ['predictiveRiskList'], // Solo pide este dato al servidor
+            },
+        );
+    };
+
+    function getColorForRisk(riskLevel: number) {
+        if (riskLevel < 30) {
+            return 'ok';
+        } else if (riskLevel < 70) {
+            return 'warning';
+        } else {
+            return 'alert';
+        }
+    }
+
     return (
         <AppLayout>
             <Head title="Admin Dashboard" />
             <div className="admin-dashboard-page">
-                <Card className="mt-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Devices by Device Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Count</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {deviceCountByStatus.length > 0 ? (
+                                    deviceCountByStatus.map((item) => (
+                                        <TableRow key={item.name}>
+                                            <TableCell>
+                                                {item.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.count}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={2}>No data</TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Most common Models</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Model</TableHead>
+                                    <TableHead>Count</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {mostCommonModels.length > 0 ? (
+                                    mostCommonModels.map((item) => (
+                                        <TableRow key={item.model_name}>
+                                            <TableCell>
+                                                {item.model_name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.quantity}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={2}>No data</TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>General MTTR</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p>{generalMttr} hours</p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>MTTR By Device Category</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>MTTR (hours)</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {mttrByCategory.length > 0 ? (
+                                    mttrByCategory.map((item) => (
+                                        <TableRow key={item.name}>
+                                            <TableCell>
+                                                {item.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.mttr}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={2}>No data</TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>MTTR By Device Brand</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>MTTR (hours)</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {mttrByBrand.length > 0 ? (
+                                    mttrByBrand.map((item) => (
+                                        <TableRow key={item.name}>
+                                            <TableCell>
+                                                {item.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.mttr}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={2}>No data</TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Failure Rate by Brand</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Brand</TableHead>
+                                    <TableHead>Percentage</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {failureRateByBrand.length > 0 ? (
+                                    failureRateByBrand.map((item) => (
+                                        <TableRow key={item.name}>
+                                            <TableCell>
+                                                {item.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.percentage}%
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={2}>No data</TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Failure Rate by Failure Type</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Failure Type</TableHead>
+                                    <TableHead>Percentage</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {failureRateByFailureType.length > 0 ? (
+                                    failureRateByFailureType.map((item) => (
+                                        <TableRow key={item.name}>
+                                            <TableCell>
+                                                {item.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.percentage}%
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={2}>No data</TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+
+                <Card>
                     <CardHeader>
                         <CardTitle>Predictive Failure Risk Analysis</CardTitle>
                         <CardDescription>
                             Devices at risk of failure in the next 3 months.
+                            <Select
+                                name=""
+                                value={months}
+                                onValueChange={handleMonthsChange}
+                                options={[
+                                    {
+                                        label: '3 months',
+                                        value: '3',
+                                    },
+                                    {
+                                        label: '6 months',
+                                        value: '6',
+                                    },
+                                    {
+                                        label: '18 months',
+                                        value: '18',
+                                    },
+                                ]}
+                            />
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -59,28 +354,41 @@ export default function AdminDashboard({
                             </TableHeader>
                             <TableBody>
                                 {predictiveRiskList.length > 0 ? (
-                                    predictiveRiskList.map((item) => (
-                                        <TableRow key={item.device_id}>
-                                            <TableCell>
-                                                {item.serial_number}
-                                            </TableCell>
-                                            <TableCell>{item.model}</TableCell>
-                                            <TableCell
-                                                className={item.ui_color}
-                                            >
-                                                {item.risk_level}
-                                            </TableCell>
-                                            <TableCell>
-                                                {item.probability_percentage}%
-                                            </TableCell>
-                                            <TableCell>
-                                                {item.most_probable_failure}
-                                            </TableCell>
-                                            <TableCell>
-                                                {item.recommended_action}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
+                                    predictiveRiskList
+                                        .toSorted(
+                                            (a, b) =>
+                                                b.probability_percentage -
+                                                a.probability_percentage,
+                                        )
+                                        .map((item) => (
+                                            <TableRow key={item.device_id}>
+                                                <TableCell>
+                                                    {item.serial_number}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {item.model}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <p
+                                                        className={`table__text--${getColorForRisk(item.probability_percentage)}`}
+                                                    >
+                                                        {item.risk_level}
+                                                    </p>
+                                                </TableCell>
+                                                <TableCell>
+                                                    {
+                                                        item.probability_percentage
+                                                    }
+                                                    %
+                                                </TableCell>
+                                                <TableCell>
+                                                    {item.most_probable_failure}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {item.recommended_action}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
                                 ) : (
                                     <TableRow>
                                         <TableCell

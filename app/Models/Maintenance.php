@@ -21,6 +21,11 @@ class Maintenance extends Model
         'device_id',
     ];
 
+    protected $casts = [
+        'back_to_service_datetime' => "datetime",
+        'out_of_service_datetime' => "datetime",
+    ];
+
     public function failure(): HasOne
     {
         return $this->hasOne(Failure::class);

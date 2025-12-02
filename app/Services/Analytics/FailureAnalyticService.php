@@ -2,97 +2,74 @@
 
 namespace App\Services\Analytics;
 
-use App\Models\FailureType;
-use App\Models\Maintenance;
+use App\Models\Failure;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class FailureAnalyticService
 {
     /**
-     * Calculate the failure rate of a device.
+     * Get the percentage of each failure type out of all failures.
      *
-     * @param null
-     * @return float
+     * @return \Illuminate\Support\Collection
      */
-    public function getFailureTrend(): float
+    public function getFailureRateByFailureType(): Collection
     {
-        $maintenance = Maintenance::with(['failure', 'failure.failureType'])
-            ->selectRaw('COUNT(*) as count')
+        $failuresByType = Failure::join('failure_types', 'failures.failure_type_id', '=', 'failure_types.id')
+            ->select('failure_types.name', DB::raw('COUNT(failures.id) as count'))
+            ->groupBy('failure_types.name')
             ->get();
 
-        $totalOperations = $maintenance->count;
+        $totalFailures = $failuresByType->sum('count');
 
-        foreach ($maintenance as $record) {
-            if ($record->failure) {
-                $failedOperations = $failedOperations ?? 0;
-                $failedOperations++;
-            }
+        if ($totalFailures === 0) {
+            return collect([]);
         }
 
-        if ($totalOperations === 0) {
-            return 0.0;
-        }
-
-        return ($failedOperations / $totalOperations) * 100;
+        return $failuresByType->map(function ($item) use ($totalFailures) {
+            return [
+                'name' => $item->name,
+                'percentage' => round(($item->count / $totalFailures) * 100, 2),
+            ];
+        });
     }
 
     /**
-     * Calculate the failure rate of a device by Category.
+     * Get the failure rate for each brand.
+     * The rate is calculated as (failures_for_brand / total_maintenances_for_brand) * 100.
      *
-     * @param FailureType $failureType
-     * @return float
+     * @return \Illuminate\Support\Collection
      */
-    public function getFailureTrendByType(FailureType $failureType): float
+    public function getFailureRateByBrand(): Collection
     {
-        $maintenance = Maintenance::with(['failure', 'failure.failureType'])
-            ->whereHas('failure.failureType', function ($query) use ($failureType) {
-                $query->where('id', $failureType->id);
+        $statsByBrand = DB::table('device_brands')
+            ->leftJoin('device_models', 'device_brands.id', '=', 'device_models.device_brand_id')
+            ->leftJoin('devices', function ($join) {
+                $join->on('device_models.id', '=', 'devices.device_model_id')
+                    ->whereNull('devices.deleted_at');
             })
-            ->selectRaw('COUNT(*) as count')
+            ->leftJoin('maintenances', function ($join) {
+                $join->on('devices.id', '=', 'maintenances.device_id')
+                    ->whereNull('maintenances.deleted_at');
+            })
+            ->leftJoin('failures', 'maintenances.id', '=', 'failures.maintenance_id')
+            ->select(
+                'device_brands.name',
+                DB::raw('COUNT(DISTINCT maintenances.id) as total_maintenances'),
+                DB::raw('COUNT(DISTINCT failures.id) as failure_count')
+            )
+            ->groupBy('device_brands.name')
             ->get();
 
-        $totalOperations = $maintenance->count;
+        return $statsByBrand->map(function ($item) {
+            $percentage = ($item->total_maintenances > 0)
+                ? round(($item->failure_count / $item->total_maintenances) * 100, 2)
+                : 0.0;
 
-        foreach ($maintenance as $record) {
-            if ($record->failure) {
-                $failedOperations = $failedOperations ?? 0;
-                $failedOperations++;
-            }
-        }
-
-        if ($totalOperations === 0) {
-            return 0.0;
-        }
-
-        return ($failedOperations / $totalOperations) * 100;
-    }
-
-    /**
-     * Calculate the failure rate of a device by Category.
-     *
-     * @param null
-     * @return float
-     */
-    public function getFailureTrendByBrands(): float
-    {
-        $maintenances = DB::table('maintenances')
-            ->leftJoin('failures','maintenances.id','=','failures.maintenance_id')
-            ->join('devices','maintenances.device_id','=','devices.id')
-            ->join('device_models','devices.device_model_id','=','devices.id')
-            ->select('device_models.name', DB::raw('count(devices.id) as total'))
-            ->get();
-
-        $totalOperations = $maintenances->count;
-
-        foreach ($maintenances as $maintenance) {
-            $failedOperations = $failedOperations ?? 0;
-            $failedOperations++;
-        }
-
-        if ($totalOperations === 0) {
-            return 0.0;
-        }
-
-        return ($failedOperations / $totalOperations) * 100;
+            return [
+                'name' => $item->name,
+                'percentage' => $percentage,
+            ];
+        });
     }
 }

@@ -17,33 +17,37 @@ class MaintenanceFactory extends Factory
      */
     public function definition(): array
     {
+        $endOfYear = (new \DateTime('last day of December this year'))->setTime(23, 59, 59);
+
         $outOfServiceDateTime = $this->faker->dateTimeThisYear();
-        $backToServiceDateTime = $this->faker->dateTimeThisYear();
+        $backToServiceDateTime = $this->faker->dateTimeBetween(
+            $outOfServiceDateTime->format('Y-m-d'),
+            $endOfYear->format('Y-m-d')
+        );
         $maintenanceDateTime = $this->faker->dateTimeBetween(
             $outOfServiceDateTime->format('Y-m-d'),
             'now'
         );
 
         // Ensure maintenanceDateTime is strictly after outOfServiceDateTime
-        if ($outOfServiceDateTime->format('Y-m-d') === $maintenanceDateTime->format('Y-m-d')) {
-            $maintenanceDateTime->modify('+1 day');
-        }
+        // if ($outOfServiceDateTime->format('Y-m-d') === $maintenanceDateTime->format('Y-m-d')) {
+        //     $maintenanceDateTime->modify('+1 day');
+        // }
 
         // Ensure maintenanceDateTime is strictly after outOfServiceDateTime
-        if ($backToServiceDateTime->format('Y-m-d') === $maintenanceDateTime->format('Y-m-d')) {
-            $backToServiceDateTime->modify('+10 day');
-        }
+        // if ($backToServiceDateTime < $outOfServiceDateTime) {
+        //     $backToServiceDateTime->modify('+10 day');
+        // }
 
         // Ensure maintenanceDateTime does not exceed the end of the current year
-        $endOfYear = (new \DateTime('last day of December this year'))->setTime(23, 59, 59);
         // if ($maintenanceDateTime > $endOfYear) {
         //     $maintenanceDateTime = $endOfYear;
         // }
         
         // Ensure backToServiceDatetime does not exceed the end of the current year
-        if ($backToServiceDateTime > $endOfYear) {
-            $backToServiceDateTime = $endOfYear;
-        }
+        // if ($backToServiceDateTime > $endOfYear) {
+        //     $backToServiceDateTime = $endOfYear;
+        // }
 
         return [
             'is_preventive' => $this->faker->boolean(),
