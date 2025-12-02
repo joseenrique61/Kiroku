@@ -6,16 +6,22 @@ use App\Models\DeviceCategory;
 use App\Models\DeviceModel;
 use App\Models\DeviceStatus;
 use App\Models\User;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
+
+beforeEach(function () {
+    $this->seed(PermissionSeeder::class);
+    $this->seed(RoleSeeder::class);
+
+    $this->user = User::factory()->create()->syncRoles("Technical Agent");
+    $this->actingAs($this->user);
+});
 
 test('creation device screen can be rendered', function () {
-    $this->actingAs($user = User::factory()->create());
-
     $this->get(route('devices.create'))->assertOk();
 });
 
 test('new devices can be registered', function () {
-    $user = User::factory()->create();
-
     $acquisition = Acquisition::factory()->create();
     $category = DeviceCategory::factory()->create();
     $brand = DeviceBrand::factory()->create();
@@ -31,7 +37,7 @@ test('new devices can be registered', function () {
         'device_status_id' => $status->id
     ];
 
-    $response = $this->actingAs($user)->post(route('devices.store'), $deviceData);
+    $response = $this->post(route('devices.store'), $deviceData);
 
-    $response->assertRedirect(route('devices.index', absolute: false));
+    $response->assertRedirect(route('home', absolute: false));
 });

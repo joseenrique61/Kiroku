@@ -131,20 +131,18 @@ class MaintenanceController extends BaseController
             $maintenance->update(Arr::only($fields, ['device_id', 'cost', 'datetime', 'out_of_service_datetime', 'back_to_service_datetime', 'is_preventive']));
 
             if (!$fields['is_preventive']) {
-                $maintenance->failure()->update([
+                $maintenance->failure()->create([
                     'failure_type_id' => $fields['failure_type_id'],
                     'description' => $fields['failure_description'],
                     'cause' => $fields['failure_cause'],
                 ]);
             }
 
-            if ($fields['out_of_service_datetime']){
+            if (!$fields['back_to_service_datetime']) {
                 Device::find($fields['device_id'])->first()->update([
-                    'device_status_id' => DeviceStatus::where('name', '=', 'Out of service')->first()->id
+                    'device_status_id' => DeviceStatus::where('name', '=', 'In maintenance')->first()->id
                 ]);
-            }
-
-            if ($fields['back_to_service_datetime']){
+            } else {
                 Device::find($fields['device_id'])->first()->update([
                     'device_status_id' => DeviceStatus::where('name', '=', 'In service')->first()->id
                 ]);

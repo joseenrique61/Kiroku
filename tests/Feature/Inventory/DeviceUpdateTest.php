@@ -8,6 +8,16 @@ use App\Models\DeviceModel;
 use App\Models\DeviceStatus;
 use App\Models\Organization;
 use App\Models\User;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
+
+beforeEach(function () {
+    $this->seed(PermissionSeeder::class);
+    $this->seed(RoleSeeder::class);
+
+    $this->user = User::factory()->create()->syncRoles("Technical Agent");
+    $this->actingAs($this->user);
+});
 
 test('update device screen can be rendered', function () {
     Organization::factory()->create();
@@ -19,20 +29,15 @@ test('update device screen can be rendered', function () {
 
     $device = Device::factory()->create();
     
-    $this->actingAs($user = User::factory()->create());
-
     // 3. Ahora crea el dispositivo. El trait Auditable
     //    encontrará al $user logueado y guardará el log.
-    $device = Device::factory()->create(['organization_id' => $user->organization_id]);
+    $device = Device::factory()->create(['organization_id' => $this->user->organization_id]);
     
     // --- Actuación y Afirmación ---
     $this->get(route('devices.edit', $device))->assertOk();
 });
 
 test('the device can be update', function () {
-    $user = User::factory()->create();
-    $this->actingAs($user);
-
     $updatedAcquisition = Acquisition::factory()->create();
     $updatedCategory = DeviceCategory::factory()->create();
     $updatedBrand = DeviceBrand::factory()->create();
@@ -45,7 +50,7 @@ test('the device can be update', function () {
     $deviceData = [
         'description' => 'Mi dispositivo de prueba',
         'acquisition_id' => $updatedAcquisition->id,
-        'organization_id' => $user->organization_id,
+        'organization_id' => $this->user->organization_id,
         'device_category_id' => $updatedCategory->id,
         'device_model_id' => $updatedModel->id,
         'device_status_id' => $updatedStatus->id,
