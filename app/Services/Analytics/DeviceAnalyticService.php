@@ -105,8 +105,12 @@ class DeviceAnalyticService
             ->limit(5)
             ->get();
 
-        foreach ($deviceModels as $deviceModel) {
+        if ($deviceModels->count() == 0)
+        {
+            return [];
+        }
 
+        foreach ($deviceModels as $deviceModel) {
             $results[] = [
                 'model_name' => $deviceModel->name,
                 'quantity' => (int) $deviceModel->total, 
