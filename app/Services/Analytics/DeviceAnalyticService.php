@@ -6,6 +6,7 @@ namespace App\Services\Analytics;
 use App\Models\Device;
 use App\Models\DeviceCategory;
 use App\Models\DeviceStatus;
+use Illuminate\Support\Facades\DB;
 
 class DeviceAnalyticService
 {
@@ -82,5 +83,31 @@ class DeviceAnalyticService
             ->get();
         
         return $devices->count;
+    }
+
+    /**
+     * Get the number of the top 5 most common models
+     *
+     * @param null
+     * @return array
+     */
+    public function mostCommonModels(): array
+    {
+        $deviceModels = DB::table('device_models')
+            ->join('devices','device_models.id','=','devices.device_model_id')
+            ->select('device_models.name', DB::raw('count(devices.id) as total'))
+            ->groupBy('device_models.id','device_models.name')
+            ->limit(5)
+            ->get();
+
+        foreach ($deviceModels as $deviceModel) {
+
+            $results[] = [
+                'model_name' => $deviceModel->name,
+                'quantity' => (int) $deviceModel->total, 
+            ];
+        }
+
+        return $results;
     }
 }
