@@ -16,7 +16,7 @@ class DeviceAnalyticService
      * @param null
      * @return array
      */
-    public function getDeviceCountByStatus(): array
+    public function getDeviceCountByStatus()
     {
         $devices = DeviceStatus::query()
             ->leftJoin('devices', 'device_statuses.id', '=', 'devices.device_status_id')
@@ -26,7 +26,12 @@ class DeviceAnalyticService
             ->orderBy('count', 'desc')
             ->get();
 
-        return $devices->pluck('count', 'name')->toArray();
+        return $devices->map(function ($item) {
+            return [
+                "name" => $item->name,
+                "count" => $item->count
+            ];
+        });
     }
 
     /**

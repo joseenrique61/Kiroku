@@ -39,6 +39,16 @@ interface MttrItem {
     mttr: number;
 }
 
+interface DeviceStatusItem {
+    name: string;
+    count: number;
+}
+
+interface ModelItem {
+    model_name: string;
+    quantity: number;
+}
+
 interface AdminDashboardProps {
     predictiveRiskList: PredictiveRiskItem[];
     failureRateByFailureType: FailureRateItem[];
@@ -46,6 +56,8 @@ interface AdminDashboardProps {
     generalMttr: number;
     mttrByCategory: MttrItem[];
     mttrByBrand: MttrItem[];
+    deviceCountByStatus: DeviceStatusItem[];
+    mostCommonModels: ModelItem[];
 }
 
 export default function AdminDashboard({
@@ -54,7 +66,9 @@ export default function AdminDashboard({
     failureRateByBrand,
     generalMttr,
     mttrByCategory,
-    mttrByBrand
+    mttrByBrand,
+    deviceCountByStatus,
+    mostCommonModels
 }: AdminDashboardProps) {
     const [months, setMonths] = useState('3');
 
@@ -87,6 +101,74 @@ export default function AdminDashboard({
         <AppLayout>
             <Head title="Admin Dashboard" />
             <div className="admin-dashboard-page">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Devices by Device Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Count</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {deviceCountByStatus.length > 0 ? (
+                                    deviceCountByStatus.map((item) => (
+                                        <TableRow key={item.name}>
+                                            <TableCell>
+                                                {item.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.count}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={2}>No data</TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Most common Models</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Model</TableHead>
+                                    <TableHead>Count</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {mostCommonModels.length > 0 ? (
+                                    mostCommonModels.map((item) => (
+                                        <TableRow key={item.model_name}>
+                                            <TableCell>
+                                                {item.model_name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.quantity}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={2}>No data</TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+
                 <Card>
                     <CardHeader>
                         <CardTitle>General MTTR</CardTitle>

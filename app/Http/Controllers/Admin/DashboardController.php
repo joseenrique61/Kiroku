@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Services\Analytics\DeviceAnalyticService;
 use App\Services\Analytics\FailureAnalyticService;
 use App\Services\Analytics\MaintenanceAnalyticService;
 use App\Services\Analytics\PredictiveAnalyticService;
@@ -12,7 +13,7 @@ use Inertia\Response;
 
 class DashboardController extends BaseController
 {
-    public function __construct(protected PredictiveAnalyticService $predictive_analytic, protected FailureAnalyticService $failure_analytic, protected MaintenanceAnalyticService $maintenance_analytic)
+    public function __construct(protected PredictiveAnalyticService $predictive_analytic, protected FailureAnalyticService $failure_analytic, protected MaintenanceAnalyticService $maintenance_analytic, protected DeviceAnalyticService $device_analytic)
     {
         $this->middleware('permission:view-dashboard');
     }
@@ -25,6 +26,8 @@ class DashboardController extends BaseController
         $months = $request->input("months", 3);
 
         return Inertia::render('admin/dashboard', [
+            'deviceCountByStatus' => $this->device_analytic->getDeviceCountByStatus(),
+            'mostCommonModels' => $this->device_analytic->mostCommonModels(),
             'predictiveRiskList' => function () use ($months) {
                 return $this->predictive_analytic->getPredictiveRiskList($months);
             },
