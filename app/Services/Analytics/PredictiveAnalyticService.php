@@ -119,7 +119,6 @@ class PredictiveAnalyticService
                 'probability_percentage' => $totalFailures > 0 ? round(($failure->total / $totalFailures) * 100, 1) : 0
             ];
         });
-
         
         // 2. Calcular Tiempo Promedio para Riesgo 30% y 70%
         // Fórmula inversa: Si Riesgo = (Tiempo / MTBF) * 100  =>  Tiempo = (Riesgo / 100) * MTBF

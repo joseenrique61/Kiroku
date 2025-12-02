@@ -25,7 +25,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         $organization = Organization::factory()->create();
-
+        
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
