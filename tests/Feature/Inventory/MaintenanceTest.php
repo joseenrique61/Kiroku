@@ -10,14 +10,15 @@ use App\Models\DeviceCategory;
 use App\Models\DeviceModel;
 use App\Models\Organization;
 use App\Models\DeviceBrand; // Added this line
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithoutMiddleware; // Added this line
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Inertia\Testing\AssertableInertia as Assert;
 
-uses(WithoutMiddleware::class);
-
 beforeEach(function () {
-    $this->user = User::factory()->create();
+    $this->seed(PermissionSeeder::class);
+    $this->seed(RoleSeeder::class);
+
+    $this->user = User::factory()->create()->syncRoles("Technical Agent");
     $this->actingAs($this->user);
 
     // Ensure core dependencies exist for factories
@@ -63,8 +64,8 @@ test('preventive maintenance can be stored', function () {
     $maintenanceData = Maintenance::factory()->make([
         'device_id' => $device->id,
         'is_preventive' => true,
-        'datetime' => now()->format('Y-m-d'),
         'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d'),
+        'back_to_service_datetime' => null,
         'failure_type_id' => null,
         'failure_description' => null,
         'failure_cause' => null,
@@ -76,14 +77,14 @@ test('preventive maintenance can be stored', function () {
     $this->assertDatabaseHas('maintenances', [
         'device_id' => $device->id,
         'is_preventive' => true,
-        'datetime' => $maintenanceData['datetime'],
-        'out_of_service_datetime' => $maintenanceData['out_of_service_datetime'],
+        'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d'),
+        'back_to_service_datetime' => null
     ]);
 
     // Assert device status is 'In service' if datetime is provided
     $this->assertDatabaseHas('devices', [
         'id' => $device->id,
-        'device_status_id' => DeviceStatus::where('name', 'In service')->first()->id,
+        'device_status_id' => DeviceStatus::where('name', 'In maintenance')->first()->id,
     ]);
 });
 
@@ -96,8 +97,8 @@ test('corrective maintenance can be stored', function () {
     $maintenanceData = Maintenance::factory()->make([
         'device_id' => $device->id,
         'is_preventive' => false,
-        'datetime' => null, // Corrective maintenance might not have an immediate end date
         'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d'),
+        'back_to_service_datetime' => null,
         'failure_type_id' => $failureType->id,
         'failure_description' => 'Test Failure Description',
         'failure_cause' => 'Test Failure Cause',
@@ -110,11 +111,12 @@ test('corrective maintenance can be stored', function () {
     $this->assertDatabaseHas('maintenances', [
         'device_id' => $device->id,
         'is_preventive' => false,
-        'datetime' => null,
-        'out_of_service_datetime' => $maintenanceData['out_of_service_datetime'],
+        'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d'),
+        'back_to_service_datetime' => null
     ]);
 
     $maintenance = Maintenance::where('device_id', $device->id)->first();
+
     $this->assertDatabaseHas('failures', [
         'maintenance_id' => $maintenance->id,
         'failure_type_id' => $failureType->id,
@@ -204,7 +206,7 @@ test('preventive maintenance can be updated', function () {
 
     $this->assertDatabaseHas('devices', [
         'id' => $device->id,
-        'device_status_id' => DeviceStatus::where('name', 'In service')->first()->id,
+        'device_status_id' => DeviceStatus::where('name', 'In maintenance')->first()->id,
     ]);
 });
 
@@ -212,13 +214,15 @@ test('corrective maintenance can be updated', function () {
     $device = Device::factory()->create([
         'organization_id' => $this->user->organization_id,
     ]);
+
     $failureType = FailureType::factory()->create();
     $maintenance = Maintenance::factory()->create([
         'device_id' => $device->id,
         'is_preventive' => false,
-        'datetime' => null,
+        'back_to_service_datetime' => null,
         'out_of_service_datetime' => now()->subDays(10)->format('Y-m-d'),
     ]);
+
     $maintenance->failure()->create([
         'failure_type_id' => FailureType::factory()->create()->id,
         'description' => 'Old description',
@@ -230,7 +234,7 @@ test('corrective maintenance can be updated', function () {
         'device_id' => $device->id,
         'cost' => 150.75,
         'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d'),
-        'datetime' => null,
+        'back_to_service_datetime' => null,
         'is_preventive' => false,
         'failure_type_id' => $newFailureType->id,
         'failure_description' => 'Updated Failure Description',
