@@ -2,8 +2,10 @@
 
 namespace App\Services\Analytics;
 
+use App\Models\DeviceBrand;
 use App\Models\DeviceCategory;
 use App\Models\Maintenance;
+use Illuminate\Support\Collection;
 
 class MaintenanceAnalyticService
 {
@@ -24,45 +26,87 @@ class MaintenanceAnalyticService
         }
 
         $totalRepairTime = 0;
-        $repairCount = 0;
+        $repairCount = $maintenances->count();
 
         foreach ($maintenances as $maintenance) {
-            $repairTime = $maintenance->back_to_service_datetime->diffInHours($maintenance->out_of_service_datetime);
+            $repairTime = $maintenance->out_of_service_datetime->diffInHours($maintenance->back_to_service_datetime);
             $totalRepairTime += $repairTime;
-            $repairCount++;
         }
 
         return $totalRepairTime / $repairCount;
     }
 
     /**
-     * Get the mean time to repair (MTTR) for a device.
+     * Get the mean time to repair (MTTR) for each device category.
      *
-     * @param DeviceCategory $deviceCategory
-     * @return float
+     * @return \Illuminate\Support\Collection
      */
-    public function getMeanTimeToRepairByDeviceCategory(DeviceCategory $deviceCategory) : float
+    public function getMeanTimeToRepairByDeviceCategory(): Collection
     {
-        $maintenances = Maintenance::with('device')
+        $maintenances = Maintenance::with('device.deviceCategory')
             ->whereNotNull('back_to_service_datetime')
-            ->whereHas('device', function ($query) use ($deviceCategory) {
-                $query->where('device_category_id', $deviceCategory->id);
-            })
             ->get();
 
-        if ($maintenances->isEmpty()) {
-            return 0.0;
-        }
+        $groupedByCategory = $maintenances->groupBy('device.deviceCategory.name')
+            ->filter(fn ($group, $key) => $key !== null);
 
-        $totalRepairTime = 0;
-        $repairCount = 0;
+        $allCategoryNames = DeviceCategory::pluck('name');
 
-        foreach ($maintenances as $maintenance) {
-            $repairTime = $maintenance->back_to_service_datetime->diffInHours($maintenance->out_of_service_datetime);
-            $totalRepairTime += $repairTime;
-            $repairCount++;
-        }
+        return $allCategoryNames->map(function ($categoryName) use ($groupedByCategory) {
+            $group = $groupedByCategory->get($categoryName);
 
-        return $totalRepairTime / $repairCount;
+            if (!$group) {
+                return ['name' => $categoryName, 'mttr' => 0.0];
+            }
+
+            $totalRepairTime = $group->sum(function ($maintenance) {
+                return $maintenance->out_of_service_datetime->diffInHours($maintenance->back_to_service_datetime);
+            });
+
+            $repairCount = $group->count();
+            $mttr = ($repairCount > 0) ? $totalRepairTime / $repairCount : 0.0;
+
+            return [
+                'name' => $categoryName,
+                'mttr' => round($mttr, 2),
+            ];
+        })->sortBy('name')->values();
+    }
+
+    /**
+     * Get the mean time to repair (MTTR) for each device brand.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getMeanTimeToRepairByDeviceBrand(): Collection
+    {
+        $maintenances = Maintenance::with('device.deviceModel.deviceBrand')
+            ->whereNotNull('back_to_service_datetime')
+            ->get();
+
+        $groupedByBrand = $maintenances->groupBy('device.deviceModel.deviceBrand.name')
+            ->filter(fn ($group, $key) => $key !== null);
+
+        $allBrandNames = DeviceBrand::pluck('name');
+
+        return $allBrandNames->map(function ($brandName) use ($groupedByBrand) {
+            $group = $groupedByBrand->get($brandName);
+
+            if (!$group) {
+                return ['name' => $brandName, 'mttr' => 0.0];
+            }
+
+            $totalRepairTime = $group->sum(function ($maintenance) {
+                return $maintenance->out_of_service_datetime->diffInHours($maintenance->back_to_service_datetime);
+            });
+
+            $repairCount = $group->count();
+            $mttr = ($repairCount > 0) ? $totalRepairTime / $repairCount : 0.0;
+
+            return [
+                'name' => $brandName,
+                'mttr' => round($mttr, 2),
+            ];
+        })->sortBy('name')->values();
     }
 }

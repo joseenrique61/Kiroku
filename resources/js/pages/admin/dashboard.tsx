@@ -34,16 +34,27 @@ interface FailureRateItem {
     percentage: number;
 }
 
+interface MttrItem {
+    name: string;
+    mttr: number;
+}
+
 interface AdminDashboardProps {
     predictiveRiskList: PredictiveRiskItem[];
     failureRateByFailureType: FailureRateItem[];
     failureRateByBrand: FailureRateItem[];
+    generalMttr: number;
+    mttrByCategory: MttrItem[];
+    mttrByBrand: MttrItem[];
 }
 
 export default function AdminDashboard({
     predictiveRiskList,
     failureRateByFailureType,
-    failureRateByBrand
+    failureRateByBrand,
+    generalMttr,
+    mttrByCategory,
+    mttrByBrand
 }: AdminDashboardProps) {
     const [months, setMonths] = useState('3');
 
@@ -76,6 +87,83 @@ export default function AdminDashboard({
         <AppLayout>
             <Head title="Admin Dashboard" />
             <div className="admin-dashboard-page">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>General MTTR</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p>{generalMttr} hours</p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>MTTR By Device Category</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>MTTR (hours)</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {mttrByCategory.length > 0 ? (
+                                    mttrByCategory.map((item) => (
+                                        <TableRow key={item.name}>
+                                            <TableCell>
+                                                {item.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.mttr}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={2}>No data</TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>MTTR By Device Brand</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>MTTR (hours)</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {mttrByBrand.length > 0 ? (
+                                    mttrByBrand.map((item) => (
+                                        <TableRow key={item.name}>
+                                            <TableCell>
+                                                {item.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {item.mttr}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={2}>No data</TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+
                 <Card>
                     <CardHeader>
                         <CardTitle>Failure Rate by Brand</CardTitle>
