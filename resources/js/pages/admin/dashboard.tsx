@@ -5,6 +5,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/card';
+import { Select } from '@/components/select';
 import {
     Table,
     TableBody,
@@ -14,7 +15,8 @@ import {
     TableRow,
 } from '@/components/table';
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
+import { useState } from 'react';
 
 interface PredictiveRiskItem {
     device_id: number;
@@ -34,6 +36,35 @@ interface AdminDashboardProps {
 export default function AdminDashboard({
     predictiveRiskList,
 }: AdminDashboardProps) {
+    const [months, setMonths] = useState('3');
+
+    const handleMonthsChange = (e: string) => {
+        const newMonths = e;
+        setMonths(newMonths);
+
+        router.get(
+            route('dashboard'), // La misma ruta actual
+            { months: newMonths },    // Enviamos el parámetro como query string (?months=6)
+            {
+                preserveState: true,  // Mantiene el estado de React (no resetea otros componentes)
+                preserveScroll: true, // No mueve el scroll de la página
+                only: ['predictiveRiskList'], // Solo pide este dato al servidor
+            }
+        );
+    }
+
+    function getColorForRisk(riskLevel: number) {
+        if (riskLevel < 30) {
+            return "ok";
+        }
+        else if (riskLevel < 70) {
+            return "warning";
+        }
+        else {
+            return "alert";
+        }
+    }
+
     return (
         <AppLayout>
             <Head title="Admin Dashboard" />
@@ -43,6 +74,26 @@ export default function AdminDashboard({
                         <CardTitle>Predictive Failure Risk Analysis</CardTitle>
                         <CardDescription>
                             Devices at risk of failure in the next 3 months.
+
+                            <Select
+                                name=''
+                                value={months}
+                                onValueChange={handleMonthsChange}
+                                options={[
+                                    {
+                                        label: "3 months",
+                                        value: "3"
+                                    },
+                                    {
+                                        label: "6 months",
+                                        value: "6"
+                                    },
+                                    {
+                                        label: "18 months",
+                                        value: "18"
+                                    },
+                                ]}
+                            />
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -59,16 +110,14 @@ export default function AdminDashboard({
                             </TableHeader>
                             <TableBody>
                                 {predictiveRiskList.length > 0 ? (
-                                    predictiveRiskList.map((item) => (
+                                    predictiveRiskList.toSorted((a, b) => b.probability_percentage - a.probability_percentage).map((item) => (
                                         <TableRow key={item.device_id}>
                                             <TableCell>
                                                 {item.serial_number}
                                             </TableCell>
                                             <TableCell>{item.model}</TableCell>
-                                            <TableCell
-                                                className={item.ui_color}
-                                            >
-                                                {item.risk_level}
+                                            <TableCell>
+                                                <p className={`table__text--${getColorForRisk(item.probability_percentage)}`}>{item.risk_level}</p>
                                             </TableCell>
                                             <TableCell>
                                                 {item.probability_percentage}%

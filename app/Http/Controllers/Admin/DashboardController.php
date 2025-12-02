@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Services\Analytics\PredictiveAnalyticService;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,12 +18,14 @@ class DashboardController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $predictiveRiskList = $this->predictive_analytic->getPredictiveRiskList(3);
+        $months = $request->input("months", 3);
 
         return Inertia::render('admin/dashboard', [
-            'predictiveRiskList' => $predictiveRiskList,
+            'predictiveRiskList' => function () use ($months) {
+                return $this->predictive_analytic->getPredictiveRiskList($months);
+            },
         ]);
     }
 }
