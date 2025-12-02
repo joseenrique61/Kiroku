@@ -8,6 +8,7 @@ use App\Models\Failure;
 use App\Models\FailureType;
 use App\Models\Maintenance;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class MaintenanceSeeder extends Seeder
 {
@@ -16,6 +17,12 @@ class MaintenanceSeeder extends Seeder
      */
     public function run(): void
     {
+        // Make seeder idempotent by cleaning up previous data
+        Schema::disableForeignKeyConstraints();
+        Maintenance::truncate();
+        Failure::truncate();
+        Schema::enableForeignKeyConstraints();
+
         $in_maintenance_id = DeviceStatus::where('name', '=', 'In maintenance')->first()->id;
 
         $devices = [];
@@ -37,7 +44,7 @@ class MaintenanceSeeder extends Seeder
 
         // Create 5 preventive maintenances (no failure)
         for ($i = 0; $i < 5; $i++) {
-            Maintenance::factory()->create([
+            Maintenance::factory(1)->create([
                 'is_preventive' => true,
                 'device_id' => $devices[$i]->id
             ]);
@@ -45,7 +52,7 @@ class MaintenanceSeeder extends Seeder
 
         // Create 5 non-preventive (corrective) maintenances with failures
         for ($i = 5; $i < 10; $i++) {
-            Maintenance::factory()
+            Maintenance::factory(1)
                 ->create([
                     'is_preventive' => false,
                     'device_id' => $devices[$i]->id

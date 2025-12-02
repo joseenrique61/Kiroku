@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Services\Analytics\FailureAnalyticService;
 use App\Services\Analytics\PredictiveAnalyticService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -10,7 +11,7 @@ use Inertia\Response;
 
 class DashboardController extends BaseController
 {
-    public function __construct(protected PredictiveAnalyticService $predictive_analytic)
+    public function __construct(protected PredictiveAnalyticService $predictive_analytic, protected FailureAnalyticService $failure_analytic)
     {
         $this->middleware('permission:view-dashboard');
     }
@@ -26,6 +27,8 @@ class DashboardController extends BaseController
             'predictiveRiskList' => function () use ($months) {
                 return $this->predictive_analytic->getPredictiveRiskList($months);
             },
+            'failureRateByFailureType' => $this->failure_analytic->getFailureRateByFailureType(),
+            'failureRateByBrand' => $this->failure_analytic->getFailureRateByBrand()
         ]);
     }
 }
