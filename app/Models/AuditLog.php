@@ -16,9 +16,23 @@ class AuditLog extends Model
         'host_ip',
         'user_id'
     ];
+    
+    protected $appends = [
+        'operation_name'
+    ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getOperationNameAttribute()
+    {
+        return [
+            'L' => 'Login',
+            'C' => 'Create',
+            'U' => 'Update',
+            'D' => 'Delete'
+        ][$this->operation] ?? $this->operation;
     }
 }

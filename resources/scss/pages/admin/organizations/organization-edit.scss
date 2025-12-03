@@ -1,0 +1,15 @@
+@use "/resources/scss/base";
+
+.organization-edit-page {
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; // Equivalent to 16px
+    }
+
+    &__form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem; // Equivalent to 8px
+    }
+}

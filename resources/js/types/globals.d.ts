@@ -84,7 +84,7 @@ export interface Maintenance {
     id: number;
     device_id: number;
     cost: number;
-    datetime: string;
+    back_to_service_datetime: string;
     out_of_service_datetime: string;
     is_preventive: boolean;
     device: Device;
@@ -96,6 +96,7 @@ export interface AuditLog {
     table_name: string;
     record_primary_key: number;
     operation: string;
+    operation_name: string;
     value_before: string;
     value_after: string;
     host_ip: string;

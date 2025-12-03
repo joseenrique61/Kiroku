@@ -109,7 +109,7 @@ class UserController extends BaseController
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:users,email,'.$user->id,
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'role' => 'nullable|string|exists:roles,name'
+            'role_id' => 'required|integer|exists:roles,id',
         ]);
 
         $user->update([
@@ -122,12 +122,14 @@ class UserController extends BaseController
                 'password' => Hash::make($request->password),
             ]);
         }
-        
-        if (!empty($request->role))
-        {
-            $user->syncRoles($request->role);
-        }
 
+        $role = Role::findById($request->role_id);
+        
+        if ($role)
+        {
+            $user->syncRoles($role);
+        }
+        
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
@@ -136,7 +138,13 @@ class UserController extends BaseController
      */
     public function destroy(User $user) : RedirectResponse
     {
+        if ($user->hasRole('Administrator','web'))
+        {
+            return redirect()->route('users.index')->with('failed','This user cannot be deleted!');
+        }
+        
         $user->delete();
+
         return redirect()->route('users.index')->with('success','User was deleted successfully!');
     }
 

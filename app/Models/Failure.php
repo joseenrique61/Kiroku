@@ -12,6 +12,7 @@ class Failure extends Model
     protected $fillable = [
         'description',
         'cause',
+        'maintenance_id',
         'failure_type_id'
     ];
 

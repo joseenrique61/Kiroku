@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Inventory\Devices;
 
+use App\Imports\InventoryImport;
 use App\Models\Acquisition;
 use App\Models\Device;
 use App\Models\DeviceCategory;
@@ -10,6 +11,7 @@ use App\Models\DeviceStatus;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Routing\Controller as BaseController;
+use Maatwebsite\Excel\Excel;
 
 class DeviceController extends BaseController
 {
@@ -17,7 +19,7 @@ class DeviceController extends BaseController
      * Display a listing of the resource.
      */
     public function index()
-    {   
+    {
         $devices = Device::with([
             'acquisition',
             'organization',
@@ -25,9 +27,9 @@ class DeviceController extends BaseController
             'deviceModel',
             'deviceModel.deviceBrand',
             'deviceStatus'
-        ])->get(); // ->paginate(20); // Use pagination to manage the optimization // TODO: Reactivate pagination
+        ])->get(); // ->paginate(20); // Use pagination to manage the optimization // ToDo: Reactivate pagination
 
-        return Inertia::render('inventory/devices/index',[
+        return Inertia::render('inventory/devices/index', [
             'devices' => $devices
         ]);
     }
@@ -40,8 +42,8 @@ class DeviceController extends BaseController
         $deviceModels = DeviceModel::with('deviceBrand')->get();
         $deviceStatus = DeviceStatus::get();
         $deviceCategories = DeviceCategory::get();
-        
-        return Inertia::render('inventory/devices/create',[
+
+        return Inertia::render('inventory/devices/create', [
             'deviceModels' => $deviceModels,
             'deviceStatus' => $deviceStatus,
             'deviceCategories' => $deviceCategories
@@ -93,7 +95,7 @@ class DeviceController extends BaseController
      * Display the specified resource.
      */
     public function show(Device $device)
-    {   
+    {
         $device->load([
             'acquisition',
             'organization',
@@ -103,7 +105,7 @@ class DeviceController extends BaseController
             'deviceStatus'
         ]);
 
-        return Inertia::render('inventory/devices/show',[
+        return Inertia::render('inventory/devices/show', [
             'device' => $device
         ]);
     }
@@ -125,8 +127,8 @@ class DeviceController extends BaseController
         $deviceModels = DeviceModel::with('deviceBrand')->get();
         $deviceStatuses = DeviceStatus::get();
         $deviceCategories = DeviceCategory::get();
-        
-        return Inertia::render('inventory/devices/edit',[
+
+        return Inertia::render('inventory/devices/edit', [
             'device' => $device,
             'deviceModels' => $deviceModels,
             'deviceStatuses' => $deviceStatuses,
@@ -160,7 +162,7 @@ class DeviceController extends BaseController
             ]);
         }
 
-         $device->update([
+        $device->update([
             'description' => $request->description,
             'device_category_id' => $request->device_category_id,
             'device_model_id' => $request->device_model_id,
@@ -176,7 +178,18 @@ class DeviceController extends BaseController
     public function destroy(Device $device)
     {
         $device->delete();
-        return redirect()->intended(route('devices.index', absolute: false))->with('success','Device was deleted successfully!');
+        return redirect()->intended(route('devices.index', absolute: false))->with('success', 'Device was deleted successfully!');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate(['file' => 'required|mimes:xlsx']);
+
+        $organizationId = $request->user()->organization_id;
+
+        Excel::import(new InventoryImport($organizationId), $request->file('file'));
+
+        return redirect()->intended(route('devices.index', absolute: false))->with('success', 'Devices was imported successfully!');;
     }
 
     public function __construct()

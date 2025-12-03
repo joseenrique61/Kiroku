@@ -16,8 +16,14 @@ class Maintenance extends Model
         'is_preventive',
         'cost',
         'datetime',
+        'back_to_service_datetime',
         'out_of_service_datetime',
         'device_id',
+    ];
+
+    protected $casts = [
+        'back_to_service_datetime' => "datetime",
+        'out_of_service_datetime' => "datetime",
     ];
 
     public function failure(): HasOne
