@@ -99,9 +99,7 @@ export default function AppSidebarLayout({
         <AppShell>
             <AppSidebar navItems={filteredNavItems} footerItems={footerItems}/>
 
-            {/* TODO: Create sass file for AppSidebarLayout */}
-            <AppContent className="overflow-x-hidden" breadcrumbs={breadcrumbs}>
-                {/* <AppSidebarHeader breadcrumbs={breadcrumbs} /> */}
+            <AppContent className="app-content" breadcrumbs={breadcrumbs}>
                 {children}
             </AppContent>
         </AppShell>

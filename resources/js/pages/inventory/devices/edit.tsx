@@ -162,7 +162,7 @@ export default function DeviceEdit({
                                 id="acquired_at"
                                 name="acquired_at"
                                 type="date"
-                                value={data.acquired_at}
+                                value={data.acquired_at.split("T")[0]}
                                 onChange={(e) =>
                                     setData('acquired_at', e.target.value)
                                 }
@@ -174,8 +174,8 @@ export default function DeviceEdit({
                             <Input
                                 id="warranty_end_date"
                                 name="warranty_end_date"
-                                type="timestamp"
-                                value={data.warranty_end_date}
+                                type="date"
+                                value={data.warranty_end_date.split("T")[0]}
                                 onChange={(e) =>
                                     setData('warranty_end_date', e.target.value)
                                 }

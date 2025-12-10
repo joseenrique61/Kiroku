@@ -16,6 +16,7 @@ import {
 } from '@/components/table';
 import AppLayout from '@/layouts/app-layout';
 import { Maintenance } from '@/types/globals';
+import { formatDateUtc } from '@/utils/dateUtils';
 import { Head, Link } from '@inertiajs/react';
 
 export default function MaintenanceIndex({
@@ -70,10 +71,10 @@ export default function MaintenanceIndex({
                                     </TableCell>
                                     <TableCell>${maintenance.cost}</TableCell>
                                     <TableCell>
-                                        {maintenance.out_of_service_datetime}
+                                        {formatDateUtc(maintenance.out_of_service_datetime)}
                                     </TableCell>
                                     <TableCell>
-                                        {maintenance.back_to_service_datetime}
+                                        {formatDateUtc(maintenance.back_to_service_datetime)}
                                     </TableCell>
                                     <TableCell>
                                         {maintenance.is_preventive

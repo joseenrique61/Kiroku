@@ -48,7 +48,6 @@ export default function DeviceIndex({ devices }: { devices: Device[] }) {
                                 <TableHead>Category</TableHead>
                                 <TableHead>Model</TableHead>
                                 <TableHead>Status</TableHead>
-                                <TableHead>Organization</TableHead>
                                 <TableHead>Actions</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -67,9 +66,6 @@ export default function DeviceIndex({ devices }: { devices: Device[] }) {
                                     </TableCell>
                                     <TableCell>
                                         {device.device_status.name}
-                                    </TableCell>
-                                    <TableCell>
-                                        {device.organization.name}
                                     </TableCell>
                                     <TableCell className="device-index-page__table-actions">
                                         <Button variant={'outline'} asChild>

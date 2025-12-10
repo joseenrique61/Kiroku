@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card';
 import AppLayout from '@/layouts/app-layout';
 import { Device } from '@/types/globals';
+import { formatDateUtc } from '@/utils/dateUtils';
 import { Head } from '@inertiajs/react';
 
 export default function DeviceShow({ device }: { device: Device }) {
@@ -38,11 +39,11 @@ export default function DeviceShow({ device }: { device: Device }) {
                     </div>
                     <div className="device-show-page__detail-group">
                         <h3 className="device-show-page__detail-label">Acquired At</h3>
-                        <p>{device.acquisition.acquired_at}</p>
+                        <p>{formatDateUtc(device.acquisition.acquired_at)}</p>
                     </div>
                     <div className="device-show-page__detail-group">
                         <h3 className="device-show-page__detail-label">Warranty End Date</h3>
-                        <p>{device.acquisition.warranty_end_date}</p>
+                        <p>{formatDateUtc(device.acquisition.warranty_end_date)}</p>
                     </div>
                 </CardContent>
             </Card>

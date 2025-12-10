@@ -28,9 +28,9 @@ export default function FailureIndex({
             <Head title="Failure Types" />
             <Card>
                 <CardHeader>
-                    <CardTitle>Failures</CardTitle>
+                    <CardTitle>Failure Types</CardTitle>
                     <CardDescription>
-                        A list of all the failures in the system.
+                        A list of all the failure types in the system.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="failure-index-page__card-content">
