@@ -15,6 +15,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Device, FailureType, Maintenance } from '@/types/globals';
 import { Head, useForm } from '@inertiajs/react';
 import { Separator } from '@/components/separator';
+import { formatDateUtc } from '@/utils/dateUtils';
 
 type MaintenanceFormData = {
     device_id: number;
@@ -103,7 +104,7 @@ export default function MaintenanceEdit({ maintenance, devices, failure_types }:
                                 id="out_of_service_datetime"
                                 name="out_of_service_datetime"
                                 type="date"
-                                value={data.out_of_service_datetime}
+                                value={data.out_of_service_datetime.split("T")[0]}
                                 onChange={(e) =>
                                     setData(
                                         'out_of_service_datetime',
@@ -121,7 +122,7 @@ export default function MaintenanceEdit({ maintenance, devices, failure_types }:
                                 id="back_to_service_datetime"
                                 name="back_to_service_datetime"
                                 type="date"
-                                value={data.back_to_service_datetime}
+                                value={data.back_to_service_datetime!.split("T")[0]}
                                 onChange={(e) =>
                                     setData('back_to_service_datetime', e.target.value)
                                 }
@@ -206,7 +207,7 @@ export default function MaintenanceEdit({ maintenance, devices, failure_types }:
                                 </div>
                             </>
                         )}
-                        <Button type="submit">Create</Button>
+                        <Button type="submit">Edit</Button>
                     </form>
                 </CardContent>
             </Card>

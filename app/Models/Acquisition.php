@@ -16,6 +16,11 @@ class Acquisition extends Model
         'warranty_end_date',
     ];
 
+    protected $casts = [
+        "acquired_at" => "datetime",
+        "warranty_end_date" => "datetime"
+    ];
+
     public function device(): HasOne
     {
         return $this->hasOne(Device::class);

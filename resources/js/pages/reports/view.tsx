@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card';
 import AppLayout from '@/layouts/app-layout';
 import { Maintenance } from '@/types/globals';
+import { formatDateUtc } from '@/utils/dateUtils';
 import { Head } from '@inertiajs/react';
 
 export default function MaintenanceShow({ maintenance }: { maintenance: Maintenance }) {
@@ -21,8 +22,12 @@ export default function MaintenanceShow({ maintenance }: { maintenance: Maintena
                         <p>${maintenance.cost}</p>
                     </div>
                     <div className="maintenance-show-page__detail-group">
-                        <h3 className="maintenance-show-page__detail-label">Date</h3>
-                        <p>{maintenance.back_to_service_datetime}</p>
+                        <h3 className="maintenance-show-page__detail-label">Out of Service Date</h3>
+                        <p>{formatDateUtc(maintenance.out_of_service_datetime)}</p>
+                    </div>
+                    <div className="maintenance-show-page__detail-group">
+                        <h3 className="maintenance-show-page__detail-label">Rehabilitation Date</h3>
+                        <p>{formatDateUtc(maintenance.back_to_service_datetime)}</p>
                     </div>
                     <div className="maintenance-show-page__detail-group">
                         <h3 className="maintenance-show-page__detail-label">Type</h3>
