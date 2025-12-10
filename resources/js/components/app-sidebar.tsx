@@ -14,15 +14,25 @@ const AppSidebar = ({ navItems, footerItems, ...props }: AppSidebarProps) => {
         <aside className="app-sidebar" {...props}>
             <AppSidebarHeader />
             <AppSidebarNav>
-                {navItems.map((navItem) => (
-                    <AppSidebarItem
-                        navItem={navItem}
-                        isActive={page.url.startsWith(
-                            new URL(navItem.href).pathname,
-                        )}
-                        key={navItem.title}
-                    />
-                ))}
+                {navItems.map((navItem) => {
+                    const pathname = new URL(navItem.href).pathname;
+                    let isActive;
+                    if (pathname === "/") 
+                    {
+                        isActive = page.url === pathname;
+                    }
+                    else {
+                        isActive = page.url.startsWith(pathname);
+                    }
+
+                    return (
+                        <AppSidebarItem
+                            navItem={navItem}
+                            isActive={isActive}
+                            key={navItem.title}
+                        />
+                    )
+                })}
             </AppSidebarNav>
             <AppSidebarFooter>
                 {footerItems.map((footerItem) => (
