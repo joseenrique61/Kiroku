@@ -20,10 +20,13 @@ class AcquisitionFactory extends Factory
     {
         $acquire_date = Carbon::createFromTimestamp(rand(Carbon::create(2020, 1, 1)->timestamp, Carbon::create(2024,1,1)->timestamp));
 
+        $warranty_end_date = $acquire_date->copy();
+        $warranty_end_date->addYear();
+
         return [
             'price' => $this->faker->randomFloat(2, 100, 5000),
             'acquired_at' => $acquire_date,
-            'warranty_end_date' => $acquire_date->addYear(),
+            'warranty_end_date' => $warranty_end_date,
         ];
     }
 }
