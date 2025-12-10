@@ -9,7 +9,6 @@ import {
 import InputError from '@/components/input-error';
 import { Input } from '@/components/input';
 import { Label } from '@/components/label';
-import { Select } from '@/components/select';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Organization } from '@/types/globals';
@@ -45,13 +44,13 @@ export default function OrganizationEdit({ organization }: { organization: Organ
                             </Link>
                         </Button>
                     </div>
-                    <form className="organization-edit-page__form">
+                    <form onSubmit={handleSubmit} className="organization-edit-page__form">
                         <div className="organization-edit-page__form-group">
                             <Label htmlFor="name">Name</Label>
                             <Input
                                 id="name"
                                 name="name"
-                                value={organization.name}
+                                value={data.name}
                                 onChange={(e) =>
                                     setData('name', e.target.value)
                                 }

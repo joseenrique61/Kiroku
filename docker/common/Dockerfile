@@ -3,6 +3,10 @@ FROM php:8.4-fpm AS builder
 
 # Install system dependencies and PHP extensions required for Laravel + PostgreSQL support
 # Some dependencies are required for PHP extensions only in the build stage
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+RUN install-php-extensions gd
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     nodejs \
@@ -16,6 +20,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libicu-dev \
     libzip-dev \
     git \
+    libpng-dev \
+    && docker-php-ext-configure gd \
     && docker-php-ext-install -j$(nproc) \
     pdo_pgsql \
     pgsql \
@@ -28,6 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-enable redis \
     && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN echo "extension=gd" > /usr/local/etc/php/conf.d/docker-php-ext-gd.ini
 
 # Set the working directory inside the container
 WORKDIR /var/www

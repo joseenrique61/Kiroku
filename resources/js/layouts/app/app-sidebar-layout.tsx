@@ -6,6 +6,7 @@ import { Computer, FileCog, LayoutDashboard, Settings, TriangleAlert, Wrench, Us
 import { BreadcrumbItem } from '@/types';
 import { type PropsWithChildren } from 'react';
 import { usePage } from '@inertiajs/react';
+import { SharedData } from '@/types/globals';
 
 interface AppSidebarLayoutProps extends PropsWithChildren {
     breadcrumbs?: BreadcrumbItem[];
@@ -16,7 +17,7 @@ export default function AppSidebarLayout({
     breadcrumbs,
 }: AppSidebarLayoutProps) {
 
-    const { auth } = usePage().props as any;
+    const { auth } = usePage<SharedData>().props;
     const userPermissions: string[] = auth.user?.permissions || [];
 
     const navItems: NavItem[] = [

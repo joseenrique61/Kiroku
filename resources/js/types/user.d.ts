@@ -12,6 +12,8 @@ export interface User {
     organization: Organization;
     organization_id: number;
 
+
+    permissions: string[];
     [key: string]: unknown; // This allows for additional properties...
 }
 

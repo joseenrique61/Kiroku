@@ -11,7 +11,7 @@ import { Input } from '@/components/input';
 import { Label } from '@/components/label';
 import { Select } from '@/components/select';
 import AppLayout from '@/layouts/app-layout';
-import { Device, DeviceCategory, DeviceModel, DeviceStatus, Organization } from '@/types/globals';
+import { Device, DeviceCategory, DeviceModel, DeviceStatus } from '@/types/globals';
 import { Head, useForm } from '@inertiajs/react';
 
 type DeviceFormData = {
