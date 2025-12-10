@@ -82,6 +82,10 @@
             background-color: base.$color-accent;
             color: base.$color-accent-foreground;
         }
+
+        & a {
+            color: base.$color-secondary-foreground;
+        }
     }
 
     &--link {
