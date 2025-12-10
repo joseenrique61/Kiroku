@@ -15,7 +15,6 @@ import AppLayout from '@/layouts/app-layout';
 import { Device, FailureType, Maintenance } from '@/types/globals';
 import { Head, useForm } from '@inertiajs/react';
 import { Separator } from '@/components/separator';
-import { formatDateUtc } from '@/utils/dateUtils';
 
 type MaintenanceFormData = {
     device_id: number;
