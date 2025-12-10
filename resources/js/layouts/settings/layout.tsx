@@ -16,12 +16,7 @@ const sidebarNavItems: NavItem[] = [
         title: 'Password',
         href: route('password.edit'),
         icon: null,
-    },
-    {
-        title: 'Appearance',
-        href: route('appearance.edit'),
-        icon: null,
-    },
+    }
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
