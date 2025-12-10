@@ -18,7 +18,7 @@ class OrganizationFactory extends Factory
     {
         return [
             'name' => $this->faker->company(),
-            'organization_policy_id' => \App\Models\OrganizationPolicy::factory(),
+            'organization_policy_id' => \App\Models\OrganizationPolicy::factory()->create()->id,
         ];
     }
 }

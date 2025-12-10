@@ -20,7 +20,6 @@ beforeEach(function () {
 
     $this->seed(DeviceStatusSeeder::class);
     $this->seed(DeviceCategorySeeder::class);
-    $this->seed(OrganizationPolicySeeder::class);
     $this->seed(OrganizationSeeder::class);
 });
 

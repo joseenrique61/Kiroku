@@ -64,7 +64,7 @@ test('preventive maintenance can be stored', function () {
     $maintenanceData = Maintenance::factory()->make([
         'device_id' => $device->id,
         'is_preventive' => true,
-        'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d'),
+        'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d H:m:s'),
         'back_to_service_datetime' => null,
         'failure_type_id' => null,
         'failure_description' => null,
@@ -77,7 +77,7 @@ test('preventive maintenance can be stored', function () {
     $this->assertDatabaseHas('maintenances', [
         'device_id' => $device->id,
         'is_preventive' => true,
-        'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d'),
+        'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d H:m:s'),
         'back_to_service_datetime' => null
     ]);
 
@@ -97,7 +97,7 @@ test('corrective maintenance can be stored', function () {
     $maintenanceData = Maintenance::factory()->make([
         'device_id' => $device->id,
         'is_preventive' => false,
-        'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d'),
+        'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d H:m:s'),
         'back_to_service_datetime' => null,
         'failure_type_id' => $failureType->id,
         'failure_description' => 'Test Failure Description',
@@ -111,7 +111,7 @@ test('corrective maintenance can be stored', function () {
     $this->assertDatabaseHas('maintenances', [
         'device_id' => $device->id,
         'is_preventive' => false,
-        'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d'),
+        'out_of_service_datetime' => now()->subDays(5)->format('Y-m-d H:m:s'),
         'back_to_service_datetime' => null
     ]);
 

@@ -15,6 +15,21 @@
             "type": "php",
             "request": "launch",
             "port": 9001
+        },
+        {
+            "type": "dockerfile", // required, must not be modified
+            "request": "launch", // required, must not be modified
+            "name": "Docker: Build", // required, configurable
+            "dockerfile": "docker/common/Dockerfile", // required, configurable
+            "contextPath": "${workspaceFolder}", // optional, defaults to ${workspaceFolder}
+            "cwd": "${workspaceFolder}", // optional, defaults to ${workspaceFolder}
+            "target": "builder", // optional, should be a build stage in the Dockerfile
+            "args": [
+                // additional arguments for the build command
+                "--build-arg",
+                "NODE_ENV=development"
+            ],
+            "stopOnEntry": false // if the debugger should suspend on the first line, defaults to false
         }
     ],
     "compounds": [
