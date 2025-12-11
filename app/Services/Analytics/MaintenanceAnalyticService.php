@@ -5,9 +5,10 @@ namespace App\Services\Analytics;
 use App\Models\DeviceBrand;
 use App\Models\DeviceCategory;
 use App\Models\Maintenance;
+use App\Services\Analytics\Interfaces\MaintenanceAnalyticServiceInterface;
 use Illuminate\Support\Collection;
 
-class MaintenanceAnalyticService
+class MaintenanceAnalyticService implements MaintenanceAnalyticServiceInterface
 {
     /**
      * Get the mean time to repair (MTTR) of all Devices.
