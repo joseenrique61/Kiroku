@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Services\Analytics\DeviceAnalyticService;
-use App\Services\Analytics\FailureAnalyticService;
-use App\Services\Analytics\MaintenanceAnalyticService;
-use App\Services\Analytics\PredictiveAnalyticService;
+use App\Services\Analytics\Interfaces\DeviceAnalyticServiceInterface;
+use App\Services\Analytics\Interfaces\FailureAnalyticServiceInterface;
+use App\Services\Analytics\Interfaces\MaintenanceAnalyticServiceInterface;
+use App\Services\Analytics\Interfaces\PredictiveAnalyticServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Inertia\Inertia;
@@ -13,7 +13,7 @@ use Inertia\Response;
 
 class DashboardController extends BaseController
 {
-    public function __construct(protected PredictiveAnalyticService $predictive_analytic, protected FailureAnalyticService $failure_analytic, protected MaintenanceAnalyticService $maintenance_analytic, protected DeviceAnalyticService $device_analytic)
+    public function __construct(protected PredictiveAnalyticServiceInterface $predictive_analytic, protected FailureAnalyticServiceInterface $failure_analytic, protected MaintenanceAnalyticServiceInterface $maintenance_analytic, protected DeviceAnalyticServiceInterface $device_analytic)
     {
         $this->middleware('permission:view-dashboard');
     }

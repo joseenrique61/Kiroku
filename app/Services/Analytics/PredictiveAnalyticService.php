@@ -3,10 +3,11 @@
 namespace App\Services\Analytics;
 
 use App\Models\Device;
+use App\Services\Analytics\Interfaces\PredictiveAnalyticServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class PredictiveAnalyticService
+class PredictiveAnalyticService implements PredictiveAnalyticServiceInterface
 {
     /**
      * Constantes de Riesgo

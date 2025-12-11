@@ -6,9 +6,10 @@ namespace App\Services\Analytics;
 use App\Models\Device;
 use App\Models\DeviceCategory;
 use App\Models\DeviceStatus;
+use App\Services\Analytics\Interfaces\DeviceAnalyticServiceInterface;
 use Illuminate\Support\Facades\DB;
 
-class DeviceAnalyticService
+class DeviceAnalyticService implements DeviceAnalyticServiceInterface
 {
     /**
      * Get the current state of the device.

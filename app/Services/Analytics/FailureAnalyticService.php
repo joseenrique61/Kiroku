@@ -3,10 +3,11 @@
 namespace App\Services\Analytics;
 
 use App\Models\Failure;
+use App\Services\Analytics\Interfaces\FailureAnalyticServiceInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class FailureAnalyticService
+class FailureAnalyticService implements FailureAnalyticServiceInterface
 {
     /**
      * Get the percentage of each failure type out of all failures.
