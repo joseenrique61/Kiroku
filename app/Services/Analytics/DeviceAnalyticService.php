@@ -17,7 +17,7 @@ class DeviceAnalyticService implements DeviceAnalyticServiceInterface
      * @param null
      * @return array
      */
-    public function getDeviceCountByStatus()
+    public function getDeviceCountByStatus(): array
     {
         $devices = DeviceStatus::query()
             ->leftJoin('devices', 'device_statuses.id', '=', 'devices.device_status_id')
@@ -32,7 +32,7 @@ class DeviceAnalyticService implements DeviceAnalyticServiceInterface
                 "name" => $item->name,
                 "count" => $item->count
             ];
-        });
+        })->toArray();
     }
 
     /**
@@ -69,7 +69,7 @@ class DeviceAnalyticService implements DeviceAnalyticServiceInterface
             })
             ->selectRaw('COUNT(*) as count')
             ->get();
-        
+
         return $devices->count;
     }
 
@@ -87,7 +87,7 @@ class DeviceAnalyticService implements DeviceAnalyticServiceInterface
             })
             ->selectRaw('COUNT(*) as count')
             ->get();
-        
+
         return $devices->count;
     }
 
@@ -100,21 +100,22 @@ class DeviceAnalyticService implements DeviceAnalyticServiceInterface
     public function mostCommonModels(): array
     {
         $deviceModels = DB::table('device_models')
-            ->join('devices','device_models.id','=','devices.device_model_id')
+            ->join('devices', 'device_models.id', '=', 'devices.device_model_id')
             ->select('device_models.name', DB::raw('count(devices.id) as total'))
-            ->groupBy('device_models.id','device_models.name')
-            ->limit(5)
+            ->groupBy('device_models.id', 'device_models.name')
+            ->orderBy('total', 'desc')
+            ->limit(10)
             ->get();
 
-        if ($deviceModels->count() == 0)
-        {
+        if ($deviceModels->count() == 0) {
             return [];
         }
 
+        $results = [];
         foreach ($deviceModels as $deviceModel) {
             $results[] = [
                 'model_name' => $deviceModel->name,
-                'quantity' => (int) $deviceModel->total, 
+                'quantity' => (int) $deviceModel->total,
             ];
         }
 

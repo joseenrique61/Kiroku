@@ -1,0 +1,33 @@
+@use "/resources/scss/base";
+
+.chart-card {
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    &__action {
+        flex-shrink: 0;
+    }
+
+    &__content {
+        padding-top: 1rem;
+    }
+}
+
+// Chart-specific theme overrides and helpers
+.chart-container {
+    width: 100%;
+    min-height: 300px;
+}
+
+// Responsive chart adjustments
+@media (max-width: 768px) {
+    .chart-card__content {
+        // Reduce padding on mobile for more chart space
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}

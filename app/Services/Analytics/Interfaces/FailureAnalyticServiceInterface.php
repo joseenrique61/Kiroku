@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 
 interface FailureAnalyticServiceInterface
 {
-    public function getFailureRateByFailureType(): Collection;
+    public function getFailureRateByFailureType(): array;
 
-    public function getFailureRateByBrand(): Collection;
+    public function getFailureRateByBrand(): array;
 }
