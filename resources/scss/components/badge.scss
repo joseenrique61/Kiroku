@@ -24,6 +24,12 @@
         color: base.$color-destructive-foreground;
     }
 
+    &--warning {
+        background-color: #f59e0b;
+        color: #fff;
+    }
+
+
     &--outline {
         color: base.$color-foreground;
         border: 1px solid base.$color-input;

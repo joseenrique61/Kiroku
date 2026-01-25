@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 interface DeviceAnalyticServiceInterface
 {
-    public function getDeviceCountByStatus();
+    public function getDeviceCountByStatus(): array;
 
     public function getDeviceStatusByCategory(DeviceCategory $deviceCategory): array;
 

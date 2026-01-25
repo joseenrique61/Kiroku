@@ -4,11 +4,11 @@ namespace App\Services\Analytics\Interfaces;
 
 use Illuminate\Support\Collection;
 
-interface MaintenanceAnalyticServiceInterface 
+interface MaintenanceAnalyticServiceInterface
 {
-    public function getMeanTimeToRepair() : float;
+    public function getMeanTimeToRepair(): float;
 
-    public function getMeanTimeToRepairByDeviceCategory(): Collection;
+    public function getMeanTimeToRepairByDeviceCategory(): array;
 
-    public function getMeanTimeToRepairByDeviceBrand(): Collection;
+    public function getMeanTimeToRepairByDeviceBrand(): array;
 }

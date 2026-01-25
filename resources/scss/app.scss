@@ -19,6 +19,10 @@
 @use 'components/app-shell';
 @use 'components/app-sidebar';
 @use 'components/placeholder-pattern';
+@use 'components/metric-card';
+@use 'components/stat-widget';
+@use 'components/chart-card';
+
 
 // Layouts
 @use 'layouts/settings/layout';
