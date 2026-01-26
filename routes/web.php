@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Inventory\Devices\DeviceController;
 use App\Http\Controllers\Inventory\Failures\FailureTypeController;
@@ -27,6 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('logs', [AuditLogController::class, 'index'])->name('logs.index');
     Route::get('logs/{log}', [AuditLogController::class, 'show'])->name('logs.show');
+
+    Route::get('api/failure-prediction', [ApiController::class, 'failure_prediction'])->name('api.failure-prediction');
 });
 
 require __DIR__.'/settings.php';

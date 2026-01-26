@@ -5,9 +5,10 @@ namespace App\Services\Analytics;
 use App\Models\DeviceBrand;
 use App\Models\DeviceCategory;
 use App\Models\Maintenance;
+use App\Services\Analytics\Interfaces\MaintenanceAnalyticServiceInterface;
 use Illuminate\Support\Collection;
 
-class MaintenanceAnalyticService
+class MaintenanceAnalyticService implements MaintenanceAnalyticServiceInterface
 {
     /**
      * Get the mean time to repair (MTTR) of all Devices.
@@ -15,7 +16,7 @@ class MaintenanceAnalyticService
      * @param null
      * @return float
      */
-    public function getMeanTimeToRepair() : float
+    public function getMeanTimeToRepair(): float
     {
         $maintenances = Maintenance::with('device')
             ->whereNotNull('back_to_service_datetime')
@@ -39,16 +40,16 @@ class MaintenanceAnalyticService
     /**
      * Get the mean time to repair (MTTR) for each device category.
      *
-     * @return \Illuminate\Support\Collection
+     * @return array
      */
-    public function getMeanTimeToRepairByDeviceCategory(): Collection
+    public function getMeanTimeToRepairByDeviceCategory(): array
     {
         $maintenances = Maintenance::with('device.deviceCategory')
             ->whereNotNull('back_to_service_datetime')
             ->get();
 
         $groupedByCategory = $maintenances->groupBy('device.deviceCategory.name')
-            ->filter(fn ($group, $key) => $key !== null);
+            ->filter(fn($group, $key) => $key !== null);
 
         $allCategoryNames = DeviceCategory::pluck('name');
 
@@ -70,22 +71,22 @@ class MaintenanceAnalyticService
                 'name' => $categoryName,
                 'mttr' => round($mttr, 2),
             ];
-        })->sortBy('name')->values();
+        })->sortBy('name')->values()->toArray();
     }
 
     /**
      * Get the mean time to repair (MTTR) for each device brand.
      *
-     * @return \Illuminate\Support\Collection
+     * @return array
      */
-    public function getMeanTimeToRepairByDeviceBrand(): Collection
+    public function getMeanTimeToRepairByDeviceBrand(): array
     {
         $maintenances = Maintenance::with('device.deviceModel.deviceBrand')
             ->whereNotNull('back_to_service_datetime')
             ->get();
 
         $groupedByBrand = $maintenances->groupBy('device.deviceModel.deviceBrand.name')
-            ->filter(fn ($group, $key) => $key !== null);
+            ->filter(fn($group, $key) => $key !== null);
 
         $allBrandNames = DeviceBrand::pluck('name');
 
@@ -107,6 +108,6 @@ class MaintenanceAnalyticService
                 'name' => $brandName,
                 'mttr' => round($mttr, 2),
             ];
-        })->sortBy('name')->values();
+        })->sortBy('name')->values()->toArray();
     }
 }

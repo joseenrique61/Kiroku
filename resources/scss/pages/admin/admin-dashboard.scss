@@ -3,11 +3,64 @@
 .admin-dashboard-page {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; // Equivalent to 24px
+    gap: 2rem;
 
+    // KPI Metrics Row
+    &__metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    // Main Grid Layout
     &__grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-        gap: 1.5rem; // Equivalent to 24px
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1.5rem;
+
+        // Full width sections
+        .grid-full {
+            grid-column: 1 / -1;
+        }
+
+        // Half width sections (2 columns)
+        .grid-half {
+            grid-column: span 6;
+        }
+
+        // Third width sections
+        .grid-third {
+            grid-column: span 4;
+        }
+
+        // Two-thirds width
+        .grid-two-thirds {
+            grid-column: span 8;
+        }
+    }
+
+    // Responsive breakpoints
+    @media (max-width: 1024px) {
+        &__grid {
+
+            .grid-half,
+            .grid-third,
+            .grid-two-thirds {
+                grid-column: 1 / -1; // Full width on tablets
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        gap: 1.5rem;
+
+        &__metrics {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        &__grid {
+            gap: 1rem;
+        }
     }
 }

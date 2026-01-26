@@ -1,7 +1,7 @@
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import { type SharedData } from '@/types/globals';
 import { Transition } from '@headlessui/react';
-import { Form, Head, usePage, useForm } from '@inertiajs/react';
+import { Form, Head, usePage } from '@inertiajs/react';
 
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';

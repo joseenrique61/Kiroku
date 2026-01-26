@@ -3,17 +3,18 @@
 namespace App\Services\Analytics;
 
 use App\Models\Failure;
+use App\Services\Analytics\Interfaces\FailureAnalyticServiceInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class FailureAnalyticService
+class FailureAnalyticService implements FailureAnalyticServiceInterface
 {
     /**
      * Get the percentage of each failure type out of all failures.
      *
-     * @return \Illuminate\Support\Collection
+     * @return array
      */
-    public function getFailureRateByFailureType(): Collection
+    public function getFailureRateByFailureType(): array
     {
         $failuresByType = Failure::join('failure_types', 'failures.failure_type_id', '=', 'failure_types.id')
             ->select('failure_types.name', DB::raw('COUNT(failures.id) as count'))
@@ -23,7 +24,7 @@ class FailureAnalyticService
         $totalFailures = $failuresByType->sum('count');
 
         if ($totalFailures === 0) {
-            return collect([]);
+            return [];
         }
 
         return $failuresByType->map(function ($item) use ($totalFailures) {
@@ -31,16 +32,16 @@ class FailureAnalyticService
                 'name' => $item->name,
                 'percentage' => round(($item->count / $totalFailures) * 100, 2),
             ];
-        });
+        })->toArray();
     }
 
     /**
      * Get the failure rate for each brand.
      * The rate is calculated as (failures_for_brand / total_maintenances_for_brand) * 100.
      *
-     * @return \Illuminate\Support\Collection
+     * @return array
      */
-    public function getFailureRateByBrand(): Collection
+    public function getFailureRateByBrand(): array
     {
         $statsByBrand = DB::table('device_brands')
             ->leftJoin('device_models', 'device_brands.id', '=', 'device_models.device_brand_id')
@@ -70,6 +71,6 @@ class FailureAnalyticService
                 'name' => $item->name,
                 'percentage' => $percentage,
             ];
-        });
+        })->toArray();
     }
 }

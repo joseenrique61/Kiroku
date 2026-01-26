@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
-    variant?: 'default' | 'destructive';
+    variant?: 'default' | 'destructive' | 'warning';
 }
 
 const Badge: React.FC<BadgeProps> = ({
