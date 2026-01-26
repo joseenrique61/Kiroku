@@ -26,7 +26,7 @@ beforeEach(function () {
 // getFailureRateByFailureType
 test('getFailureRateByFailureType returns empty when no failures', function () {
     $result = $this->service->getFailureRateByFailureType();
-    expect($result->isEmpty())->toBeTrue();
+    expect(count($result) == 0)->toBeTrue();
 });
 
 test('getFailureRateByFailureType calculates correctly', function () {
@@ -54,7 +54,7 @@ test('getFailureRateByFailureType calculates correctly', function () {
             ]);
         });
 
-    $result = $this->service->getFailureRateByFailureType()->sortBy('name')->values();
+    $result = $this->service->getFailureRateByFailureType();
 
     expect($result)->toHaveCount(2)
         ->and($result[0]['name'])->toBe('Type A')
@@ -91,7 +91,7 @@ test('getFailureRateByBrand calculates correctly', function () {
     // Brand C: No maintenances -> 0%
     DeviceBrand::factory()->create(['name' => 'Brand C']);
 
-    $result = $this->service->getFailureRateByBrand()->sortBy('name')->values();
+    $result = $this->service->getFailureRateByBrand();
 
     expect($result)->toHaveCount(3)
         ->and($result[0]['name'])->toBe('Brand A')
