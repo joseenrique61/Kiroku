@@ -68,12 +68,12 @@ class MaintenanceController extends BaseController
             }
 
             if (!$fields['back_to_service_datetime']) {
-                Device::find($fields['device_id'])->first()->update([
+                Device::find($fields['device_id'])->update([
                     'device_status_id' => DeviceStatus::where('name', '=', 'In maintenance')->first()->id
                 ]);
             }
             else {
-                Device::find($fields['device_id'])->first()->update([
+                Device::find($fields['device_id'])->update([
                     'device_status_id' => DeviceStatus::where('name', '=', 'In service')->first()->id
                 ]);
             }
@@ -139,11 +139,11 @@ class MaintenanceController extends BaseController
             }
 
             if (!$fields['back_to_service_datetime']) {
-                Device::find($fields['device_id'])->first()->update([
+                Device::find($fields['device_id'])->update([
                     'device_status_id' => DeviceStatus::where('name', '=', 'In maintenance')->first()->id
                 ]);
             } else {
-                Device::find($fields['device_id'])->first()->update([
+                Device::find($fields['device_id'])->update([
                     'device_status_id' => DeviceStatus::where('name', '=', 'In service')->first()->id
                 ]);
             }

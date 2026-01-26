@@ -12,13 +12,13 @@ class PredictiveAnalyticService implements PredictiveAnalyticServiceInterface
     /**
      * Constantes de Riesgo
      */
-    const RISK_LOW = 'Riesgo Bajo';
-    const RISK_MEDIUM = 'Riesgo Medio';
-    const RISK_HIGH = 'Riesgo Alto';
+    const RISK_LOW = 'Low Risk';
+    const RISK_MEDIUM = 'Medium Risk';
+    const RISK_HIGH = 'High Risk';
 
-    const ACTION_LOW = 'Se recomienda realizar mantenimientos de forma periódica.';
-    const ACTION_MEDIUM = 'Se recomienda realizar una evaluación y mantenimiento preventivo.';
-    const ACTION_HIGH = 'Tomar acciones inmediatamente.';
+    const ACTION_LOW = 'Make periodic maintenance';
+    const ACTION_MEDIUM = 'Evaluate and make preventive maintenance';
+    const ACTION_HIGH = 'Take action inmediately';
 
     /**
      * ESCENARIO 1: Cálculo con Información Histórica del Dispositivo
