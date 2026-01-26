@@ -1,87 +1,44 @@
-import { ResponsivePie } from '@nivo/pie';
-import { PieChartDataItem, ChartColors } from '@/types/chart-types';
+import { PieChart as PieC, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
-interface PieChartProps {
-    data: PieChartDataItem[];
-    height?: number;
-    colors?: ChartColors;
-    enableArcLabels?: boolean;
-    enableArcLinkLabels?: boolean;
-    innerRadius?: number;
+interface PieChartData {
+    name: string;
+    value: number;
 }
 
-const defaultColors = ['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#6366f1'];
+interface Color {
+    scheme: string[];
+}
 
-export function PieChart({
-    data,
-    height = 350,
-    colors,
-    enableArcLabels = true,
-    enableArcLinkLabels = true,
-    innerRadius = 0,
-}: PieChartProps) {
-    return (
-        <div style={{ height: `${height}px` }}>
-            <ResponsivePie
-                data={data}
-                margin={{ top: 30, right: 120, bottom: 30, left: 20 }}
-                innerRadius={innerRadius}
-                padAngle={1}
-                cornerRadius={4}
-                activeOuterRadiusOffset={8}
-                colors={colors?.scheme || defaultColors}
-                borderWidth={1}
-                borderColor={{
-                    from: 'color',
-                    modifiers: [['darker', 0.2]],
-                }}
-                enableArcLabels={enableArcLabels}
-                arcLabelsSkipAngle={10}
-                arcLabelsTextColor={{
-                    from: 'color',
-                    modifiers: [['darker', 2]],
-                }}
-                enableArcLinkLabels={enableArcLinkLabels}
-                arcLinkLabelsSkipAngle={10}
-                arcLinkLabelsTextColor="#64748b"
-                arcLinkLabelsThickness={2}
-                arcLinkLabelsColor={{ from: 'color' }}
-                legends={[
-                    {
-                        anchor: 'right',
-                        direction: 'column',
-                        justify: false,
-                        translateX: 100,
-                        translateY: 0,
-                        itemsSpacing: 8,
-                        itemWidth: 80,
-                        itemHeight: 20,
-                        itemTextColor: '#64748b',
-                        itemDirection: 'left-to-right',
-                        itemOpacity: 1,
-                        symbolSize: 14,
-                        symbolShape: 'circle',
-                    },
-                ]}
-                theme={{
-                    text: {
-                        fontSize: 12,
-                        fill: '#64748b',
-                    },
-                    tooltip: {
-                        container: {
-                            background: '#ffffff',
-                            color: '#1e293b',
-                            fontSize: '14px',
-                            borderRadius: '8px',
-                            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                            padding: '12px 16px',
-                        },
-                    },
-                }}
-                animate={true}
-                motionConfig="gentle"
-            />
-        </div>
-    );
+interface PieChartProps {
+    data: PieChartData[];
+    colors: Color;
+}
+
+export function PieChart({data, colors}: PieChartProps) {
+  return (
+    // Simplemente asegúrate de que ESTE div tenga altura. 
+    // Recharts llenará el 100% de width y height.
+    <div style={{ width: '100%', height: '350px' }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <PieC>
+          <Pie
+            data={data}
+            cx="50%" // Centro X
+            cy="50%" // Centro Y
+            innerRadius={60} // Para hacerlo tipo "Donut"
+            outerRadius={80}
+            fill="#8884d8"
+            paddingAngle={1}
+            dataKey="value"
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={colors.scheme[index % colors.scheme.length]} />
+            ))}
+          </Pie>
+          <Tooltip />
+          <Legend verticalAlign="middle" align="right" layout="vertical" />
+        </PieC>
+      </ResponsiveContainer>
+    </div>
+  );
 }

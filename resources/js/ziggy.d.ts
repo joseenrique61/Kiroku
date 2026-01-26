@@ -141,25 +141,29 @@ declare module 'ziggy-js' {
     "organizations.show": [
         {
             "name": "organization",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "organizations.edit": [
         {
             "name": "organization",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "organizations.update": [
         {
             "name": "organization",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "organizations.destroy": [
         {
             "name": "organization",
-            "required": true
+            "required": true,
+            "binding": "id"
         }
     ],
     "logs.index": [],
@@ -170,6 +174,7 @@ declare module 'ziggy-js' {
             "binding": "id"
         }
     ],
+    "api.failure-prediction": [],
     "profile.edit": [],
     "profile.update": [],
     "profile.destroy": [],

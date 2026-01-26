@@ -27,10 +27,6 @@
     "dependencies": {
         "@headlessui/react": "^2.2.0",
         "@inertiajs/react": "^2.1.4",
-        "@nivo/bar": "^0.99.0",
-        "@nivo/core": "^0.99.0",
-        "@nivo/line": "^0.99.0",
-        "@nivo/pie": "^0.99.0",
         "@types/react": "^19.0.3",
         "@types/react-dom": "^19.0.2",
         "@vitejs/plugin-react": "^4.6.0",
@@ -44,6 +40,7 @@
         "lucide-react": "^0.475.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
+        "recharts": "^3.7.0",
         "typescript": "^5.7.2",
         "vite": "^7.0.4",
         "ziggy-js": "^2.6.0"

@@ -72,9 +72,14 @@ class PredictiveAnalyticService implements PredictiveAnalyticServiceInterface
      * MÉTODO INTEGRADOR (Lista de Riesgos)
      * Decide qué escenario usar para cada dispositivo y retorna la lista completa.
      */
-    public function getPredictiveRiskList(int $monthsFuture): array
+    public function getPredictiveRiskList(int $monthsFuture, int $category): array
     {
-        $devices = Device::with(['maintenances.failure.failureType', 'acquisition', 'deviceModel'])->get();
+        $devices = Device::with(['maintenances.failure.failureType', 'acquisition', 'deviceModel']);
+        if ($category != -1) {
+            $devices->where('device_category_id', '=', $category);
+        }
+        $devices = $devices->get();
+
         $results = [];
 
         // Por el momento, no está siendo utilizada
