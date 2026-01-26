@@ -29,5 +29,4 @@ export interface StatWidgetProps {
 
 export interface ChartColors {
     scheme?: string | string[];
-    [key: string]: any;
 }

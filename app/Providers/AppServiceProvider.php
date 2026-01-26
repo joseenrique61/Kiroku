@@ -11,6 +11,8 @@ use App\Services\Analytics\Interfaces\MaintenanceAnalyticServiceInterface;
 use App\Services\Analytics\Interfaces\PredictiveAnalyticServiceInterface;
 use App\Services\Analytics\MaintenanceAnalyticService;
 use App\Services\Analytics\PredictiveAnalyticService;
+use App\Services\DeviceService;
+use App\Services\DeviceServiceInterface;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -40,6 +42,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             DeviceAnalyticServiceInterface::class,
             fn () => new DeviceAnalyticService()
+        );
+
+        $this->app->singleton(
+            DeviceServiceInterface::class,
+            fn () => new DeviceService()
         );
     }
 

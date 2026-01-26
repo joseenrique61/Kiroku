@@ -1,8 +1,8 @@
+import { Badge } from '@/components/badge';
 import { BarChart } from '@/components/bar-chart';
 import { ChartCard } from '@/components/chart-card';
 import { MetricCard } from '@/components/metric-card';
 import { PieChart } from '@/components/pie-chart';
-import { Badge } from '@/components/badge';
 import { Select } from '@/components/select';
 import {
     Table,
@@ -13,17 +13,16 @@ import {
     TableRow,
 } from '@/components/table';
 import AppLayout from '@/layouts/app-layout';
-import { Head, router } from '@inertiajs/react';
+import { DeviceCategory } from '@/types/globals';
+import { Head } from '@inertiajs/react';
 import {
-    Activity,
     AlertCircle,
     AlertTriangle,
     CheckCircle,
     Clock,
     Server,
-    TrendingUp,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface PredictiveRiskItem {
     device_id: number;
@@ -57,7 +56,6 @@ interface ModelItem {
 }
 
 interface AdminDashboardProps {
-    predictiveRiskList: PredictiveRiskItem[];
     failureRateByFailureType: FailureRateItem[];
     failureRateByBrand: FailureRateItem[];
     generalMttr: number;
@@ -65,10 +63,10 @@ interface AdminDashboardProps {
     mttrByBrand: MttrItem[];
     deviceCountByStatus: DeviceStatusItem[];
     mostCommonModels: ModelItem[];
+    deviceCategories: DeviceCategory[];
 }
 
 export default function AdminDashboard({
-    predictiveRiskList,
     failureRateByFailureType,
     failureRateByBrand,
     generalMttr,
@@ -76,23 +74,41 @@ export default function AdminDashboard({
     mttrByBrand,
     deviceCountByStatus,
     mostCommonModels,
+    deviceCategories,
 }: AdminDashboardProps) {
     const [months, setMonths] = useState('3');
+    const [category, setCategory] = useState('');
+    const [predictiveRiskList, setPredictiveRiskList] = useState<
+        PredictiveRiskItem[]
+    >([]);
 
-    const handleMonthsChange = (e: string) => {
-        const newMonths = e;
-        setMonths(newMonths);
+    useEffect(() => {
+        // Define an asynchronous function to fetch the data
+        const fetchData = async () => {
+            try {
+                const response = await fetch(
+                    route('api.failure-prediction', {
+                        category: category,
+                        months: months,
+                    }),
+                );
 
-        router.get(
-            route('dashboard'),
-            { months: newMonths },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                only: ['predictiveRiskList'],
-            },
-        );
-    };
+                if (!response.ok) {
+                    // A fetch promise only rejects on a network error, not an HTTP error status (like 404 or 500)
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Type the response data
+                const result: PredictiveRiskItem[] = await response.json();
+                setPredictiveRiskList(result);
+            } catch (err) {
+                // Use type assertion for the error if needed
+                console.error('Error calling Predictive risk list: ' + err);
+            }
+        };
+
+        fetchData();
+    }, [category, months]);
 
     // Calculate KPIs
     const totalDevices = deviceCountByStatus.reduce(
@@ -105,7 +121,9 @@ export default function AdminDashboard({
         (item) => item.probability_percentage >= 70,
     ).length;
     const mediumRiskDevices = predictiveRiskList.filter(
-        (item) => item.probability_percentage >= 50 && item.probability_percentage < 70,
+        (item) =>
+            item.probability_percentage >= 50 &&
+            item.probability_percentage < 70,
     ).length;
     const lowRiskDevices = predictiveRiskList.filter(
         (item) => item.probability_percentage < 50,
@@ -113,21 +131,18 @@ export default function AdminDashboard({
 
     // Find active/operational devices - check for common status names
     const activeDevices =
-        deviceCountByStatus.find((item) =>
-            item.name.includes('In service')
-        )?.count || 0;
+        deviceCountByStatus.find((item) => item.name.includes('In service'))
+            ?.count || 0;
 
     // Find out of service devices - check for common status names
     const outOfServiceDevices =
-        deviceCountByStatus.find((item) =>
-            item.name.includes('Out of service')
-        )?.count || 0;
+        deviceCountByStatus.find((item) => item.name.includes('Out of service'))
+            ?.count || 0;
 
     // Find in maintenance devices - check for common status names
     const inMaintenanceDevices =
-        deviceCountByStatus.find((item) =>
-            item.name.includes('In maintenance')
-        )?.count || 0;
+        deviceCountByStatus.find((item) => item.name.includes('In maintenance'))
+            ?.count || 0;
 
     // Prepare chart data
     const deviceStatusPieData = deviceCountByStatus.map((item) => ({
@@ -158,11 +173,12 @@ export default function AdminDashboard({
         value: item.percentage,
     }));
 
-    const mostCommonModelsBarData = mostCommonModels.slice(0, 10).map((item) => ({
-        model: item.model_name,
-        'Quantity': item.quantity,
-    }));
-
+    const mostCommonModelsBarData = mostCommonModels
+        .slice(0, 10)
+        .map((item) => ({
+            model: item.model_name,
+            Quantity: item.quantity,
+        }));
 
     function getRiskBadgeVariant(percentage: number) {
         if (percentage < 30) return 'default';
@@ -241,11 +257,19 @@ export default function AdminDashboard({
                         <ChartCard
                             title="Device Status Distribution"
                             description="Overview of device operational status"
+                            className="h-[350px]"
                         >
-                            {deviceStatusPieData.length > 0 ? (
+                            {deviceStatusPieData.filter((e) => e.value > 0)
+                                .length > 0 ? (
                                 <PieChart
-                                    data={deviceStatusPieData}
-                                    height={350}
+                                    data={deviceStatusPieData
+                                        .filter((e) => e.value > 0)
+                                        .map((f) => {
+                                            return {
+                                                name: f.label,
+                                                value: f.value,
+                                            };
+                                        })}
                                     colors={{
                                         scheme: [
                                             '#10b981',
@@ -341,10 +365,17 @@ export default function AdminDashboard({
                             title="Failure Rate by Type"
                             description="Distribution of failure types"
                         >
-                            {failureRateByTypePieData.length > 0 ? (
+                            {failureRateByTypePieData.filter((e) => e.value > 0)
+                                .length > 0 ? (
                                 <PieChart
-                                    data={failureRateByTypePieData}
-                                    height={350}
+                                    data={failureRateByTypePieData
+                                        .filter((e) => e.value > 0)
+                                        .map((f) => {
+                                            return {
+                                                name: f.label,
+                                                value: f.value,
+                                            };
+                                        })}
                                     colors={{
                                         scheme: [
                                             '#ef4444',
@@ -367,10 +398,18 @@ export default function AdminDashboard({
                             title="Failure Rate by Brand"
                             description="Failure percentage per manufacturer"
                         >
-                            {failureRateByBrandPieData.length > 0 ? (
+                            {failureRateByBrandPieData.filter(
+                                (e) => e.value > 0,
+                            ).length > 0 ? (
                                 <PieChart
-                                    data={failureRateByBrandPieData}
-                                    height={350}
+                                    data={failureRateByBrandPieData
+                                        .filter((e) => e.value > 0)
+                                        .map((f) => {
+                                            return {
+                                                name: f.label,
+                                                value: f.value,
+                                            };
+                                        })}
                                     colors={{
                                         scheme: [
                                             '#6366f1',
@@ -393,16 +432,36 @@ export default function AdminDashboard({
                             title="Predictive Failure Risk Analysis"
                             description={`Devices at risk of failure in the next ${months} months`}
                             action={
-                                <Select
-                                    name="months-filter"
-                                    value={months}
-                                    onValueChange={handleMonthsChange}
-                                    options={[
-                                        { label: '3 months', value: '3' },
-                                        { label: '6 months', value: '6' },
-                                        { label: '18 months', value: '18' },
-                                    ]}
-                                />
+                                <div>
+                                    <Select
+                                        name="category-filter"
+                                        value={category}
+                                        onValueChange={(e: string) =>
+                                            setCategory(e)
+                                        }
+                                        options={[
+                                            { label: 'All', value: '' },
+                                            ...deviceCategories.map((d) => {
+                                                return {
+                                                    label: d.name,
+                                                    value: d.id.toString(),
+                                                };
+                                            }),
+                                        ]}
+                                    />
+                                    <Select
+                                        name="months-filter"
+                                        value={months}
+                                        onValueChange={(e: string) =>
+                                            setMonths(e)
+                                        }
+                                        options={[
+                                            { label: '3 months', value: '3' },
+                                            { label: '6 months', value: '6' },
+                                            { label: '18 months', value: '18' },
+                                        ]}
+                                    />
+                                </div>
                             }
                         >
                             <Table>
@@ -412,8 +471,12 @@ export default function AdminDashboard({
                                         <TableHead>Model</TableHead>
                                         <TableHead>Risk Level</TableHead>
                                         <TableHead>Probability</TableHead>
-                                        <TableHead>Most Probable Failure</TableHead>
-                                        <TableHead>Recommended Action</TableHead>
+                                        <TableHead>
+                                            Most Probable Failure
+                                        </TableHead>
+                                        <TableHead>
+                                            Recommended Action
+                                        </TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -442,36 +505,64 @@ export default function AdminDashboard({
                                                         </Badge>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <div style={{
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '0.5rem',
-                                                        }}>
-                                                            <span style={{ fontWeight: 600 }}>
-                                                                {item.probability_percentage}%
+                                                        <div
+                                                            style={{
+                                                                display: 'flex',
+                                                                alignItems:
+                                                                    'center',
+                                                                gap: '0.5rem',
+                                                            }}
+                                                        >
+                                                            <span
+                                                                style={{
+                                                                    fontWeight: 600,
+                                                                }}
+                                                            >
+                                                                {
+                                                                    item.probability_percentage
+                                                                }
+                                                                %
                                                             </span>
-                                                            <div style={{
-                                                                width: '100px',
-                                                                height: '6px',
-                                                                backgroundColor: '#e5e7eb',
-                                                                borderRadius: '3px',
-                                                                overflow: 'hidden',
-                                                            }}>
-                                                                <div style={{
-                                                                    width: `${item.probability_percentage}%`,
-                                                                    height: '100%',
-                                                                    backgroundColor: item.probability_percentage >= 70 ? '#ef4444' :
-                                                                        item.probability_percentage >= 30 ? '#f59e0b' : '#10b981',
-                                                                    transition: 'width 0.3s ease',
-                                                                }} />
+                                                            <div
+                                                                style={{
+                                                                    width: '100px',
+                                                                    height: '6px',
+                                                                    backgroundColor:
+                                                                        '#e5e7eb',
+                                                                    borderRadius:
+                                                                        '3px',
+                                                                    overflow:
+                                                                        'hidden',
+                                                                }}
+                                                            >
+                                                                <div
+                                                                    style={{
+                                                                        width: `${item.probability_percentage}%`,
+                                                                        height: '100%',
+                                                                        backgroundColor:
+                                                                            item.probability_percentage >=
+                                                                            70
+                                                                                ? '#ef4444'
+                                                                                : item.probability_percentage >=
+                                                                                    30
+                                                                                  ? '#f59e0b'
+                                                                                  : '#10b981',
+                                                                        transition:
+                                                                            'width 0.3s ease',
+                                                                    }}
+                                                                />
                                                             </div>
                                                         </div>
                                                     </TableCell>
                                                     <TableCell>
-                                                        {item.most_probable_failure}
+                                                        {
+                                                            item.most_probable_failure
+                                                        }
                                                     </TableCell>
                                                     <TableCell>
-                                                        {item.recommended_action}
+                                                        {
+                                                            item.recommended_action
+                                                        }
                                                     </TableCell>
                                                 </TableRow>
                                             ))
