@@ -124,11 +124,11 @@ export default function AdminDashboard({
     ).length;
     const mediumRiskDevices = predictiveRiskList.filter(
         (item) =>
-            item.probability_percentage >= 50 &&
+            item.probability_percentage >= 30 &&
             item.probability_percentage < 70,
     ).length;
     const lowRiskDevices = predictiveRiskList.filter(
-        (item) => item.probability_percentage < 50,
+        (item) => item.probability_percentage < 30,
     ).length;
 
     // Find active/operational devices - check for common status names
