@@ -20,7 +20,9 @@ import {
     AlertTriangle,
     CheckCircle,
     Clock,
+    InfoIcon,
     Server,
+    WrenchIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -122,11 +124,11 @@ export default function AdminDashboard({
     ).length;
     const mediumRiskDevices = predictiveRiskList.filter(
         (item) =>
-            item.probability_percentage >= 50 &&
+            item.probability_percentage >= 30 &&
             item.probability_percentage < 70,
     ).length;
     const lowRiskDevices = predictiveRiskList.filter(
-        (item) => item.probability_percentage < 50,
+        (item) => item.probability_percentage < 30,
     ).length;
 
     // Find active/operational devices - check for common status names
@@ -200,6 +202,28 @@ export default function AdminDashboard({
                         description="All registered devices"
                     />
                     <MetricCard
+                        title="Out of Service Devices"
+                        value={outOfServiceDevices}
+                        icon={AlertCircle}
+                        variant="danger"
+                        description="Currently not operational"
+                    />
+                    <MetricCard
+                        title="In Maintenance Devices"
+                        value={inMaintenanceDevices}
+                        icon={WrenchIcon}
+                        variant="warning"
+                        description="Temporarily out of service"
+                    />
+                    <MetricCard
+                        title="Active Devices"
+                        value={activeDevices}
+                        icon={CheckCircle}
+                        variant="success"
+                        description="Currently operational"
+                    />
+
+                    <MetricCard
                         title="Avg. MTTR"
                         value={`${generalMttr.toFixed(2)}h`}
                         icon={Clock}
@@ -211,7 +235,7 @@ export default function AdminDashboard({
                         value={highRiskDevices}
                         icon={AlertTriangle}
                         variant="danger"
-                        description="Devices needing attention"
+                        description="Devices needing urgent attention"
                     />
                     <MetricCard
                         title="Medium Risk"
@@ -223,30 +247,9 @@ export default function AdminDashboard({
                     <MetricCard
                         title="Low Risk"
                         value={lowRiskDevices}
-                        icon={AlertTriangle}
+                        icon={InfoIcon}
                         variant="default"
-                        description="Devices needing attention"
-                    />
-                    <MetricCard
-                        title="Active Devices"
-                        value={activeDevices}
-                        icon={CheckCircle}
-                        variant="success"
-                        description="Currently operational"
-                    />
-                    <MetricCard
-                        title="Out of Service Devices"
-                        value={outOfServiceDevices}
-                        icon={AlertCircle}
-                        variant="danger"
-                        description="Currently operational"
-                    />
-                    <MetricCard
-                        title="In Maintenance Devices"
-                        value={inMaintenanceDevices}
-                        icon={AlertCircle}
-                        variant="warning"
-                        description="Currently operational"
+                        description="Devices with no need of attention"
                     />
                 </div>
 
@@ -432,35 +435,51 @@ export default function AdminDashboard({
                             title="Predictive Failure Risk Analysis"
                             description={`Devices at risk of failure in the next ${months} months`}
                             action={
-                                <div>
-                                    <Select
-                                        name="category-filter"
-                                        value={category}
-                                        onValueChange={(e: string) =>
-                                            setCategory(e)
-                                        }
-                                        options={[
-                                            { label: 'All', value: '' },
-                                            ...deviceCategories.map((d) => {
-                                                return {
-                                                    label: d.name,
-                                                    value: d.id.toString(),
-                                                };
-                                            }),
-                                        ]}
-                                    />
-                                    <Select
-                                        name="months-filter"
-                                        value={months}
-                                        onValueChange={(e: string) =>
-                                            setMonths(e)
-                                        }
-                                        options={[
-                                            { label: '3 months', value: '3' },
-                                            { label: '6 months', value: '6' },
-                                            { label: '18 months', value: '18' },
-                                        ]}
-                                    />
+                                <div className="chart-action-inner-wrapper">
+                                    <div className="chart-action-filter">
+                                        <p>Category</p>
+                                        <Select
+                                            name="category-filter"
+                                            value={category}
+                                            onValueChange={(e: string) =>
+                                                setCategory(e)
+                                            }
+                                            options={[
+                                                { label: 'All', value: '' },
+                                                ...deviceCategories.map((d) => {
+                                                    return {
+                                                        label: d.name,
+                                                        value: d.id.toString(),
+                                                    };
+                                                }),
+                                            ]}
+                                        />
+                                    </div>
+
+                                    <div className="chart-action-filter">
+                                        <p>Time</p>
+                                        <Select
+                                            name="months-filter"
+                                            value={months}
+                                            onValueChange={(e: string) =>
+                                                setMonths(e)
+                                            }
+                                            options={[
+                                                {
+                                                    label: '3 months',
+                                                    value: '3',
+                                                },
+                                                {
+                                                    label: '6 months',
+                                                    value: '6',
+                                                },
+                                                {
+                                                    label: '18 months',
+                                                    value: '18',
+                                                },
+                                            ]}
+                                        />
+                                    </div>
                                 </div>
                             }
                         >
@@ -511,6 +530,9 @@ export default function AdminDashboard({
                                                                 alignItems:
                                                                     'center',
                                                                 gap: '0.5rem',
+                                                                flex: '',
+                                                                justifyContent:
+                                                                    'space-between',
                                                             }}
                                                         >
                                                             <span
