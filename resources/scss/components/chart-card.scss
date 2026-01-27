@@ -5,11 +5,12 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        gap: 1rem;
+        gap: 3rem;
     }
 
     &__action {
         flex-shrink: 0;
+        flex-grow: 1;
     }
 
     &__content {
